@@ -91,7 +91,7 @@
                     <!-- Botón de Login/Register -->
                     <button style="font-size: 16px;"><a href="{{ route('login') }}"
                             class="text-dark text-decoration-none">
-                            Iniciar Sesion
+                            Iniciar Sesión / Regístrate
                         </a></button>
                 </div>
             </div>
