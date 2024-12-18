@@ -53,6 +53,13 @@
             background-color: #e6c501;
             /* Un amarillo más oscuro para el hover */
         }
+
+        /* Estilo para el enfoque en los campos de entrada */
+        input:focus {
+            outline: none;
+            border-color: #ffdb01; /* Borde amarillo al enfocar */
+            box-shadow: 0px 0px 5px #ffdb01;
+        }
     </style>
 </head>
 
