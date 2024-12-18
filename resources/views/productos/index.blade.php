@@ -110,8 +110,11 @@
                             @endif
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 <div class="d-flex">
-                                    <input type="text" class="form-control me-2" placeholder="Buscar producto">
-                                    <button class="btn btn-outline-secondary">Buscar</button>
+                                    <form method="GET" action="{{ route('productos.index') }}" class="d-flex">
+                                        <input type="text" name="search" class="form-control me-2"
+                                            placeholder="Buscar producto" value="{{ request('search') }}">
+                                        <button type="submit" class="btn btn-outline-secondary">Buscar</button>
+                                    </form>
                                 </div>
                                 <a href="{{ route('categorias.create') }}" class="btn btn-success">Añadir categoría</a>
                                 <a href="{{ route('productos.create') }}" class="btn btn-primary">Añadir nuevo

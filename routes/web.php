@@ -64,3 +64,5 @@ Route::resource('inventario', InventarioController::class);
 Route::resource('productos', ProductoController::class);
 
 Route::resource('categorias', CategoriaController::class);
+
+Route::get('/productos/search', [ProductoController::class, 'search'])->name('productos.search');

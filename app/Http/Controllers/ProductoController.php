@@ -8,9 +8,19 @@ use Illuminate\Http\Request;
 
 class ProductoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $productos = Producto::with('categoria')->get();
+        $query = Producto::with('categoria');  // Mantén la relación con 'categoria'
+
+        // Verificar si hay un término de búsqueda
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('nombre_producto', 'like', '%' . $search . '%');  // Filtrar por nombre del producto
+        }
+
+        // Obtener los productos con el filtro de búsqueda aplicado
+        $productos = $query->get();
+
         return view('productos.index', compact('productos'));
     }
 
@@ -67,4 +77,7 @@ class ProductoController extends Controller
 
         return redirect()->route('productos.index')->with('success', 'Producto eliminado exitosamente.');
     }
+
+
+    
 }
