@@ -12,16 +12,23 @@
         <h1 class="text-center">Recuperar Contraseña</h1>
         <p class="text-center text-muted">Introduce tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.</p>
 
+        <!-- Mensaje de confirmación -->
+        @if (session('status'))
+            <div class="alert alert-success text-center">
+                {{ session('status') }}
+            </div>
+        @endif
+
         <form action="{{ route('password.email') }}" method="POST">
             @csrf
             <div class="mb-3">
                 <label for="email" class="form-label">Correo Electrónico:</label>
                 <input type="email" class="form-control" id="email" name="email" required>
                 @error('email')
-                    <div class="ms_err">{{ $message }}</div>
+                    <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>
-            <button type="submit" class="btn btn-custom-warning w-100">Enviar enlace de recuperación</button>
+            <button type="submit" class="btn btn-warning w-100">Enviar enlace de recuperación</button>
         </form>
     </div>
     <!-- Bootstrap JS -->

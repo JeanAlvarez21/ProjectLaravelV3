@@ -12,6 +12,6 @@ class RoleMiddleware
         if (Auth::check() && Auth::user()->rol == $role) {
             return $next($request);
         }
-        return redirect('/home')->with('error', 'No tienes permiso para acceder a esta página.');
+        return redirect('/login')->with('error', 'No tienes permiso para acceder a esta página.');
     }
 }

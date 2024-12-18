@@ -10,7 +10,7 @@ class ClienteController extends Controller
     {
         switch (Auth::user()->rol) {
             case 1: // Administrador
-                return view('roles.admin'); // Vista para administradores
+                return view('welcome'); // Vista para administradores
             case 2: // Empleado
                 return view('roles.empleado'); // Vista para empleados
             case 3: // Cliente
