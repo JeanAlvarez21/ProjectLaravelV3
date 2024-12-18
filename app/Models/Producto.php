@@ -8,21 +8,25 @@ use Illuminate\Database\Eloquent\Model;
 class Producto extends Model
 {
     use HasFactory;
-    protected $guarded = [];
-    public $timestaps = false;
 
-    public function detalles_pedidos() 
+    protected $primaryKey = 'id_producto';
+
+    protected $fillable = [
+        'nombre_producto',
+        'descripcion',
+        'unidad_medida',
+        'link_imagen',
+        'id_categoria',
+        'visible',
+    ];
+
+    public function categoria()
     {
-        return $this->hasMany(Detalles_Pedido::class);
+        return $this->belongsTo(Categoria::class, 'id_categoria', 'id_categoria');
     }
 
-    public function inventario_Products() 
+    public function inventarios()
     {
-        return $this->hasMany(Inventario_Producto::class);
-    }
-        
-    public function categorias() 
-    {
-        return $this->belongsTo(Categorias::class);
+        return $this->hasMany(Inventario::class, 'id_producto', 'id_producto');
     }
 }

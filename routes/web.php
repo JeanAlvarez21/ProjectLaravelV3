@@ -15,8 +15,6 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\UserController;
 
-
-
 Route::get('/', function () {
     return view('welcome');
 });
@@ -57,3 +55,9 @@ Route::post('/logout', function () {
 Route::post('/usuarios', [UserController::class, 'store'])->name('usuarios.store');
 Route::put('/usuarios/{user}', [UserController::class, 'update'])->name('usuarios.update');
 Route::delete('usuarios/{user}', [UserController::class, 'destroy'])->name('usuarios.destroy');
+
+
+// Inventario routes
+Route::resource('inventario', InventarioController::class);
+// Producto routes
+Route::resource('productos', ProductoController::class);

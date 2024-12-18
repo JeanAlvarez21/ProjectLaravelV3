@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('productos', function (Blueprint $table) {
-            $table->bigIncrements('id_producto'); // Clave primaria
+            $table->id('id_producto'); // Clave primaria
             $table->string('nombre_producto', 100);
             $table->string('descripcion', 100);
             $table->string('unidad_medida', 50);
@@ -20,6 +20,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_categoria'); // Tipo consistente con la tabla 'categorias'
             $table->boolean('visible')->default(true); // Nuevo campo para visibilidad
             $table->foreign('id_categoria')->references('id_categoria')->on('categorias')->onUpdate('cascade')->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
