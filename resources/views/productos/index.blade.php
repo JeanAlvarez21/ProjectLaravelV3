@@ -113,6 +113,7 @@
                                     <input type="text" class="form-control me-2" placeholder="Buscar producto">
                                     <button class="btn btn-outline-secondary">Buscar</button>
                                 </div>
+                                <a href="{{ route('categorias.create') }}" class="btn btn-success">Añadir categoría</a>
                                 <a href="{{ route('productos.create') }}" class="btn btn-primary">Añadir nuevo
                                     producto</a>
                             </div>

@@ -14,6 +14,7 @@ use App\Http\Controllers\NotificationCenterController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CategoriaController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -61,3 +62,5 @@ Route::delete('usuarios/{user}', [UserController::class, 'destroy'])->name('usua
 Route::resource('inventario', InventarioController::class);
 // Producto routes
 Route::resource('productos', ProductoController::class);
+
+Route::resource('categorias', CategoriaController::class);

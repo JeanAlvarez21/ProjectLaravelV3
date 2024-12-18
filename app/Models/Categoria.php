@@ -9,11 +9,10 @@ class Categoria extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'id_categoria';
-
-    protected $fillable = ['nombre_categoria'];
-
-    public $timestamps = false;
+    protected $table = 'categorias'; // Esto es opcional, solo si el nombre de la tabla no sigue la convención
+    protected $primaryKey = 'id_categoria'; // Definir la clave primaria
+    protected $fillable = ['nombre_categoria']; // Campos asignables en masa
+    public $timestamps = false; // Si no estás utilizando timestamps
 
     public function productos()
     {
