@@ -97,13 +97,48 @@
             border: none;
             cursor: pointer;
         }
+
+        .btn-delete {
+            background-color: #FF0000;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+        }
+
+        .btn-delete:hover {
+            background-color: #D40000;
+        }
+
+        /* Estilo para el botón de cerrar sesión */
+        .btn-logout {
+            background-color: #FF6347; /* Un color rojo para el botón */
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+            display: block;
+            margin-top: auto;
+        }
+
+        .btn-logout:hover {
+            background-color: #D44C3C;
+        }
     </style>
 </head>
 <body>
     <div class="sidebar">
-        <div class="logo">
-            <img src="/logo.png" alt="NOVOCENTRO" height="40">
+        <div class="logo" style="text-align: center; margin-bottom: 2rem;">
+            <a href="home">
+                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
+                style="height: 7vh; max-height: auto; width: 70%;">
+            </a>
         </div>
+
         <nav>
             <a href="/dashboard" class="nav-item">
                 <span>Dashboard</span>
@@ -123,6 +158,11 @@
             <a href="/reportes" class="nav-item">
                 <span>Reportes</span>
             </a>
+            <!-- Botón de cerrar sesión -->
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
+                @csrf
+                <button type="submit" class="btn-logout">Cerrar sesión</button>
+            </form>
         </nav>
     </div>
 
@@ -131,7 +171,6 @@
             <h1>Usuarios</h1>
             <div class="actions">
                 <input type="text" class="search-bar" placeholder="Buscar...">
-                <a href="{{ route('usuarios.create') }}" class="btn btn-primary">Añadir nuevo cliente</a>
             </div>
         </div>
 
@@ -169,6 +208,13 @@
                     <td>{{ $user->created_at->format('d F Y') }}</td>
                     <td>
                         <a href="{{ route('usuarios.edit', $user) }}" class="btn btn-edit">Editar</a>
+
+                        <!-- Botón de eliminar -->
+                        <form action="{{ route('usuarios.destroy', $user) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-delete" onclick="return confirm('¿Estás seguro de eliminar este usuario?')">Eliminar</button>
+                        </form>
                     </td>
                 </tr>
                 @endforeach
@@ -177,4 +223,3 @@
     </div>
 </body>
 </html>
-

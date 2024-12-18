@@ -28,6 +28,13 @@
             background-color: #FFD700;
             /* Amarillo similar */
         }
+
+        .no-link {
+            text-decoration: none;
+            /* Elimina el subrayado */
+            color: inherit;
+            /* Hereda el color del texto circundante */
+        }
     </style>
 </head>
 
@@ -62,7 +69,7 @@
                         <a class="nav-link" href="#">Contacto</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('adminsito') }}">Admin</a>
+                        <a href="/dashboard" class="nav-link no-link">Admin</a>
                     </li>
                 </ul>
                 <!-- Botón de Login/Register y Notificaciones -->

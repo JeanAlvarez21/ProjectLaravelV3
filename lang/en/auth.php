@@ -14,7 +14,7 @@ return [
     */
 
     'failed' => 'No encontramos una cuenta asociada con tu correo electrónico, prueba a crear una cuenta.',
-    'password' => 'The provided password is incorrect.',
-    'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+    'password' => 'La contraseña introducida e sincorrecta.',
+    'throttle' => 'Muchos intentos fellidos de inicio de sesión, vuelve a intentarlo en :seconds segundos.',
 
 ];

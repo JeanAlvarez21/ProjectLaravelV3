@@ -42,7 +42,6 @@ Route::get('/dashboard', function () {
     return view('dashboard'); // Nombre del archivo en resources/views/dashboard.blade.php
 })->name('dashboard');
 Route::get('/notificaciones', [NotificationCenterController::class, 'index'])->name('notificaciones');
-
 Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios.index');
 Route::get('/usuarios/crear', [UserController::class, 'create'])->name('usuarios.create');
 Route::get('/usuarios/{user}/editar', [UserController::class, 'edit'])->name('usuarios.edit');
@@ -57,6 +56,4 @@ Route::post('/logout', function () {
 })->name('logout');
 Route::post('/usuarios', [UserController::class, 'store'])->name('usuarios.store');
 Route::put('/usuarios/{user}', [UserController::class, 'update'])->name('usuarios.update');
-
-
-
+Route::delete('usuarios/{user}', [UserController::class, 'destroy'])->name('usuarios.destroy');

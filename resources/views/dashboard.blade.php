@@ -12,42 +12,90 @@
             font-family: Arial, sans-serif;
         }
 
+        /* Sidebar Styles */
         .sidebar {
-            height: 100vh;
-            background-color: #ffcc00;
-            padding: 20px;
+            width: 250px;
+            background-color: #FFD700;
+            min-height: 100vh;
+            padding: 1rem;
         }
 
-        .sidebar a {
+        .sidebar .logo {
+            margin-bottom: 2rem;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .sidebar .nav-item {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
             color: #000;
             text-decoration: none;
-            display: block;
-            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .sidebar a:hover {
-            color: #555;
+        .sidebar .nav-item.active {
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar .btn-logout {
+            background-color: #FF6347;
+            /* Rojo */
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+            display: block;
+            margin-top: auto;
+        }
+
+        .sidebar .btn-logout:hover {
+            background-color: #D44C3C;
         }
     </style>
 </head>
-
 <body>
     <div class="d-flex">
         <!-- Sidebar -->
         <div class="sidebar">
-            <h4 class="text-center">NOVOCENTRO</h4>
-            <a href="#">Dashboard</a>
-            <a href="#">Productos</a>
-            <a href="#">Inventario</a>
-            <a href="/usuarios">Usuarios</a>
-            <a href="#">Facturación</a>
-            <a href="#">Reportes</a>
-            <hr>
-            <a href="#">Configuración</a>
-            <a href="#" onclick="document.getElementById('logout-form').submit();">Cerrar sesión</a>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                @csrf
-            </form>
+            <div class="logo" style="text-align: center; margin-bottom: 2rem;">
+                <a href="home">
+                    <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
+                        style="height: 7vh; max-height: auto; width: 70%;">
+                </a>
+            </div>
+
+            <nav>
+                <a href="/dashboard" class="nav-item active">
+                    <span>Dashboard</span>
+                </a>
+                <a href="/productos" class="nav-item">
+                    <span>Productos</span>
+                </a>
+                <a href="/inventario" class="nav-item">
+                    <span>Inventario</span>
+                </a>
+                <a href="/usuarios" class="nav-item">
+                    <span>Usuarios</span>
+                </a>
+                <a href="/facturacion" class="nav-item">
+                    <span>Facturación</span>
+                </a>
+                <a href="/reportes" class="nav-item">
+                    <span>Reportes</span>
+                </a>
+                <!-- Botón de cerrar sesión -->
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
+                    @csrf
+                    <button type="submit" class="btn-logout">Cerrar sesión</button>
+                </form>
+            </nav>
         </div>
 
         <!-- Main Content -->
