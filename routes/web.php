@@ -11,11 +11,17 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationCenterController;
+use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\InventarioController;
+use App\Http\Controllers\UserController;
+
+
 
 Route::get('/', function () {
     return view('welcome');
 });
 
+// Rutas de autenticación
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -37,6 +43,10 @@ Route::get('/dashboard', function () {
 })->name('dashboard');
 Route::get('/notificaciones', [NotificationCenterController::class, 'index'])->name('notificaciones');
 
+Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios.index');
+Route::get('/usuarios/crear', [UserController::class, 'create'])->name('usuarios.create');
+Route::get('/usuarios/{user}/editar', [UserController::class, 'edit'])->name('usuarios.edit');
+
 //Controllers
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
@@ -45,4 +55,8 @@ Route::post('/logout', function () {
     Auth::logout(); // Cierra la sesión del usuario
     return redirect('/'); // Redirige a la página principal o de inicio de sesión
 })->name('logout');
+Route::post('/usuarios', [UserController::class, 'store'])->name('usuarios.store');
+Route::put('/usuarios/{user}', [UserController::class, 'update'])->name('usuarios.update');
+
+
 

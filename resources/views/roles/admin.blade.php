@@ -38,7 +38,7 @@
             <a href="{{ route('dashboard') }}">Dashboard</a>
             <a href="#">Productos</a>
             <a href="#">Inventario</a>
-            <a href="#">Usuarios</a>
+            <a href="{{route('usuarios.index')}}">Usuarios</a>
             <a href="#">Facturación</a>
             <a href="#">Reportes</a>
             <hr>
