@@ -57,55 +57,65 @@
         .sidebar .btn-logout:hover {
             background-color: #D44C3C;
         }
-
-        .content {
-            margin-left: 250px;
-            padding: 20px;
-        }
     </style>
 </head>
 
 <body>
     <div class="d-flex">
         <!-- Sidebar -->
-        <div class="d-flex">
-            <!-- Sidebar -->
-            <div class="d-flex">
-                <!-- Sidebar -->
-                <div class="sidebar">
-                    <div class="logo" style="text-align: center; margin-bottom: 2rem;">
-                        <a href="home">
-                            <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
-                                style="height: 7vh; max-height: auto; width: 70%;">
-                        </a>
-                    </div>
+        <div class="sidebar">
+            <div class="logo" style="text-align: center; margin-bottom: 2rem;">
+                <a href="home">
+                    <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
+                        style="height: 7vh; max-height: auto; width: 70%;">
+                </a>
+            </div>
 
-                    <nav>
-                        <a href="/dashboard" class="nav-item ">
-                            <span>Dashboard</span>
-                        </a>
-                        <a href="/productos" class="nav-item active">
-                            <span>Productos</span>
-                        </a>
-                        <a href="/inventario" class="nav-item ">
-                            <span>Inventario</span>
-                        </a>
-                        <a href="/usuarios" class="nav-item">
-                            <span>Usuarios</span>
-                        </a>
-                        <a href="/facturacion" class="nav-item">
-                            <span>Facturación</span>
-                        </a>
-                        <a href="/reportes" class="nav-item">
-                            <span>Reportes</span>
-                        </a>
-                        <!-- Botón de cerrar sesión -->
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
-                            @csrf
-                            <button type="submit" class="btn-logout">Cerrar sesión</button>
-                        </form>
-                    </nav>
-                </div>
+            <nav>
+                @if(auth()->user()->rol == 1)
+                    <!-- Menú completo para rol 3 -->
+                    <a href="/dashboard" class="nav-item active">
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="/productos" class="nav-item">
+                        <span>Productos</span>
+                    </a>
+                    <a href="/inventario" class="nav-item">
+                        <span>Inventario</span>
+                    </a>
+                    <a href="/usuarios" class="nav-item">
+                        <span>Usuarios</span>
+                    </a>
+                    <a href="/facturacion" class="nav-item">
+                        <span>Facturación</span>
+                    </a>
+                    <a href="/reportes" class="nav-item">
+                        <span>Reportes</span>
+                    </a>
+                @elseif(auth()->user()->rol == 2)
+                    <!-- Menú reducido para rol 2 -->
+                    <a href="/productos" class="nav-item active">
+                        <span>Productos</span>
+                    </a>
+                    <a href="/inventario" class="nav-item">
+                        <span>Inventario</span>
+                    </a>
+                    <a href="/facturacion" class="nav-item">
+                        <span>Facturación</span>
+                    </a>
+                    <a href="/reportes" class="nav-item">
+                        <span>Reportes</span>
+                    </a>
+                @endif
+
+                <!-- Botón de cerrar sesión -->
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
+                    @csrf
+                    <button type="submit" class="btn-logout">Cerrar sesión</button>
+                </form>
+            </nav>
+        </div>
+
 
                 <!-- Main content -->
                 <div class="content">

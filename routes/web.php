@@ -15,6 +15,7 @@ use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -44,6 +45,7 @@ Route::get('/notificaciones', [NotificationCenterController::class, 'index'])->n
 Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios.index');
 Route::get('/usuarios/crear', [UserController::class, 'create'])->name('usuarios.create');
 Route::get('/usuarios/{user}/editar', [UserController::class, 'edit'])->name('usuarios.edit');
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
 
 //Controllers
 Route::post('/register', [RegisterController::class, 'register']);
@@ -56,8 +58,8 @@ Route::post('/logout', function () {
 Route::post('/usuarios', [UserController::class, 'store'])->name('usuarios.store');
 Route::put('/usuarios/{user}', [UserController::class, 'update'])->name('usuarios.update');
 Route::delete('usuarios/{user}', [UserController::class, 'destroy'])->name('usuarios.destroy');
-
-
+Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+Route::put('/profile/address', [ProfileController::class, 'updateAddress'])->name('address.update');
 // Inventario routes
 Route::resource('inventario', InventarioController::class);
 // Producto routes

@@ -26,24 +26,19 @@
 
         .navbar {
             background-color: #FFD700;
-            /* Amarillo similar */
         }
 
         .no-link {
             text-decoration: none;
-            /* Elimina el subrayado */
             color: inherit;
-            /* Hereda el color del texto circundante */
         }
     </style>
 </head>
 
 <body>
-
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="{{ url('home') }}">
                 <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
                     style="height: 6vh; max-height: 100%; width: auto;">
             </a>
@@ -52,7 +47,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto"> <!-- Agregamos mx-auto para centrar los items -->
+                <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
                         <a class="nav-link active" href="#">Menú</a>
                     </li>
@@ -68,21 +63,29 @@
                     <li class="nav-item">
                         <a class="nav-link" href="#">Contacto</a>
                     </li>
-                    <li class="nav-item">
-                        <a href="/dashboard" class="nav-link no-link">Admin</a>
-                    </li>
+                    @auth
+                        @if(Auth::user()->rol == 1)
+                            <li class="nav-item">
+                                <a href="/dashboard" class="nav-link no-link">Admin</a>
+                            </li>
+                        @elseif(Auth::user()->rol == 2)
+                            <li class="nav-item">
+                                <a href="/productos" class="nav-link no-link">Empleado</a>
+                            </li>
+                        @endif
+                    @endauth
                 </ul>
-                <!-- Botón de Login/Register y Notificaciones -->
                 <div class="d-flex align-items-center">
-                    <!-- Botón de Login/Register -->
-                    <a href="{{ route('login') }}">
-                        <img src="{{ asset('media/boton-usuario.png') }}" alt="Login/Register" width="30" height="30">
-                    </a>
-
-                    <!-- Espacio entre los botones -->
+                    @auth
+                        <a href="{{ route('profile') }}">
+                            <img src="{{ asset('media/boton-usuario.png') }}" alt="Profile" width="30" height="30">
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}">
+                            <img src="{{ asset('media/boton-usuario.png') }}" alt="Login/Register" width="30" height="30">
+                        </a>
+                    @endauth
                     <span class="mx-3">|</span>
-
-                    <!-- Botón de Notificaciones -->
                     <a href="{{ route('notificaciones') }}">
                         <img src="{{ asset('media/boton-notificaciones.png') }}" alt="Notificaciones" width="30"
                             height="30">

@@ -30,16 +30,7 @@ class LoginController extends Controller
     protected function redirectTo()
     {
         $role = auth()->user()->rol; // Asume que 'rol' es el campo que identifica el rol del usuario
-        switch ($role) {
-            case 1:
-                return '/admin/dashboard';
-            case 2:
-                return '/empleado/dashboard';
-            case 3:
-                return '/cliente/dashboard';
-            default:
                 return '/home'; // Ruta por defecto si el rol no coincide
-        }
     }
 
 

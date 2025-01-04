@@ -57,120 +57,127 @@
         .sidebar .btn-logout:hover {
             background-color: #D44C3C;
         }
-
-        .content {
-            margin-left: 250px;
-            padding: 20px;
-        }
     </style>
 </head>
 
 <body>
     <div class="d-flex">
         <!-- Sidebar -->
-        <div class="d-flex">
-            <!-- Sidebar -->
-            <div class="d-flex">
-                <!-- Sidebar -->
-                <div class="sidebar">
-                    <div class="logo" style="text-align: center; margin-bottom: 2rem;">
-                        <a href="home">
-                            <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
-                                style="height: 7vh; max-height: auto; width: 70%;">
-                        </a>
-                    </div>
+        <div class="sidebar">
+            <div class="logo" style="text-align: center; margin-bottom: 2rem;">
+                <a href="home">
+                    <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
+                        style="height: 7vh; max-height: auto; width: 70%;">
+                </a>
+            </div>
 
-                    <nav>
-                        <a href="/dashboard" class="nav-item ">
-                            <span>Dashboard</span>
-                        </a>
-                        <a href="/productos" class="nav-item active">
-                            <span>Productos</span>
-                        </a>
-                        <a href="/inventario" class="nav-item ">
-                            <span>Inventario</span>
-                        </a>
-                        <a href="/usuarios" class="nav-item">
-                            <span>Usuarios</span>
-                        </a>
-                        <a href="/facturacion" class="nav-item">
-                            <span>Facturación</span>
-                        </a>
-                        <a href="/reportes" class="nav-item">
-                            <span>Reportes</span>
-                        </a>
-                        <!-- Botón de cerrar sesión -->
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
-                            @csrf
-                            <button type="submit" class="btn-logout">Cerrar sesión</button>
-                        </form>
-                    </nav>
-                </div>
-                <!-- Main content -->
-                <div class="content">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-12">
-                                <h1 class="mb-4">Editar Item de Inventario</h1>
-                                @if ($errors->any())
-                                    <div class="alert alert-danger">
-                                        <ul>
-                                            @foreach ($errors->all() as $error)
-                                                <li>{{ $error }}</li>
-                                            @endforeach
-                                        </ul>
-                                    </div>
-                                @endif
-                                <form action="{{ route('inventario.update', $inventario->id_inventario) }}"
-                                    method="POST">
-                                    @csrf
-                                    @method('PUT')
-                                    <div class="mb-3">
-                                        <label for="id_producto" class="form-label">Producto</label>
-                                        <select class="form-control" id="id_producto" name="id_producto" required>
-                                            @foreach($productos as $producto)
-                                                <option value="{{ $producto->id_producto }}" {{ $inventario->id_producto == $producto->id_producto ? 'selected' : '' }}>
-                                                    {{ $producto->nombre_producto }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="cantidad_disponible" class="form-label">Cantidad Disponible</label>
-                                        <input type="number" class="form-control" id="cantidad_disponible"
-                                            name="cantidad_disponible" required
-                                            value="{{ $inventario->cantidad_disponible }}">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="precio_unitario" class="form-label">Precio Unitario</label>
-                                        <input type="number" step="0.01" class="form-control" id="precio_unitario"
-                                            name="precio_unitario" required value="{{ $inventario->precio_unitario }}">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="descripcion" class="form-label">Descripción</label>
-                                        <textarea class="form-control" id="descripcion" name="descripcion"
-                                            rows="3">{{ $inventario->descripcion }}</textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="nombre_sucursal" class="form-label">Nombre de Sucursal</label>
-                                        <input type="text" class="form-control" id="nombre_sucursal"
-                                            name="nombre_sucursal" required value="{{ $inventario->nombre_sucursal }}">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="direccion_sucursal" class="form-label">Dirección de Sucursal</label>
-                                        <input type="text" class="form-control" id="direccion_sucursal"
-                                            name="direccion_sucursal" required
-                                            value="{{ $inventario->direccion_sucursal }}">
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Actualizar Item de Inventario</button>
-                                </form>
+            <nav>
+                @if(auth()->user()->rol == 1)
+                    <!-- Menú completo para rol 3 -->
+                    <a href="/dashboard" class="nav-item active">
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="/productos" class="nav-item">
+                        <span>Productos</span>
+                    </a>
+                    <a href="/inventario" class="nav-item">
+                        <span>Inventario</span>
+                    </a>
+                    <a href="/usuarios" class="nav-item">
+                        <span>Usuarios</span>
+                    </a>
+                    <a href="/facturacion" class="nav-item">
+                        <span>Facturación</span>
+                    </a>
+                    <a href="/reportes" class="nav-item">
+                        <span>Reportes</span>
+                    </a>
+                @elseif(auth()->user()->rol == 2)
+                    <!-- Menú reducido para rol 2 -->
+                    <a href="/productos" class="nav-item">
+                        <span>Productos</span>
+                    </a>
+                    <a href="/inventario" class="nav-item">
+                        <span>Inventario</span>
+                    </a>
+                    <a href="/facturacion" class="nav-item">
+                        <span>Facturación</span>
+                    </a>
+                    <a href="/reportes" class="nav-item">
+                        <span>Reportes</span>
+                    </a>
+                @endif
+
+                <!-- Botón de cerrar sesión -->
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
+                    @csrf
+                    <button type="submit" class="btn-logout">Cerrar sesión</button>
+                </form>
+            </nav>
+        </div>
+
+        <!-- Main content -->
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-12">
+                        <h1 class="mb-4">Editar Item de Inventario</h1>
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
                             </div>
-                        </div>
+                        @endif
+                        <form action="{{ route('inventario.update', $inventario->id_inventario) }}" method="POST">
+                            @csrf
+                            @method('PUT')
+                            <div class="mb-3">
+                                <label for="id_producto" class="form-label">Producto</label>
+                                <select class="form-control" id="id_producto" name="id_producto" required>
+                                    @foreach($productos as $producto)
+                                        <option value="{{ $producto->id_producto }}" {{ $inventario->id_producto == $producto->id_producto ? 'selected' : '' }}>
+                                            {{ $producto->nombre_producto }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cantidad_disponible" class="form-label">Cantidad Disponible</label>
+                                <input type="number" class="form-control" id="cantidad_disponible"
+                                    name="cantidad_disponible" required value="{{ $inventario->cantidad_disponible }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="precio_unitario" class="form-label">Precio Unitario</label>
+                                <input type="number" step="0.01" class="form-control" id="precio_unitario"
+                                    name="precio_unitario" required value="{{ $inventario->precio_unitario }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="descripcion" class="form-label">Descripción</label>
+                                <textarea class="form-control" id="descripcion" name="descripcion"
+                                    rows="3">{{ $inventario->descripcion }}</textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="nombre_sucursal" class="form-label">Nombre de Sucursal</label>
+                                <input type="text" class="form-control" id="nombre_sucursal" name="nombre_sucursal"
+                                    required value="{{ $inventario->nombre_sucursal }}">
+                            </div>
+                            <div class="mb-3">
+                                <label for="direccion_sucursal" class="form-label">Dirección de Sucursal</label>
+                                <input type="text" class="form-control" id="direccion_sucursal"
+                                    name="direccion_sucursal" required value="{{ $inventario->direccion_sucursal }}">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Actualizar Item de Inventario</button>
+                        </form>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

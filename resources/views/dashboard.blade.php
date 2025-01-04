@@ -72,24 +72,42 @@
             </div>
 
             <nav>
-                <a href="/dashboard" class="nav-item active">
-                    <span>Dashboard</span>
-                </a>
-                <a href="/productos" class="nav-item">
-                    <span>Productos</span>
-                </a>
-                <a href="/inventario" class="nav-item">
-                    <span>Inventario</span>
-                </a>
-                <a href="/usuarios" class="nav-item">
-                    <span>Usuarios</span>
-                </a>
-                <a href="/facturacion" class="nav-item">
-                    <span>Facturación</span>
-                </a>
-                <a href="/reportes" class="nav-item">
-                    <span>Reportes</span>
-                </a>
+                @if(auth()->user()->rol == 1)
+                    <!-- Menú completo para rol 1 -->
+                    <a href="/dashboard" class="nav-item active">
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="/productos" class="nav-item">
+                        <span>Productos</span>
+                    </a>
+                    <a href="/inventario" class="nav-item">
+                        <span>Inventario</span>
+                    </a>
+                    <a href="/usuarios" class="nav-item">
+                        <span>Usuarios</span>
+                    </a>
+                    <a href="/facturacion" class="nav-item">
+                        <span>Facturación</span>
+                    </a>
+                    <a href="/reportes" class="nav-item">
+                        <span>Reportes</span>
+                    </a>
+                @elseif(auth()->user()->rol == 2)
+                    <!-- Menú reducido para rol 2 -->
+                    <a href="/productos" class="nav-item">
+                        <span>Productos</span>
+                    </a>
+                    <a href="/inventario" class="nav-item">
+                        <span>Inventario</span>
+                    </a>
+                    <a href="/facturacion" class="nav-item">
+                        <span>Facturación</span>
+                    </a>
+                    <a href="/reportes" class="nav-item">
+                        <span>Reportes</span>
+                    </a>
+                @endif
+
                 <!-- Botón de cerrar sesión -->
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
                     @csrf
