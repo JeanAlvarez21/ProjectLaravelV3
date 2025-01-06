@@ -132,28 +132,34 @@
                                         </ul>
                                     </div>
                                 @endif
-                                <form action="{{ route('productos.update', $producto->id_producto) }}" method="POST">
+                                <form action="{{ route('productos.update', $producto->id_producto) }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     @method('PUT')
                                     <div class="mb-3">
                                         <label for="nombre_producto" class="form-label">Nombre del Producto</label>
-                                        <input type="text" class="form-control" id="nombre_producto"
-                                            name="nombre_producto" required value="{{ $producto->nombre_producto }}">
+                                        <input type="text" class="form-control" id="nombre_producto" name="nombre_producto" required value="{{ $producto->nombre_producto }}">
                                     </div>
                                     <div class="mb-3">
                                         <label for="descripcion" class="form-label">Descripción</label>
-                                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3"
-                                            required>{{ $producto->descripcion }}</textarea>
+                                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required>{{ $producto->descripcion }}</textarea>
                                     </div>
                                     <div class="mb-3">
                                         <label for="unidad_medida" class="form-label">Unidad de Medida</label>
-                                        <input type="text" class="form-control" id="unidad_medida" name="unidad_medida"
-                                            required value="{{ $producto->unidad_medida }}">
+                                        <input type="text" class="form-control" id="unidad_medida" name="unidad_medida" required value="{{ $producto->unidad_medida }}">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="link_imagen" class="form-label">Link de Imagen</label>
-                                        <input type="text" class="form-control" id="link_imagen" name="link_imagen"
-                                            required value="{{ $producto->link_imagen }}">
+                                        <label for="imagen_actual" class="form-label">Imagen Actual</label>
+                                        <div>
+                                            <img src="{{ asset($producto->link_imagen) }}" alt="Imagen del Producto" style="max-width: 200px; max-height: 200px;">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="link_imagen" class="form-label">Subir Nueva Imagen</label>
+                                        <input type="file" class="form-control" id="link_imagen" name="link_imagen">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="cantidad" class="form-label">Cantidad</label>
+                                        <input type="number" class="form-control" id="cantidad" name="cantidad" required value="{{ $producto->cantidad }}">
                                     </div>
                                     <div class="mb-3">
                                         <label for="id_categoria" class="form-label">Categoría</label>
@@ -165,10 +171,12 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <div class="mb-3 form-check">
-                                        <input type="checkbox" class="form-check-input" id="visible" name="visible"
-                                            value="1" {{ $producto->visible ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="visible">Visible</label>
+                                    <div class="mb-3">
+                                        <label for="visible" class="form-label">Visibilidad</label>
+                                        <select class="form-control" id="visible" name="visible" required>
+                                            <option value="2" {{ $producto->visible == 2 ? 'selected' : '' }}>Público</option>
+                                            <option value="1" {{ $producto->visible == 1 ? 'selected' : '' }}>Privado</option>
+                                        </select>
                                     </div>
                                     <button type="submit" class="btn btn-primary">Actualizar Producto</button>
                                 </form>

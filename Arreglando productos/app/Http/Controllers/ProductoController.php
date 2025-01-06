@@ -38,7 +38,7 @@ class ProductoController extends Controller
             'descripcion' => 'required|string|max:100',
             'cantidad' => 'required|integer|min:0',
             'unidad_medida' => 'required|string|max:50',
-            'imagen' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'id_categoria' => 'required',
             'visible' => 'required|in:publico,privado'
         ]);
@@ -54,6 +54,7 @@ class ProductoController extends Controller
         }
 
         // Manejar la imagen
+        $rutaImagen = null;
         if ($request->hasFile('imagen')) {
             $imagen = $request->file('imagen');
             $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
@@ -65,10 +66,11 @@ class ProductoController extends Controller
             'id_producto' => $request->id_producto,
             'nombre_producto' => $request->nombre_producto,
             'descripcion' => $request->descripcion,
+            'cantidad' => $request->cantidad,
             'unidad_medida' => $request->unidad_medida,
             'link_imagen' => $rutaImagen,
             'id_categoria' => $id_categoria,
-            'visible' => $request->visible === 'publico' ? 2 : 1,
+            'visible' => $request->visible,
         ]);
 
         return redirect()->route('productos.index')
@@ -86,10 +88,11 @@ class ProductoController extends Controller
         $request->validate([
             'nombre_producto' => 'required|string|max:100',
             'descripcion' => 'required|string|max:100',
+            'cantidad' => 'required|integer|min:0',
             'unidad_medida' => 'required|string|max:50',
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'id_categoria' => 'required',
-            'visible' => 'required|in:publico,privado'
+            'visible' => 'required|in:1,2', // Validar que sea 1 (privado) o 2 (público
         ]);
 
         // Manejar la categoría
@@ -118,10 +121,11 @@ class ProductoController extends Controller
         $producto->update([
             'nombre_producto' => $request->nombre_producto,
             'descripcion' => $request->descripcion,
+            'cantidad' => $request->cantidad,
             'unidad_medida' => $request->unidad_medida,
-            'link_imagen' => $request->hasFile('imagen') ? $rutaImagen : $producto->link_imagen,
-            'id_categoria' => $id_categoria,
-            'visible' => $request->visible === 'publico' ? 2 : 1,
+            'link_imagen' => $request->hasFile('link_imagen') ? $request->file('link_imagen')->store('productos', 'public') : $producto->link_imagen,
+            'id_categoria' => $request->id_categoria,
+            'visible' => $request->visible, // Guardar directamente el valor enviado
         ]);
 
         return redirect()->route('productos.index')
