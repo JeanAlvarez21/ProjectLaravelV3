@@ -40,7 +40,7 @@ class ProductoController extends Controller
             'unidad_medida' => 'required|string|max:50',
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'id_categoria' => 'required',
-            'visible' => 'required|in:publico,privado'
+            'visible' => 'required|in:1,2'
         ]);
 
         // Manejar la categoría

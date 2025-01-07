@@ -188,11 +188,11 @@
                                 <input type="text" class="form-control" id="nueva_categoria" name="nueva_categoria">
                             </div>
 
-                            <div class="mb-3">
-                                <label for="visible" class="form-label">Visibilidad</label>
-                                <select class="form-control" id="visible" name="visible" required>
-                                    <option value="publico">Público</option>
-                                    <option value="privado">Privado</option>
+                            <div class="form-group">
+                                <label for="visible">Visibilidad</label>
+                                <select name="visible" class="form-control">
+                                    <option value="1">Público</option>
+                                    <option value="2">Privado</option>
                                 </select>
                             </div>
 
