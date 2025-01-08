@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Rules\ValidCedula;
 
 class RegisterController extends Controller
 {
@@ -53,12 +54,13 @@ class RegisterController extends Controller
             'nombres' => ['required', 'string', 'max:255'],
             'apellidos' => ['required', 'string', 'max:255'],
             'direccion' => ['required', 'string', 'max:255'],
-            'cedula' => ['required', 'string', 'unique:users,cedula', 'digits:10'],
+            'cedula' => ['required', 'string', 'unique:users,cedula', 'digits:10', new ValidCedula],
             'telefono' => ['required', 'string', 'max:10'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email', 'regex:/^[a-zA-Z0-9._%+-]+@(gmail\.com|hotmail\.com|outlook\.com|yahoo\.com|aol\.com|icloud\.com|live\.com)$/'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ], [
             'cedula.unique' => 'La cédula ya está registrada.',
+            'cedula.valid_cedula' => 'La cédula introducida no es válida.',
             'email.unique' => 'El correo electrónico ya está registrado.',
             'required' => 'El campo :attribute es obligatorio.',
             'password.confirmed' => 'La confirmación de la contraseña no coincide.',
@@ -101,4 +103,30 @@ class RegisterController extends Controller
         return view('auth.register');
     }
 
+    public function validateCedula($cedula)
+    {
+        // Verifica si la cédula tiene 10 dígitos
+        if (strlen($cedula) != 10) {
+            return false;
+        }
+
+        // Obtiene los primeros 9 dígitos y el dígito verificador
+        $cedula = str_split($cedula);
+        $suma = 0;
+
+        // Reglas de multiplicación para los primeros 9 dígitos
+        $mult = [2, 1, 2, 1, 2, 1, 2, 1, 2];
+        for ($i = 0; $i < 9; $i++) {
+            $suma += $cedula[$i] * $mult[$i];
+        }
+
+        // Calcula el residuo y el dígito verificador
+        $mod = $suma % 10;
+        $digitoVerificador = ($mod == 0) ? 0 : 10 - $mod;
+
+        // Verifica si el último dígito de la cédula coincide con el digito verificador
+        return $cedula[9] == $digitoVerificador;
+    }
 }
+
+

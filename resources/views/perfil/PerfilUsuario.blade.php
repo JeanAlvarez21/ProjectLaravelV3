@@ -20,6 +20,17 @@
             border-radius: 10px;
         }
 
+        .input-disabled {
+            background-color: #f5f5f5;
+            /* Color de fondo suave */
+            color: #a9a9a9;
+            /* Texto más claro */
+            border: 1px solid #ddd;
+            /* Borde suave */
+            cursor: not-allowed;
+            /* Indicador de que no se puede interactuar */
+        }
+
         .nav-pills .nav-link {
             color: black;
         }
@@ -185,7 +196,8 @@
                                         <div class="col-md-6">
                                             <label class="form-label">Cédula</label>
                                             <input type="text" class="form-control" name="cedula"
-                                                value="{{ Auth::user()->cedula }}" disabled readonly>
+                                                value="{{ Auth::user()->cedula }}" disabled readonly
+                                                class="input-disabled">
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Teléfono</label>
