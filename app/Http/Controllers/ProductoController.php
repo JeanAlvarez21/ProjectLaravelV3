@@ -5,22 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Producto;
 use App\Models\Categoria;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductoController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $query = Producto::with('categoria');  // Mantén la relación con 'categoria'
-
-        // Verificar si hay un término de búsqueda
-        if ($request->has('search')) {
-            $search = $request->input('search');
-            $query->where('nombre_producto', 'like', '%' . $search . '%');  // Filtrar por nombre del producto
-        }
-
-        // Obtener los productos con el filtro de búsqueda aplicado
-        $productos = $query->get();
-
+        $productos = Producto::with('categoria')->get();
         return view('productos.index', compact('productos'));
     }
 
@@ -30,54 +21,125 @@ class ProductoController extends Controller
         return view('productos.create', compact('categorias'));
     }
 
-    public function store(Request $request)
+    public function checkId(Request $request)
     {
-        $validatedData = $request->validate([
-            'nombre_producto' => 'required|string|max:100',
-            'descripcion' => 'required|string|max:255',
-            'unidad_medida' => 'required|string|max:50',
-            'link_imagen' => 'required|string|max:255',
-            'id_categoria' => 'required|exists:categorias,id_categoria',
-            'visible' => 'boolean',
+        $producto = Producto::find($request->id_producto);
+        return response()->json([
+            'exists' => $producto ? true : false,
+            'edit_url' => $producto ? route('productos.edit', $producto->id_producto) : null
         ]);
-
-        Producto::create($validatedData);
-
-        return redirect()->route('productos.index')->with('success', 'Producto creado exitosamente.');
     }
 
-    public function edit($id)
+    public function store(Request $request)
     {
-        $producto = Producto::findOrFail($id);
+        $request->validate([
+            'id_producto' => 'required|unique:productos,id_producto',
+            'nombre_producto' => 'required|string|max:100',
+            'descripcion' => 'required|string|max:100',
+            'cantidad' => 'required|integer|min:0',
+            'unidad_medida' => 'required|string|max:50',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'id_categoria' => 'required',
+            'visible' => 'required|in:1,2'
+        ]);
+
+        // Manejar la categoría
+        if ($request->id_categoria === 'nueva') {
+            $categoria = Categoria::create([
+                'nombre_categoria' => strtoupper(trim($request->nueva_categoria))
+            ]);
+            $id_categoria = $categoria->id_categoria;
+        } else {
+            $id_categoria = $request->id_categoria;
+        }
+
+        // Manejar la imagen
+        $rutaImagen = null;
+        if ($request->hasFile('imagen')) {
+            $imagen = $request->file('imagen');
+            $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
+            $imagen->move(public_path('assets/productos'), $nombreImagen);
+            $rutaImagen = 'assets/productos/' . $nombreImagen;
+        }
+
+        Producto::create([
+            'id_producto' => $request->id_producto,
+            'nombre_producto' => $request->nombre_producto,
+            'descripcion' => $request->descripcion,
+            'cantidad' => $request->cantidad,
+            'unidad_medida' => $request->unidad_medida,
+            'link_imagen' => $rutaImagen,
+            'id_categoria' => $id_categoria,
+            'visible' => $request->visible,
+        ]);
+
+        return redirect()->route('productos.index')
+            ->with('success', 'Producto creado exitosamente.');
+    }
+
+    public function edit(Producto $producto)
+    {
         $categorias = Categoria::all();
         return view('productos.edit', compact('producto', 'categorias'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Producto $producto)
     {
-        $validatedData = $request->validate([
+        $request->validate([
             'nombre_producto' => 'required|string|max:100',
-            'descripcion' => 'required|string|max:255',
+            'descripcion' => 'required|string|max:100',
+            'cantidad' => 'required|integer|min:0',
             'unidad_medida' => 'required|string|max:50',
-            'link_imagen' => 'required|string|max:255',
-            'id_categoria' => 'required|exists:categorias,id_categoria',
-            'visible' => 'boolean',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'id_categoria' => 'required',
+            'visible' => 'required|in:1,2', // Validar que sea 1 (privado) o 2 (público
         ]);
 
-        $producto = Producto::findOrFail($id);
-        $producto->update($validatedData);
+        // Manejar la categoría
+        if ($request->id_categoria === 'nueva') {
+            $categoria = Categoria::create([
+                'nombre_categoria' => strtoupper(trim($request->nueva_categoria))
+            ]);
+            $id_categoria = $categoria->id_categoria;
+        } else {
+            $id_categoria = $request->id_categoria;
+        }
 
-        return redirect()->route('productos.index')->with('success', 'Producto actualizado exitosamente.');
+        // Manejar la imagen
+        if ($request->hasFile('imagen')) {
+            // Eliminar imagen anterior si existe
+            if ($producto->link_imagen && file_exists(public_path($producto->link_imagen))) {
+                unlink(public_path($producto->link_imagen));
+            }
+
+            $imagen = $request->file('imagen');
+            $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
+            $imagen->move(public_path('assets/productos'), $nombreImagen);
+            $rutaImagen = 'assets/productos/' . $nombreImagen;
+        }
+
+        $producto->update([
+            'nombre_producto' => $request->nombre_producto,
+            'descripcion' => $request->descripcion,
+            'cantidad' => $request->cantidad,
+            'unidad_medida' => $request->unidad_medida,
+            'link_imagen' => $request->hasFile('link_imagen') ? $request->file('link_imagen')->store('productos', 'public') : $producto->link_imagen,
+            'id_categoria' => $request->id_categoria,
+            'visible' => $request->visible, // Guardar directamente el valor enviado
+        ]);
+
+        return redirect()->route('productos.index')
+            ->with('success', 'Producto actualizado exitosamente.');
     }
 
-    public function destroy($id)
+    public function destroy(Producto $producto)
     {
-        $producto = Producto::findOrFail($id);
+        if ($producto->link_imagen && file_exists(public_path($producto->link_imagen))) {
+            unlink(public_path($producto->link_imagen));
+        }
+        
         $producto->delete();
-
-        return redirect()->route('productos.index')->with('success', 'Producto eliminado exitosamente.');
+        return redirect()->route('productos.index')
+            ->with('success', 'Producto eliminado exitosamente.');
     }
-
-
-    
 }

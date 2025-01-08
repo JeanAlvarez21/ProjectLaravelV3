@@ -53,9 +53,9 @@ class RegisterController extends Controller
             'nombres' => ['required', 'string', 'max:255'],
             'apellidos' => ['required', 'string', 'max:255'],
             'direccion' => ['required', 'string', 'max:255'],
-            'cedula' => ['required', 'string', 'unique:users,cedula'],
-            'telefono' => ['required', 'string', 'max:15'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
+            'cedula' => ['required', 'string', 'unique:users,cedula', 'digits:10'],
+            'telefono' => ['required', 'string', 'max:10'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email', 'regex:/^[a-zA-Z0-9._%+-]+@(gmail\.com|hotmail\.com|outlook\.com|yahoo\.com|aol\.com|icloud\.com|live\.com)$/'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ], [
             'cedula.unique' => 'La cédula ya está registrada.',
@@ -75,19 +75,25 @@ class RegisterController extends Controller
      * @return \App\Models\User
      */
     protected function create(array $data)
-    {
-        // Crear al usuario con los datos del formulario
-        return User::create([
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-            'nombres' => $data['nombres'],
-            'apellidos' => $data['apellidos'],
-            'direccion' => $data['direccion'],
-            'cedula' => $data['cedula'],
-            'telefono' => $data['telefono'],
-            'rol' => 3, // Asigna el rol automáticamente
-        ]);
-    }
+{
+    // Formatear los campos para que la primera letra de cada palabra esté en mayúscula
+    $nombres = ucwords(strtolower($data['nombres']));
+    $apellidos = ucwords(strtolower($data['apellidos']));
+    $direccion = ucwords(strtolower($data['direccion']));
+
+    // Crear al usuario con los datos del formulario
+    return User::create([
+        'email' => $data['email'],
+        'password' => bcrypt($data['password']),
+        'nombres' => $nombres,
+        'apellidos' => $apellidos,
+        'direccion' => $direccion,
+        'cedula' => $data['cedula'],
+        'telefono' => $data['telefono'],
+        'rol' => 3, // Asigna el rol automáticamente
+    ]);
+}
+
 
     // Muestra la pantalla de registro
     public function showRegistrationForm()

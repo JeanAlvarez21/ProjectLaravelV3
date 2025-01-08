@@ -45,20 +45,24 @@
             background-color: #e6c200;
             border-color: #e6c200;
         }
+
         .navbar {
             background-color: #FFD700;
         }
+
         .no-link {
             text-decoration: none;
             color: inherit;
         }
     </style>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-light">
         <div class="container">
             <a class="navbar-brand" href="{{ url('home') }}">
-                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid" style="height: 6vh; max-height: 100%; width: auto;">
+                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
+                    style="height: 6vh; max-height: 100%; width: auto;">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,7 +109,8 @@
                     @endauth
                     <span class="mx-3">|</span>
                     <a href="{{ route('notificaciones') }}">
-                        <img src="{{ asset('media/boton-notificaciones.png') }}" alt="Notificaciones" width="30" height="30">
+                        <img src="{{ asset('media/boton-notificaciones.png') }}" alt="Notificaciones" width="30"
+                            height="30">
                     </a>
                 </div>
             </div>
@@ -144,6 +149,17 @@
                                     @csrf
                                     @method('PUT')
 
+                                    @if ($errors->any())
+                                        <div class="alert alert-danger">
+                                            <ul>
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
+
+
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                             <label class="form-label">Nombres</label>
@@ -169,7 +185,7 @@
                                         <div class="col-md-6">
                                             <label class="form-label">Cédula</label>
                                             <input type="text" class="form-control" name="cedula"
-                                                value="{{ Auth::user()->cedula }}" disabled>
+                                                value="{{ Auth::user()->cedula }}" disabled readonly>
                                         </div>
                                         <div class="col-md-6">
                                             <label class="form-label">Teléfono</label>

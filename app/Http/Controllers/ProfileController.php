@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 
 class ProfileController extends Controller
 {
@@ -16,20 +15,21 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $user = auth()->user();
-        
+
         $validated = $request->validate([
             'nombres' => 'required|string|max:255',
             'apellidos' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,'.$user->id,
-            'cedula' => 'required|string|max:20',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id, // Verificar duplicados
             'telefono' => 'required|string|max:20',
             'password' => 'nullable|string|min:8|confirmed',
+        ], [
+            'email.unique' => 'El correo electrónico ya está registrado.',
         ]);
 
+        // Actualizar los datos del usuario
         $user->nombres = $validated['nombres'];
         $user->apellidos = $validated['apellidos'];
         $user->email = $validated['email'];
-        $user->cedula = $validated['cedula'];
         $user->telefono = $validated['telefono'];
 
         if ($request->filled('password')) {
@@ -44,7 +44,7 @@ class ProfileController extends Controller
     public function updateAddress(Request $request)
     {
         $user = auth()->user();
-        
+
         $validated = $request->validate([
             'nombres' => 'required|string|max:255',
             'apellidos' => 'required|string|max:255',
@@ -62,4 +62,3 @@ class ProfileController extends Controller
         return redirect()->back()->with('success', 'Dirección actualizada exitosamente');
     }
 }
-
