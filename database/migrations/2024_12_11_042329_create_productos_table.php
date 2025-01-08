@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('id_producto'); // Clave primaria
             $table->string('nombre_producto', 100);
             $table->string('descripcion', 100);
+            $table->integer('cantidad');
             $table->string('unidad_medida', 50);
             $table->string('link_imagen', 255);
             $table->unsignedBigInteger('id_categoria'); // Tipo consistente con la tabla 'categorias'

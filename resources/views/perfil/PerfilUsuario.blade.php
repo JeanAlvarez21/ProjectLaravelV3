@@ -94,7 +94,7 @@
                         <a class="nav-link" href="#">Carpinteros</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Contacto</a>
+                        <a class="nav-link" href="/contacto">Contacto</a>
                     </li>
                     @auth
                         @if(Auth::user()->rol == 1)
@@ -103,7 +103,7 @@
                             </li>
                         @elseif(Auth::user()->rol == 2)
                             <li class="nav-item">
-                                <a href="/employee-dashboard" class="nav-link no-link">Empleado</a>
+                                <a href="/productos" class="nav-link no-link">Empleado</a>
                             </li>
                         @endif
                     @endauth

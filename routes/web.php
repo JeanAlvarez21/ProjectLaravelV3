@@ -16,6 +16,7 @@ use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ContactController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -68,3 +69,7 @@ Route::resource('productos', ProductoController::class);
 Route::resource('categorias', CategoriaController::class);
 
 Route::get('/productos/search', [ProductoController::class, 'search'])->name('productos.search');
+
+// Ruta de contacto (asumiendo que quieres mantenerla basada en tu inclusión del ContactController)
+Route::get('/contacto', [ContactController::class, 'index'])->name('contact.index');
+Route::post('/contacto', [ContactController::class, 'store'])->name('contact.store');

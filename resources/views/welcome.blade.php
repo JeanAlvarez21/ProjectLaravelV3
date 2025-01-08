@@ -41,10 +41,10 @@
         }
 
         button:hover {
-            background-color:#FFFAEB;
+            background-color: #FFFAEB;
             box-shadow: 0 0 20px #6fc5ff50;
             transform: scale(1.1);
-        } 
+        }
 
         button:active {
             background-color: rgb(255, 255, 255);
@@ -52,6 +52,17 @@
             -webkit-transition: all 0.10s;
             box-shadow: none;
             transform: scale(0.98);
+        }
+
+        .carousel-item img {
+            max-height: 200px;
+            /* Ajusta según tus necesidades */
+            max-width: 100%;
+            /* Asegura que la imagen no se salga del contenedor */
+            object-fit: contain;
+            /* Mantiene la proporción de la imagen */
+            margin: 0 auto;
+            /* Centra la imagen */
         }
     </style>
 </head>
@@ -72,7 +83,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto"> <!-- Agregamos mx-auto para centrar los items -->
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Menú</a>
+                        <a class="nav-link active" href="/home">Menú</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Productos</a>
@@ -84,7 +95,7 @@
                         <a class="nav-link" href="#">Carpinteros</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Contacto</a>
+                        <a class="nav-link" href="/contacto">Contacto</a>
                     </li>
                 </ul>
                 <div class="d-flex align-items-center">
@@ -104,7 +115,7 @@
             <h1 class="fw-bold">Optimiza tu Proyecto con Madera de <span class="text-warning">Alta Calidad</span></h1>
             <p>Descubre cómo nuestra tecnología de vanguardia garantizan madera cortada y acabada según tus necesidades
                 específicas</p>
-            <a href="#" class="btn btn-light">Contáctanos</a>
+            <a href="/contacto" class="btn btn-light">Contáctanos</a>
         </div>
     </section>
     <!-- Sección de Carrusel de Tipos de Paneles -->
@@ -120,7 +131,8 @@
                         <!-- Tarjetas 1 a 4 -->
                         <div class="col-md-3">
                             <div class="card">
-                                <img src="https://via.placeholder.com/150" class="card-img-top" alt="MDP Enchapado">
+                                <img src="{{ asset('assets/productos/2.jpg') }}" class="card-img-top"
+                                    alt="MDP Enchapado">
                                 <div class="card-body">
                                     <h5 class="card-title">MDP Enchapado</h5>
                                     <ul>
@@ -132,7 +144,8 @@
                         </div>
                         <div class="col-md-3">
                             <div class="card">
-                                <img src="https://via.placeholder.com/150" class="card-img-top" alt="MDF Enchapado">
+                                <img src="{{ asset('assets/productos/1.jpg') }}" class="card-img-top"
+                                    alt="MDP Enchapado">
                                 <div class="card-body">
                                     <h5 class="card-title">MDF Enchapado</h5>
                                     <ul>
@@ -142,9 +155,10 @@
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-md-3">
                             <div class="card">
-                                <img src="https://via.placeholder.com/150" class="card-img-top" alt="Plywood">
+                                <img src="{{ asset('assets/productos/3.jpg') }}" class="card-img-top" alt="Plywood">
                                 <div class="card-body">
                                     <h5 class="card-title">Plywood</h5>
                                     <ul>
@@ -163,7 +177,8 @@
                         <!-- Tarjetas 5 a 7 -->
                         <div class="col-md-3">
                             <div class="card">
-                                <img src="https://via.placeholder.com/150" class="card-img-top" alt="Panel de Madera">
+                                <img src="{{ asset('assets/productos/1.jpg') }}" class="card-img-top"
+                                    alt="Panel de Madera">
                                 <div class="card-body">
                                     <h5 class="card-title">Panel de Madera</h5>
                                     <ul>
@@ -176,7 +191,8 @@
                         </div>
                         <div class="col-md-3">
                             <div class="card">
-                                <img src="https://via.placeholder.com/150" class="card-img-top" alt="Panel de Vidrio">
+                                <img src="{{ asset('assets/productos/2.jpg') }}" class="card-img-top"
+                                    alt="Panel de Vidrio">
                                 <div class="card-body">
                                     <h5 class="card-title">Panel de Vidrio</h5>
                                     <ul>
@@ -189,7 +205,8 @@
                         </div>
                         <div class="col-md-3">
                             <div class="card">
-                                <img src="https://via.placeholder.com/150" class="card-img-top" alt="Panel de Acero">
+                                <img src="{{ asset('assets/productos/3.jpg') }}" class="card-img-top"
+                                    alt="Panel de Acero">
                                 <div class="card-body">
                                     <h5 class="card-title">Panel de Acero</h5>
                                     <ul>

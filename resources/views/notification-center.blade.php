@@ -46,7 +46,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Menú</a>
+                        <a class="nav-link" href="/home">Menú</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Productos</a>
@@ -58,7 +58,7 @@
                         <a class="nav-link" href="#">Carpinteros</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Contacto</a>
+                        <a class="nav-link" href="/contacto">Contacto</a>
                     </li>
                     @auth
                         @if(Auth::user()->rol == 1)
