@@ -51,8 +51,8 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'nombres' => ['required', 'string', 'max:255'],
-            'apellidos' => ['required', 'string', 'max:255'],
+            'nombres' => ['required', 'string', 'max:255', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/'],
+            'apellidos' => ['required', 'string', 'max:255', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/'],
             'direccion' => ['required', 'string', 'max:255'],
             'cedula' => ['required', 'string', 'unique:users,cedula', 'digits:10', new ValidCedula],
             'telefono' => ['required', 'string', 'max:10'],
@@ -65,6 +65,8 @@ class RegisterController extends Controller
             'required' => 'El campo :attribute es obligatorio.',
             'password.confirmed' => 'La confirmación de la contraseña no coincide.',
             'password.min' => 'La contraseña debe tener al menos :min caracteres.',
+            'nombres.regex' => 'El campo nombres solo puede contener letras y espacios.',
+            'apellidos.regex' => 'El campo apellidos solo puede contener letras y espacios.',
         ]);
     }
 
@@ -77,24 +79,24 @@ class RegisterController extends Controller
      * @return \App\Models\User
      */
     protected function create(array $data)
-{
-    // Formatear los campos para que la primera letra de cada palabra esté en mayúscula
-    $nombres = ucwords(strtolower($data['nombres']));
-    $apellidos = ucwords(strtolower($data['apellidos']));
-    $direccion = ucwords(strtolower($data['direccion']));
+    {
+        // Formatear los campos para que la primera letra de cada palabra esté en mayúscula
+        $nombres = ucwords(strtolower($data['nombres']));
+        $apellidos = ucwords(strtolower($data['apellidos']));
+        $direccion = ucwords(strtolower($data['direccion']));
 
-    // Crear al usuario con los datos del formulario
-    return User::create([
-        'email' => $data['email'],
-        'password' => bcrypt($data['password']),
-        'nombres' => $nombres,
-        'apellidos' => $apellidos,
-        'direccion' => $direccion,
-        'cedula' => $data['cedula'],
-        'telefono' => $data['telefono'],
-        'rol' => 3, // Asigna el rol automáticamente
-    ]);
-}
+        // Crear al usuario con los datos del formulario
+        return User::create([
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
+            'nombres' => $nombres,
+            'apellidos' => $apellidos,
+            'direccion' => $direccion,
+            'cedula' => $data['cedula'],
+            'telefono' => $data['telefono'],
+            'rol' => 3, // Asigna el rol automáticamente
+        ]);
+    }
 
 
     // Muestra la pantalla de registro
