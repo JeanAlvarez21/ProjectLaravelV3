@@ -65,13 +65,66 @@
             text-decoration: none;
             color: inherit;
         }
+
+        body {
+            padding-top: 70px;
+            /* Added padding to prevent content from being hidden behind the fixed navbar */
+        }
+
+        .navbar {
+            background-color: #FFD700;
+        }
+
+        .no-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .navbar-brand img {
+            height: 6vh;
+            max-height: 100%;
+            width: auto;
+        }
+
+        @media (max-width: 576px) {
+            .navbar-brand img {
+                height: 5vh;
+            }
+        }
+
+        /* From Uiverse.io by suda-code */
+        button {
+            padding: 7px 15px;
+            border: 0;
+            border-radius: 100px;
+            background-color: rgb(255, 255, 255);
+            color: #ffffff;
+            font-weight: Bold;
+            transition: all 0.5s;
+            -webkit-transition: all 0.5s;
+        }
+
+        button:hover {
+            background-color: #FFFAEB;
+            box-shadow: 0 0 20px #6fc5ff50;
+            transform: scale(1.1);
+        }
+
+        button:active {
+            background-color: rgb(255, 255, 255);
+            transition: all 0.25s;
+            -webkit-transition: all 0.10s;
+            box-shadow: none;
+            transform: scale(0.98);
+        }
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light">
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="{{ url('home') }}">
+            <a class="navbar-brand"
+                href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
                 <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
                     style="height: 6vh; max-height: 100%; width: auto;">
             </a>
@@ -82,47 +135,62 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#">Menú</a>
+                        <a class="nav-link"
+                            href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
+                            Menú
+                        </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Productos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Proyectos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Carpinteros</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/contacto">Contacto</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#">Productos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Proyectos</a></li>
+                    @auth
+                        @if(Auth::user()->rol == 1 || Auth::user()->rol == 2)
+                            <li class="nav-item"><a class="nav-link" href="{{ route('carpinteros.index') }}">Carpinteros</a>
+                            </li>
+                        @else
+                            <li class="nav-item"><a class="nav-link" href="/carpinteros">Carpinteros</a></li>
+                        @endif
+                    @else
+                        <li class="nav-item"><a class="nav-link" href="/carpinteros">Carpinteros</a></li>
+                    @endauth
+
+                    <li class="nav-item"><a class="nav-link" href="/contacto">Contacto</a></li>
                     @auth
                         @if(Auth::user()->rol == 1)
-                            <li class="nav-item">
-                                <a href="/dashboard" class="nav-link no-link">Admin</a>
-                            </li>
+                            <li class="nav-item"><a href="/dashboard" class="nav-link no-link">Admin</a></li>
                         @elseif(Auth::user()->rol == 2)
-                            <li class="nav-item">
-                                <a href="/productos" class="nav-link no-link">Empleado</a>
-                            </li>
+                            <li class="nav-item"><a href="/productos" class="nav-link no-link">Empleado</a></li>
                         @endif
                     @endauth
                 </ul>
                 <div class="d-flex align-items-center">
                     @auth
-                        <a href="{{ route('profile') }}">
-                            <img src="{{ asset('media/boton-usuario.png') }}" alt="Profile" width="30" height="30">
-                        </a>
+                        @if(Auth::user()->rol == 1 || Auth::user()->rol == 2)
+                            <a href="{{ route('profile') }}">
+                                <img src="{{ asset('media/boton-usuario.png') }}" alt="Profile" width="30" height="30">
+                            </a>
+                            <span class="mx-3">|</span>
+                            <a href="{{ route('notificaciones') }}">
+                                <img src="{{ asset('media/boton-notificaciones.png') }}" alt="Notificaciones" width="30"
+                                    height="30">
+                            </a>
+                        @else
+                            <div class="d-flex align-items-center">
+                                <button style="font-size: 16px;">
+                                    <a href="{{ route('login') }}" class="text-dark text-decoration-none">
+                                        Iniciar Sesión / Regístrate
+                                    </a>
+                                </button>
+                            </div>
+                        @endif
                     @else
-                        <a href="{{ route('login') }}">
-                            <img src="{{ asset('media/boton-usuario.png') }}" alt="Login/Register" width="30" height="30">
-                        </a>
+                        <div class="d-flex align-items-center">
+                            <button style="font-size: 16px;">
+                                <a href="{{ route('login') }}" class="text-dark text-decoration-none">
+                                    Iniciar Sesión / Regístrate
+                                </a>
+                            </button>
+                        </div>
                     @endauth
-                    <span class="mx-3">|</span>
-                    <a href="{{ route('notificaciones') }}">
-                        <img src="{{ asset('media/boton-notificaciones.png') }}" alt="Notificaciones" width="30"
-                            height="30">
-                    </a>
                 </div>
             </div>
         </div>

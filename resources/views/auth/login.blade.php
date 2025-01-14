@@ -57,8 +57,14 @@
         /* Estilo para el enfoque en los campos de entrada */
         input:focus {
             outline: none;
-            border-color: #ffdb01; /* Borde amarillo al enfocar */
+            border-color: #ffdb01;
+            /* Borde amarillo al enfocar */
             box-shadow: 0px 0px 5px #ffdb01;
+        }
+
+        .save-password:checked {
+            accent-color: #ffdb01;
+            /* Cambia el color de la casilla a amarillo */
         }
     </style>
 </head>
@@ -99,6 +105,15 @@
                                 <div class="ms_err">{{ $message }}</div>
                             @enderror
                         </div>
+
+                       <!--
+                        <div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input save-password" id="save-password"
+                                name="remember" value="1">
+                            <label class="form-check-label" for="save-password">Guardar contraseña</label>
+                        </div>
+                        -->
+
                         <button type="submit" class="btn btn-custom-warning w-100">Iniciar Sesión</button>
                         <div class="row mb-3">
                             <div class="col-md-6">

@@ -6,20 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cookie;
 
 class LoginController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Login Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
-    |
-    */
-
     use AuthenticatesUsers;
 
     /**
@@ -30,16 +20,8 @@ class LoginController extends Controller
     protected function redirectTo()
     {
         $role = auth()->user()->rol; // Asume que 'rol' es el campo que identifica el rol del usuario
-                return '/home'; // Ruta por defecto si el rol no coincide
+        return '/home'; // Ruta por defecto si el rol no coincide
     }
-
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-
 
     public function __construct()
     {
@@ -47,10 +29,12 @@ class LoginController extends Controller
         $this->middleware('auth')->only('logout');
     }
 
-    // Muestra la pantalla de registro
     public function showLoginForm()
     {
-        return view('auth.login');
+        // Recuperar credenciales guardadas en cookies (si existen)
+        $email = Cookie::get('email', '');
+        $password = Cookie::get('password', '');
+        return view('auth.login', compact('email', 'password'));
     }
 
     public function login(Request $request)
@@ -69,15 +53,26 @@ class LoginController extends Controller
         }
 
         // Intentar autenticar con las credenciales proporcionadas
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        $remember = $request->has('remember'); // Verificar si el checkbox "Guardar contraseña" está marcado
+        if (!Auth::attempt($request->only('email', 'password'), $remember)) {
             return back()->withErrors([
                 'password' => 'La contraseña es incorrecta.',
             ])->withInput($request->except('password'));
         }
 
+        // Manejo de la opción "Guardar contraseña" para las cookies (opcional, no recomendado en producción)
+        if ($request->has('save-password')) {
+            // Guardar email y contraseña en cookies por 7 días
+            Cookie::queue('email', $request->email, 10080); // 7 días en minutos
+            Cookie::queue('password', $request->password, 10080); // Nota: Esto no es seguro en producción
+        } else {
+            // Eliminar cookies si no se selecciona "Guardar contraseña"
+            Cookie::queue(Cookie::forget('email'));
+            Cookie::queue(Cookie::forget('password'));
+        }
+
         // Redirigir al usuario si la autenticación es exitosa
         return redirect()->intended($this->redirectTo());
-
     }
 
     protected function redirectBasedOnRole()
@@ -97,11 +92,6 @@ class LoginController extends Controller
         }
     }
 
-    /**
-     * Cierra la sesión del usuario.
-     *
-     * @return \Illuminate\Http\RedirectResponse
-     */
     public function logout()
     {
         Auth::logout();

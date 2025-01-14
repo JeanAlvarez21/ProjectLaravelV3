@@ -17,6 +17,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\CarpinteroController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -73,3 +74,11 @@ Route::get('/productos/search', [ProductoController::class, 'search'])->name('pr
 // Ruta de contacto (asumiendo que quieres mantenerla basada en tu inclusión del ContactController)
 Route::get('/contacto', [ContactController::class, 'index'])->name('contact.index');
 Route::post('/contacto', [ContactController::class, 'store'])->name('contact.store');
+
+// Rutas para Carpinteros
+Route::get('/carpinteros', [CarpinteroController::class, 'index'])->name('carpinteros.index');
+Route::get('/carpinteros/manage', [CarpinteroController::class, 'manage'])->name('carpinteros.manage');
+Route::post('/carpinteros', [CarpinteroController::class, 'store'])->name('carpinteros.store');
+Route::get('/carpinteros/{id}/edit', [CarpinteroController::class, 'edit'])->name('carpinteros.edit');
+Route::put('/carpinteros/{id}', [CarpinteroController::class, 'update'])->name('carpinteros.update');
+Route::delete('/carpinteros/{id}', [CarpinteroController::class, 'destroy'])->name('carpinteros.destroy');
