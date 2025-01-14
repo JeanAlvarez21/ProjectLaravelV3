@@ -162,6 +162,10 @@
                     <div class="d-flex align-items-center">
                         @auth
                             @if(Auth::user()->rol == 1 || Auth::user()->rol == 2)
+                            <a href="#">
+                                <img src="{{ asset('media/carro-de-la-compra.png') }}" alt="Carrito" width="30" height="30">
+                            </a>
+                            <span class="mx-3">|</span>
                                 <a href="{{ route('profile') }}">
                                     <img src="{{ asset('media/boton-usuario.png') }}" alt="Profile" width="30" height="30">
                                 </a>
