@@ -17,13 +17,17 @@ class ProfileController extends Controller
         $user = auth()->user();
 
         $validated = $request->validate([
-            'nombres' => 'required|string|max:255',
-            'apellidos' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id, // Verificar duplicados
-            'telefono' => 'required|string|max:20',
+            'nombres' => 'required|string|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+            'apellidos' => 'required|string|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id, 
+            'telefono' => 'required|string|max:20|regex:/^\d+$/',
             'password' => 'nullable|string|min:8|confirmed',
         ], [
             'email.unique' => 'El correo electrónico ya está registrado.',
+            'password.confirmed' => 'La confirmación de la contraseña no coincide.',
+            'password.min' => 'La contraseña debe tener al menos :min caracteres.',
+            'nombres.regex' => 'El campo nombres solo puede contener letras y espacios.',
+            'apellidos.regex' => 'El campo apellidos solo puede contener letras y espacios.',
         ]);
 
         // Actualizar los datos del usuario
@@ -46,10 +50,10 @@ class ProfileController extends Controller
         $user = auth()->user();
 
         $validated = $request->validate([
-            'nombres' => 'required|string|max:255',
-            'apellidos' => 'required|string|max:255',
+            'nombres' => 'required|string|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+            'apellidos' => 'required|string|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
             'direccion' => 'required|string|max:255',
-            'telefono' => 'required|string|max:20',
+            'telefono' => 'required|string|max:20|regex:/^\d+$/',
         ]);
 
         $user->nombres = $validated['nombres'];

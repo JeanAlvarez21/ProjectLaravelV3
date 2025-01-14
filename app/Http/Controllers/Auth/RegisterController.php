@@ -54,8 +54,8 @@ class RegisterController extends Controller
             'nombres' => ['required', 'string', 'max:255', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/'],
             'apellidos' => ['required', 'string', 'max:255', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/'],
             'direccion' => ['required', 'string', 'max:255'],
-            'cedula' => ['required', 'string', 'unique:users,cedula', 'digits:10', new ValidCedula],
-            'telefono' => ['required', 'string', 'max:10'],
+            'cedula' => ['required', 'string', 'unique:users,cedula', 'digits:10', new ValidCedula, 'regex:/^\d{10}$/'],
+            'telefono' => ['required', 'string', 'max:10', 'regex:/^\d+$/'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email', 'regex:/^[a-zA-Z0-9._%+-]+@(gmail\.com|hotmail\.com|outlook\.com|yahoo\.com|aol\.com|icloud\.com|live\.com)$/'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ], [
@@ -67,6 +67,7 @@ class RegisterController extends Controller
             'password.min' => 'La contraseña debe tener al menos :min caracteres.',
             'nombres.regex' => 'El campo nombres solo puede contener letras y espacios.',
             'apellidos.regex' => 'El campo apellidos solo puede contener letras y espacios.',
+            
         ]);
     }
 
