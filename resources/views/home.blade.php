@@ -17,36 +17,21 @@
             padding: 100px 0;
         }
 
-
         .hero-overlay {
             background-color: rgba(0, 0, 0, 0.5);
             padding: 50px;
             border-radius: 10px;
         }
 
-        .navbar {
-            background-color: #FFD700;
-        }
-
-        .no-link {
-            text-decoration: none;
-            color: inherit;
-        }
-
         .carousel-item img {
             max-height: 200px;
-            /* Ajusta según tus necesidades */
             max-width: 100%;
-            /* Asegura que la imagen no se salga del contenedor */
             object-fit: contain;
-            /* Mantiene la proporción de la imagen */
             margin: 0 auto;
-            /* Centra la imagen */
         }
 
         body {
             padding-top: 70px;
-            /* Added padding to prevent content from being hidden behind the fixed navbar */
         }
 
         .navbar {
@@ -95,6 +80,36 @@
             box-shadow: none;
             transform: scale(0.98);
         }
+
+        /* Estilos para los botones del carrusel */
+        .carousel-control-prev,
+        .carousel-control-next {
+            margin-left: 20px;
+            margin-right: 20px;
+            z-index: 5;
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: #495E57;
+            border-radius: 50%;
+            padding: 15px;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .carousel-control-prev {
+            left: 10px;
+        }
+
+        .carousel-control-next {
+            right: 10px;
+        }
     </style>
 </head>
 
@@ -122,15 +137,13 @@
                     <li class="nav-item"><a class="nav-link" href="#">Proyectos</a></li>
                     @auth
                         @if(Auth::user()->rol == 1 || Auth::user()->rol == 2)
-                            <li class="nav-item"><a class="nav-link" href="{{ route('carpinteros.index') }}">Carpinteros</a>
-                            </li>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('carpinteros.index') }}">Carpinteros</a></li>
                         @else
                             <li class="nav-item"><a class="nav-link" href="/carpinteros">Carpinteros</a></li>
                         @endif
                     @else
                         <li class="nav-item"><a class="nav-link" href="/carpinteros">Carpinteros</a></li>
                     @endauth
-
                     <li class="nav-item"><a class="nav-link" href="/contacto">Contacto</a></li>
                     @auth
                         @if(Auth::user()->rol == 1)
@@ -142,7 +155,7 @@
                 </ul>
                 <div class="d-flex align-items-center">
                     @auth
-                        @if(Auth::user()->rol == 1 || Auth::user()->rol == 2)
+                        @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3)
                             <a href="#">
                                 <img src="{{ asset('media/carro-de-la-compra.png') }}" alt="Carrito" width="30" height="30">
                             </a>
@@ -178,7 +191,6 @@
         </div>
     </nav>
 
-
     <!-- Hero Section -->
     <section class="hero-section text-center d-flex align-items-center justify-content-center">
         <div class="container hero-overlay">
@@ -188,6 +200,7 @@
             <a href="/contacto" class="btn btn-light">Contáctanos</a>
         </div>
     </section>
+
     <!-- Sección de Carrusel de Tipos de Paneles -->
     <section class="container my-5 text-center">
         <h2 class="fw-bold mb-4">Tipos de Paneles</h2>
@@ -198,7 +211,6 @@
                 <!-- Primer Item del Carrusel -->
                 <div class="carousel-item active">
                     <div class="row justify-content-center">
-                        <!-- Tarjetas 1 a 4 -->
                         <div class="col-md-3">
                             <div class="card">
                                 <img src="{{ asset('assets/productos/2.jpg') }}" class="card-img-top"
@@ -225,7 +237,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="col-md-3">
                             <div class="card">
                                 <img src="{{ asset('assets/productos/3.jpg') }}" class="card-img-top" alt="Plywood">
@@ -244,7 +255,6 @@
                 <!-- Segundo Item del Carrusel -->
                 <div class="carousel-item">
                     <div class="row justify-content-center">
-                        <!-- Tarjetas 5 a 7 -->
                         <div class="col-md-3">
                             <div class="card">
                                 <img src="{{ asset('assets/productos/1.jpg') }}" class="card-img-top"
@@ -289,7 +299,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
             <!-- Controles del Carrusel -->
@@ -301,63 +310,11 @@
                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                 <span class="visually-hidden">Next</span>
             </button>
+        </div>
 
-            <!-- Estilos personalizados para los botones -->
-            <style>
-                /* Asegura que los botones no se superpongan a las tarjetas y tengan suficiente espacio */
-                .carousel-control-prev,
-                .carousel-control-next {
-                    margin-left: 20px;
-                    /* Espacio más grande entre los botones */
-                    margin-right: 20px;
-                    /* Espacio más grande entre los botones */
-                    z-index: 5;
-                    /* Asegura que los botones estén sobre el contenido */
-                }
-
-                /* Estilo para el círculo alrededor de las flechas */
-                .carousel-control-prev-icon,
-                .carousel-control-next-icon {
-                    background-color: #495E57;
-                    /* Color del círculo */
-                    border-radius: 50%;
-                    /* Hacer el fondo circular */
-                    padding: 15px;
-                    /* Aumenta el tamaño del círculo */
-                }
-
-                /* Asegura que los botones estén bien posicionados respecto al carrusel */
-                .carousel-control-prev,
-                .carousel-control-next {
-                    position: absolute;
-                    /* Posicionamiento absoluto para sacarlos del flujo normal */
-                    top: 50%;
-                    /* Centra verticalmente */
-                    transform: translateY(-50%);
-                    /* Ajusta el centro exacto */
-                }
-
-                /* Asegura que el botón "previous" esté a la izquierda */
-                .carousel-control-prev {
-                    left: 10px;
-                    /* Ajusta el espacio desde el borde izquierdo */
-                }
-
-                /* Asegura que el botón "next" esté a la derecha */
-                .carousel-control-next {
-                    right: 10px;
-                    /* Ajusta el espacio desde el borde derecho */
-                }
-            </style>
-
-
-            <!-- Botón "Crear Proyecto" -->
-            <a href="/crear-proyecto" class="btn btn-primary mt-4">Crear un Proyecto</a>
+        <!-- Botón "Crear Proyecto" -->
+        <a href="/crear-proyecto" class="btn btn-primary mt-4">Crear un Proyecto</a>
     </section>
-
-
-    <!-- Bootstrap Bundle JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Modal de Login / Registro -->
     <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
@@ -370,9 +327,7 @@
                 <div class="modal-body">
                     <!-- Opciones Login / Register -->
                     <div class="d-flex justify-content-around">
-                        <!-- Redirigir a la página de Login -->
                         <a href="{{ route('login') }}" class="btn btn-primary">Iniciar Sesión</a>
-                        <!-- Redirigir a la página de Registro -->
                         <a href="{{ route('register') }}" class="btn btn-success">Registrarse</a>
                     </div>
                 </div>
@@ -385,13 +340,4 @@
 </body>
 
 </html>
-<div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-    <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-        {{ __('Logout') }}
-    </a>
 
-    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-        @csrf
-    </form>
-</div>
