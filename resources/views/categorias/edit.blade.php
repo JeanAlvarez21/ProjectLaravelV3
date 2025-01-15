@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear Producto - Novocentro</title>
+    <title>Editar Familia - Novocentro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -41,6 +42,7 @@
 
         .sidebar .btn-logout {
             background-color: #FF6347;
+            /* Rojo */
             color: white;
             border: none;
             padding: 0.75rem 1rem;
@@ -55,12 +57,6 @@
         .sidebar .btn-logout:hover {
             background-color: #D44C3C;
         }
-
-        .preview-image {
-            max-width: 200px;
-            max-height: 200px;
-            margin-top: 10px;
-        }
     </style>
 </head>
 
@@ -70,16 +66,18 @@
         <div class="sidebar">
             <div class="logo" style="text-align: center; margin-bottom: 2rem;">
                 <a href="home">
-                    <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid" style="height: 7vh; max-height: auto; width: 70%;">
+                    <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
+                        style="height: 7vh; max-height: auto; width: 70%;">
                 </a>
             </div>
 
             <nav>
                 @if(auth()->user()->rol == 1)
-                    <a href="/dashboard" class="nav-item">
+                    <!-- Menú completo para rol 3 -->
+                    <a href="/dashboard" class="nav-item active">
                         <span>Dashboard</span>
                     </a>
-                    <a href="/productos" class="nav-item active">
+                    <a href="/productos" class="nav-item">
                         <span>Productos</span>
                     </a>
                     <a href="/categorias" class="nav-item">
@@ -95,6 +93,7 @@
                         <span>Reportes</span>
                     </a>
                 @elseif(auth()->user()->rol == 2)
+                    <!-- Menú reducido para rol 2 -->
                     <a href="/productos" class="nav-item active">
                         <span>Productos</span>
                     </a>
@@ -109,6 +108,7 @@
                     </a>
                 @endif
 
+                <!-- Botón de cerrar sesión -->
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
                     @csrf
                     <button type="submit" class="btn-logout">Cerrar sesión</button>
@@ -116,80 +116,43 @@
             </nav>
         </div>
 
-        <!-- Main content -->
-        <div class="content" style="flex-grow: 1; padding: 20px;">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <h1 class="mb-4">Crear Nueva Familia</h1>
-                        @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
 
-                        <form action="{{ route('productos.store') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <div class="mb-3">
-                                <label for="nombre_categoria" class="form-label">Nombre de Categoría</label>
-                                <input type="text" class="form-control" id="nombre_categoria" name="nombre_categoria" required>
-                            </div>
+                <!-- Main content -->
+                <div class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <h1 class="mb-4">Editar Producto</h1>
+                                @if ($errors->any())
+                                    <div class="alert alert-danger">
+                                        <ul>
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+                                <form action="{{ route('categorias.store') }}" method="POST">
+                                @csrf
+                                <div class="mb-3">
+                                    <label for="nombre_categoria" class="form-label">Nombre de la Familia</label>
+                                    <input type="text" class="form-control" id="nombre_categoria" name="nombre_categoria" required>
+                                </div>
 
-                            <div class="mb-3">
-                                <label for="descripcion" class="form-label">Descripcion</label>
-                                <input type="text" class="form-control" id="descripcion" name="descripcion" required>
-                            </div>
+                                <div class="mb-3">
+                                    <label for="descripcion" class="form-label">Descripción</label>
+                                    <textarea class="form-control" id="descripcion" name="descripcion" rows="3"></textarea>
+                                </div>
 
-                            <button type="submit" class="btn btn-primary">Añadir Categoría</button>
-                            <a href="{{ route('categorias.index') }}" class="btn btn-secondary">Cancelar</a>
-                        </form>
-                        
+                                <button type="submit" class="btn btn-primary">Guardar Familia</button>
+                            </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    </body>
-    </html>
 
-
-
-
-
-
-
-
-
-
-
-<!DOCTYPE html>
-<html lang="es">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Añadir Familia - Novocentro</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-
-<body>
-    <div class="container mt-5">
-        <h1>Añadir Nueva Familia</h1>
-        <form action="{{ route('categorias.store') }}" method="POST">
-            @csrf
-            <div class="mb-3">
-                <label for="nombre_categoria" class="form-label">Nombre de Categoría</label>
-                <input type="text" class="form-control" id="nombre_categoria" name="nombre_categoria" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Añadir Categoría</button>
-            <a href="{{ route('productos.index') }}" class="btn btn-secondary">Cancelar</a>
-        </form>
-
-    </div>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

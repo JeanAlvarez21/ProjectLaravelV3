@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Productos - Novocentro</title>
+    <title>Editar Familia - Novocentro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -74,14 +74,14 @@
             <nav>
                 @if(auth()->user()->rol == 1)
                     <!-- Menú completo para rol 3 -->
-                    <a href="/dashboard" class="nav-item">
+                    <a href="/dashboard" class="nav-item active">
                         <span>Dashboard</span>
                     </a>
-                    <a href="/productos" class="nav-item active">
+                    <a href="/productos" class="nav-item">
                         <span>Productos</span>
                     </a>
                     <a href="/categorias" class="nav-item">
-                        <span>Familia</span>
+                        <span>Familias</span>
                     </a>
                     <a href="/usuarios" class="nav-item">
                         <span>Usuarios</span>
@@ -116,29 +116,33 @@
             </nav>
         </div>
 
-        <!-- Main content -->
-        <div class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <h1 class="mb-4">Productos</h1>
-                        @if(session('success'))
-                            <div class="alert alert-success">
-                                {{ session('success') }}
-                            </div>
-                        @endif
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <div class="d-flex">
-                                <form method="GET" action="{{ route('productos.index') }}" class="d-flex">
+
+                <!-- Main content -->
+                <div class="content">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <h1 class="mb-4">Familias</h1>
+                                @if ($errors->any())
+                                    <div class="alert alert-danger">
+                                        <ul>
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="d-flex">
+                                <form method="GET" action="{{ route('categorias.index') }}" class="d-flex">
                                     <input type="text" name="search" class="form-control me-2"
-                                        placeholder="Buscar producto" value="{{ request('search') }}">
+                                        placeholder="Buscar Familia" value="{{ request('search') }}">
                                     <button type="submit" class="btn btn-outline-secondary">Buscar</button>
                                 </form>
                             </div>
                             <a href="{{ route('categorias.create') }}" class="btn btn-success">Añadir Familia</a>
-                            <a href="{{ route('productos.create') }}" class="btn btn-primary">Añadir nuevo
-                                producto</a>
-                        </div>
+                            
+                            </div>
 
                         <div class="table-responsive">
                             <table class="table table-striped table-hover">
@@ -147,25 +151,18 @@
                                         <th>ID</th>
                                         <th>Nombre</th>
                                         <th>Descripción</th>
-                                        <th>Unidad de Medida</th>
-                                        <th>Categoría</th>
-                                        <th>Visible</th>
-                                        <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($productos as $producto)
+                                    @foreach($categorias as $categoria)
                                         <tr>
-                                            <td>{{ $producto->id }}</td>
-                                            <td>{{ $producto->nombre_producto }}</td>
-                                            <td>{{ Str::limit($producto->descripcion, 50) }}</td>
-                                            <td>{{ $producto->unidad_medida }}</td>
-                                            <td>{{ $producto->categoria->nombre_categoria }}</td>
-                                            <td>{{ $producto->visible ? 'Sí' : 'No' }}</td>
+                                            <td>{{ $categoria->id_categoria }}</td>
+                                            <td>{{ $categoria->nombre_categoria }}</td>
+                                            <td>{{ Str::limit($categoria->descripcion, 50) }}</td>
                                             <td>
-                                                <a href="{{ route('productos.edit', $producto->id) }}"
+                                                <a href="{{ route('categorias.edit', $categoria->id_categoria) }}"
                                                     class="btn btn-sm btn-warning">Editar</a>
-                                                <form action="{{ route('productos.destroy', $producto->id) }}"
+                                                <form action="{{ route('categorias.destroy', $categoria->id_categoria) }}"
                                                     method="POST" style="display: inline-block;">
                                                     @csrf
                                                     @method('DELETE')
@@ -186,4 +183,3 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-

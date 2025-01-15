@@ -129,8 +129,8 @@
             <a href="/productos" class="nav-item">
                 <span>Productos</span>
             </a>
-            <a href="/inventario" class="nav-item">
-                <span>Inventario</span>
+            <a href="/categorias" class="nav-item">
+                <span>Familias</span>
             </a>
             <a href="/usuarios" class="nav-item active">
                 <span>Usuarios</span>

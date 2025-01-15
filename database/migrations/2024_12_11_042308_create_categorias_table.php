@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('categorias', function (Blueprint $table) {
             $table->id('id_categoria'); // Clave primaria
-            $table->string('nombre_categoria', 100);
-            $table->timestamps();
+            $table->string('nombre_categoria', 255);
+            $table->text('descripcion')->nullable(); // Descripción de la familia
+            $table->timestamps(); // Campos created_at y updated_at
         });
     }
 

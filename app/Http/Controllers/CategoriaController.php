@@ -7,6 +7,15 @@ use Illuminate\Http\Request;
 
 class CategoriaController extends Controller
 {
+    public function index()
+    {
+        // Obtiene todas las categorías
+        $categorias = Categoria::all();
+
+        // Retorna la vista con las categorías
+        return view('categorias.index', compact('categorias'));
+    }
+
     public function create()
     {
         return view('categorias.create');

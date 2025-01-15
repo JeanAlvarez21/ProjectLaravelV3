@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Inventario</title>
+    <title>Gestión de Familias</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
@@ -21,7 +21,7 @@
         </div>
         <div class="space-x-6">
             <a href="#" class="hover:underline font-semibold">Menú</a>
-            <a href="#" class="hover:underline font-semibold">Inventario</a>
+            <a href="#" class="hover:underline font-semibold">Familias</a>
             <a href="#" class="hover:underline font-semibold">Tienda</a>
             <a href="#" class="hover:underline font-semibold">Carpinteros</a>
         </div>
@@ -29,13 +29,13 @@
 
     <!-- Contenido principal -->
     <div class="container mx-auto px-6 py-10">
-        <h2 class="text-2xl font-bold text-gray-800 text-center mb-8">Gestión de Inventario</h2>
+        <h2 class="text-2xl font-bold text-gray-800 text-center mb-8">Gestión de Familias</h2>
 
         <!-- Botones principales -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-xl mx-auto">
-            <a href="{{ route('inventarios.index') }}" class="bg-yellow-200 p-6 rounded-lg shadow-md hover:bg-yellow-300 text-center">
-                <h3 class="text-lg font-bold">Listar Inventario</h3>
-                <p class="text-sm text-gray-600">Consulta y gestiona todos los elementos del inventario.</p>
+            <a href="{{ route('categorias.index') }}" class="bg-yellow-200 p-6 rounded-lg shadow-md hover:bg-yellow-300 text-center">
+                <h3 class="text-lg font-bold">Listar Familias</h3>
+                <p class="text-sm text-gray-600">Consulta y gestiona todos los elementos de las Familias.</p>
             </a>
 
             <a href="{{ route('productos.index') }}" class="bg-blue-200 p-6 rounded-lg shadow-md hover:bg-blue-300 text-center">
@@ -43,9 +43,9 @@
                 <p class="text-sm text-gray-600">Revisa la lista completa de productos disponibles.</p>
             </a>
 
-            <a href="{{ route('inventarios.create') }}" class="bg-yellow-200 p-6 rounded-lg shadow-md hover:bg-yellow-300 text-center">
-                <h3 class="text-lg font-bold">Agregar al Inventario</h3>
-                <p class="text-sm text-gray-600">Añade nuevos productos al inventario.</p>
+            <a href="{{ route('categorias.create') }}" class="bg-yellow-200 p-6 rounded-lg shadow-md hover:bg-yellow-300 text-center">
+                <h3 class="text-lg font-bold">Agregar a Familias</h3>
+                <p class="text-sm text-gray-600">Añade nuevos productos a Familias.</p>
             </a>
 
             <a href="{{ route('productos.create') }}" class="bg-blue-200 p-6 rounded-lg shadow-md hover:bg-blue-300 text-center">

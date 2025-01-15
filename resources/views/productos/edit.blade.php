@@ -80,8 +80,8 @@
                     <a href="/productos" class="nav-item">
                         <span>Productos</span>
                     </a>
-                    <a href="/inventario" class="nav-item">
-                        <span>Inventario</span>
+                    <a href="/categorias" class="nav-item">
+                        <span>Familias</span>
                     </a>
                     <a href="/usuarios" class="nav-item">
                         <span>Usuarios</span>
@@ -97,8 +97,8 @@
                     <a href="/productos" class="nav-item active">
                         <span>Productos</span>
                     </a>
-                    <a href="/inventario" class="nav-item">
-                        <span>Inventario</span>
+                    <a href="/categorias" class="nav-item">
+                        <span>Familias</span>
                     </a>
                     <a href="/facturacion" class="nav-item">
                         <span>Facturación</span>
@@ -132,60 +132,77 @@
                                         </ul>
                                     </div>
                                 @endif
-                                <form action="{{ route('productos.update', $producto->id_producto) }}" method="POST" enctype="multipart/form-data">
-                                    @csrf
-                                    @method('PUT')
-                                    <div class="mb-3">
-                                        <label for="nombre_producto" class="form-label">Nombre del Producto</label>
-                                        <input type="text" class="form-control" id="nombre_producto" name="nombre_producto" required value="{{ $producto->nombre_producto }}">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="descripcion" class="form-label">Descripción</label>
-                                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required>{{ $producto->descripcion }}</textarea>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="unidad_medida" class="form-label">Unidad de Medida</label>
-                                        <input type="text" class="form-control" id="unidad_medida" name="unidad_medida" required value="{{ $producto->unidad_medida }}">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="imagen_actual" class="form-label">Imagen Actual</label>
-                                        <div>
-                                            <img src="{{ asset($producto->link_imagen) }}" alt="Imagen del Producto" style="max-width: 200px; max-height: 200px;">
-                                        </div>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="link_imagen" class="form-label">Subir Nueva Imagen</label>
-                                        <input type="file" class="form-control" id="link_imagen" name="link_imagen">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="cantidad" class="form-label">Cantidad</label>
-                                        <input type="number" class="form-control" id="cantidad" name="cantidad" required value="{{ $producto->cantidad }}">
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="id_categoria" class="form-label">Categoría</label>
-                                        <select class="form-control" id="id_categoria" name="id_categoria" required>
-                                            @foreach($categorias as $categoria)
-                                                <option value="{{ $categoria->id_categoria }}" {{ $producto->id_categoria == $categoria->id_categoria ? 'selected' : '' }}>
-                                                    {{ $categoria->nombre_categoria }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="visible" class="form-label">Visibilidad</label>
-                                        <select class="form-control" id="visible" name="visible" required>
-                                            <option value="2" {{ $producto->visible == 2 ? 'selected' : '' }}>Público</option>
-                                            <option value="1" {{ $producto->visible == 1 ? 'selected' : '' }}>Privado</option>
-                                        </select>
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Actualizar Producto</button>
-                                </form>
+                                <form action="{{ route('productos.store') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="mb-3">
+                                <label for="id" class="form-label">ID del Producto</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="id" name="id" required>
+                                    <button type="button" class="btn btn-secondary" id="checkId">Verificar ID</button>
+                                </div>
+                                <div id="idFeedback" class="form-text"></div>
                             </div>
-                        </div>
+
+                            <div class="mb-3">
+                                <label for="nombre_producto" class="form-label">Nombre del Producto</label>
+                                <input type="text" class="form-control" id="nombre_producto" name="nombre_producto" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="descripcion" class="form-label">Descripción</label>
+                                <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="cantidad" class="form-label">Cantidad</label>
+                                <input type="number" name="cantidad" id="cantidad" class="form-control" required min="0" step="1" 
+                                    placeholder="Introduce la cantidad del producto">
+                            </div>
+
+
+                            <div class="mb-3">
+                                <label for="unidad_medida" class="form-label">Unidad de Medida</label>
+                                <input type="text" class="form-control" id="unidad_medida" name="unidad_medida" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="imagen" class="form-label">Imagen del Producto</label>
+                                <input type="file" class="form-control" id="imagen" name="imagen" accept="image/jpeg,image/png,image/jpg" required>
+                                <img id="preview" class="preview-image d-none">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_categoria" class="form-label">Categoría</label>
+                                <select class="form-control" id="id_categoria" name="id_categoria" required>
+                                    @foreach($categorias as $categoria)
+                                        <option value="{{ $categoria->id_categoria }}">
+                                            {{ $categoria->nombre_categoria }}
+                                        </option>
+                                    @endforeach
+                                    <option value="nueva">+ Agregar nueva categoría</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3 d-none" id="nuevaCategoriaDiv">
+                                <label for="nueva_categoria" class="form-label">Nueva Categoría</label>
+                                <input type="text" class="form-control" id="nueva_categoria" name="nueva_categoria">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="visible">Visibilidad</label>
+                                <select name="visible" class="form-control">
+                                    <option value="1">Público</option>
+                                    <option value="2">Privado</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Crear Producto</button>
+                        </form>
                     </div>
                 </div>
             </div>
-
+        </div>
+    </div>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

@@ -82,8 +82,8 @@
                     <a href="/productos" class="nav-item active">
                         <span>Productos</span>
                     </a>
-                    <a href="/inventario" class="nav-item">
-                        <span>Inventario</span>
+                    <a href="/categorias" class="nav-item">
+                        <span>Familias</span>
                     </a>
                     <a href="/usuarios" class="nav-item">
                         <span>Usuarios</span>
@@ -98,8 +98,8 @@
                     <a href="/productos" class="nav-item active">
                         <span>Productos</span>
                     </a>
-                    <a href="/inventario" class="nav-item">
-                        <span>Inventario</span>
+                    <a href="/categorias" class="nav-item">
+                        <span>Familias</span>
                     </a>
                     <a href="/facturacion" class="nav-item">
                         <span>Facturación</span>
@@ -135,17 +135,16 @@
                         <form action="{{ route('productos.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
-                                <label for="id_producto" class="form-label">ID del Producto</label>
+                                <label for="codigo_producto" class="form-label">Código del Producto</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" id="id_producto" name="id_producto" required>
-                                    <button type="button" class="btn btn-secondary" id="checkId">Verificar ID</button>
+                                    <input type="text" class="form-control" id="codigo_producto" name="codigo_producto" required>
                                 </div>
-                                <div id="idFeedback" class="form-text"></div>
+                                <div id="codigoFeedback" class="form-text"></div>
                             </div>
 
                             <div class="mb-3">
                                 <label for="nombre_producto" class="form-label">Nombre del Producto</label>
-                                <input type="text" class="form-control" id="nombre_producto" name="nombre_producto" required>
+                                <input type="text" class="form-control" id="nombre_producto" name="nombre" required>
                             </div>
 
                             <div class="mb-3">
@@ -154,50 +153,75 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="cantidad" class="form-label">Cantidad</label>
-                                <input type="number" name="cantidad" id="cantidad" class="form-control" required min="0" step="1" 
-                                    placeholder="Introduce la cantidad del producto">
-                            </div>
-
-
-                            <div class="mb-3">
-                                <label for="unidad_medida" class="form-label">Unidad de Medida</label>
-                                <input type="text" class="form-control" id="unidad_medida" name="unidad_medida" required>
+                                <label for="precio" class="form-label">Precio</label>
+                                <input type="number" class="form-control" id="precio" name="precio" required min="0" step="0.01">
                             </div>
 
                             <div class="mb-3">
-                                <label for="imagen" class="form-label">Imagen del Producto</label>
-                                <input type="file" class="form-control" id="imagen" name="imagen" accept="image/jpeg,image/png,image/jpg" required>
-                                <img id="preview" class="preview-image d-none">
+                                <label for="costo" class="form-label">Costo</label>
+                                <input type="number" class="form-control" id="costo" name="costo" required min="0" step="0.01">
                             </div>
 
                             <div class="mb-3">
-                                <label for="id_categoria" class="form-label">Categoría</label>
+                                <label for="stock" class="form-label">Cantidad en Inventario</label>
+                                <input type="number" class="form-control" id="stock" name="stock" required min="0" step="1">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="min_stock" class="form-label">Stock Mínimo</label>
+                                <input type="number" class="form-control" id="min_stock" name="min_stock" required min="0" step="1">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_categoria" class="form-label">Familia</label>
                                 <select class="form-control" id="id_categoria" name="id_categoria" required>
                                     @foreach($categorias as $categoria)
                                         <option value="{{ $categoria->id_categoria }}">
                                             {{ $categoria->nombre_categoria }}
                                         </option>
                                     @endforeach
-                                    <option value="nueva">+ Agregar nueva categoría</option>
+                                    <option value="nueva">+ Agregar nueva Familia</option>
                                 </select>
                             </div>
 
                             <div class="mb-3 d-none" id="nuevaCategoriaDiv">
-                                <label for="nueva_categoria" class="form-label">Nueva Categoría</label>
+                                <label for="nueva_categoria" class="form-label">Nueva Familia</label>
                                 <input type="text" class="form-control" id="nueva_categoria" name="nueva_categoria">
+                            </div>
+
+                            <div class="mb-3 d-none" id="descripcionCategoriaDiv">
+                                <label for="descripcion_categoria" class="form-label">Descripción de la Nueva Familia</label>
+                                <textarea class="form-control" id="descripcion_categoria" name="descripcion_categoria" rows="3" placeholder="Breve descripción "></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="imagen" class="form-label">Imagen del Producto</label>
+                                <input type="file" class="form-control" id="imagen" name="imagen" accept="image/jpeg,image/png,image/jpg">
+                                <img id="preview" class="preview-image d-none">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="nombre_sucursal" class="form-label">Nombre de la Sucursal</label>
+                                <input type="text" class="form-control" id="nombre_sucursal" name="nombre_sucursal" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="direccion_sucursal" class="form-label">Dirección de la Sucursal</label>
+                                <input type="text" class="form-control" id="direccion_sucursal" name="direccion_sucursal" required>
                             </div>
 
                             <div class="form-group">
                                 <label for="visible">Visibilidad</label>
                                 <select name="visible" class="form-control">
                                     <option value="1">Público</option>
-                                    <option value="2">Privado</option>
+                                    <option value="0">Privado</option>
                                 </select>
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Crear Producto</button>
+                            <button type="submit" class="btn btn-primary">Guardar Producto</button>
                         </form>
+
+
                     </div>
                 </div>
             </div>
@@ -218,18 +242,24 @@
 
         document.getElementById('id_categoria').addEventListener('change', function() {
             const nuevaCategoriaDiv = document.getElementById('nuevaCategoriaDiv');
+            const descripcionCategoriaDiv  = document.getElementById('descripcionCategoriaDiv');
+
             if (this.value === 'nueva') {
                 nuevaCategoriaDiv.classList.remove('d-none');
+                descripcionCategoriaDiv.classList.remove('d-none');
+
             } else {
                 nuevaCategoriaDiv.classList.add('d-none');
+                descripcionCategoriaDiv.classList.add('d-none');
+
             }
         });
 
         document.getElementById('checkId').addEventListener('click', function() {
-            const id = document.getElementById('id_producto').value;
+            const id = document.getElementById('id').value;
             if (!id) return;
 
-            fetch(`/productos/check-id?id_producto=${id}`)
+            fetch(`/productos/check-id?id=${id}`)
                 .then(response => response.json())
                 .then(data => {
                     const feedback = document.getElementById('idFeedback');

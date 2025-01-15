@@ -17,6 +17,7 @@ return new class extends Migration
             $table->dateTime('fecha_pedido');
             $table->string('direccion_pedido');
             $table->decimal('total', 10, 2);
+
         });
     }
 

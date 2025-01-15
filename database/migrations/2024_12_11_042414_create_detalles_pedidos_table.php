@@ -12,13 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('detalles_pedidos', function (Blueprint $table) {
-            $table->bigIncrements('id_detalle'); // Clave primaria
-            $table->unsignedBigInteger('id_pedido'); // Aseguramos que el tipo sea el mismo que en 'pedidos'
-            $table->unsignedBigInteger('id_producto'); // Aseguramos que el tipo sea el mismo que en 'productos'
-            $table->foreign('id_pedido')->references('id_pedido')->on('pedidos')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreign('id_producto')->references('id_producto')->on('productos')->onUpdate('cascade')->onDelete('cascade');
-            $table->integer('cantidad');
-            $table->decimal('subtotal', 10, 2);
+            $table->id(); // Clave primaria
+            $table->unsignedBigInteger('pedido_id'); // Relación con tabla pedidos
+            $table->unsignedBigInteger('producto_id'); // Relación con tabla productos
+            $table->integer('cantidad'); // Cantidad de productos
+            $table->decimal('subtotal', 10, 2); // Subtotal del pedido
+            $table->timestamps(); // Campos created_at y updated_at
+
+            // Llaves foráneas
+            $table->foreign('pedido_id')->references('id_pedido')->on('pedidos')->onUpdate('cascade')->onDelete('cascade');
+            $table->foreign('producto_id')->references('id')->on('productos')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 

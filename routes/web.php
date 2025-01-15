@@ -28,7 +28,7 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-//Vistas
+// Vistas
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
 Route::get('/password/reset', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
@@ -43,13 +43,12 @@ Route::get('/notificaciones', [NotificationCenterController::class, 'index'])->n
 Route::get('/dashboard', function () {
     return view('dashboard'); // Nombre del archivo en resources/views/dashboard.blade.php
 })->name('dashboard');
-Route::get('/notificaciones', [NotificationCenterController::class, 'index'])->name('notificaciones');
 Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios.index');
 Route::get('/usuarios/crear', [UserController::class, 'create'])->name('usuarios.create');
 Route::get('/usuarios/{user}/editar', [UserController::class, 'edit'])->name('usuarios.edit');
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
 
-//Controllers
+// Controllers
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
@@ -62,14 +61,20 @@ Route::put('/usuarios/{user}', [UserController::class, 'update'])->name('usuario
 Route::delete('usuarios/{user}', [UserController::class, 'destroy'])->name('usuarios.destroy');
 Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 Route::put('/profile/address', [ProfileController::class, 'updateAddress'])->name('address.update');
+
 // Inventario routes
 Route::resource('inventario', InventarioController::class);
+
 // Producto routes
 Route::resource('productos', ProductoController::class);
 
-Route::resource('categorias', CategoriaController::class);
-
+// Ruta adicional para la búsqueda de productos
 Route::get('/productos/search', [ProductoController::class, 'search'])->name('productos.search');
+
+// Categoria routes
+Route::resource('categorias', CategoriaController::class);
+Route::get('/categorias', [App\Http\Controllers\CategoriaController::class, 'index'])->name('categorias.index');
+
 
 // Ruta de contacto (asumiendo que quieres mantenerla basada en tu inclusión del ContactController)
 Route::get('/contacto', [ContactController::class, 'index'])->name('contact.index');
