@@ -8,7 +8,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
+
+<style>
         /* Personalización adicional */
         .hero-section {
             background: url('{{ asset('media/background_main.png') }}') no-repeat center center;
@@ -135,7 +136,6 @@
                     </li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('productos.clientes') }}">Productos</a></li>
                     <li class="nav-item"><a class="nav-link" href="#">Proyectos</a></li>
-                    
                     @auth
                         @if(Auth::user()->rol == 1 || Auth::user()->rol == 2)
                             <li class="nav-item"><a class="nav-link" href="{{ route('carpinteros.index') }}">Carpinteros</a>
@@ -194,152 +194,151 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero-section text-center d-flex align-items-center justify-content-center">
-        <div class="container hero-overlay">
-            <h1 class="fw-bold">Optimiza tu Proyecto con Madera de <span class="text-warning">Alta Calidad</span></h1>
-            <p>Descubre cómo nuestra tecnología de vanguardia garantizan madera cortada y acabada según tus necesidades
-                específicas</p>
-            <a href="/contacto" class="btn btn-light">Contáctanos</a>
-        </div>
-    </section>
 
-    <!-- Sección de Carrusel de Tipos de Paneles -->
-    <section class="container my-5 text-center">
-        <h2 class="fw-bold mb-4">Tipos de Paneles</h2>
-
-        <!-- Carrusel de Bootstrap -->
-        <div id="panelCarousel" class="carousel slide" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                <!-- Primer Item del Carrusel -->
-                <div class="carousel-item active">
-                    <div class="row justify-content-center">
-                        <div class="col-md-3">
-                            <div class="card">
-                                <img src="{{ asset('assets/productos/2.jpg') }}" class="card-img-top"
-                                    alt="MDP Enchapado">
-                                <div class="card-body">
-                                    <h5 class="card-title">MDP Enchapado</h5>
-                                    <ul>
-                                        <li>✔ Económico</li>
-                                        <li>❌ Poco resistente</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card">
-                                <img src="{{ asset('assets/productos/1.jpg') }}" class="card-img-top"
-                                    alt="MDP Enchapado">
-                                <div class="card-body">
-                                    <h5 class="card-title">MDF Enchapado</h5>
-                                    <ul>
-                                        <li>✔ Resistencia y estabilidad</li>
-                                        <li>✔ Mayor peso</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card">
-                                <img src="{{ asset('assets/productos/3.jpg') }}" class="card-img-top" alt="Plywood">
-                                <div class="card-body">
-                                    <h5 class="card-title">Plywood</h5>
-                                    <ul>
-                                        <li>✔ Exteriores</li>
-                                        <li>❌ Mayor costo</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Segundo Item del Carrusel -->
-                <div class="carousel-item">
-                    <div class="row justify-content-center">
-                        <div class="col-md-3">
-                            <div class="card">
-                                <img src="{{ asset('assets/productos/1.jpg') }}" class="card-img-top"
-                                    alt="Panel de Madera">
-                                <div class="card-body">
-                                    <h5 class="card-title">Panel de Madera</h5>
-                                    <ul>
-                                        <li>✔ Natural</li>
-                                        <li>✔ Alta resistencia</li>
-                                        <li>❌ Puede ser costoso</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card">
-                                <img src="{{ asset('assets/productos/2.jpg') }}" class="card-img-top"
-                                    alt="Panel de Vidrio">
-                                <div class="card-body">
-                                    <h5 class="card-title">Panel de Vidrio</h5>
-                                    <ul>
-                                        <li>✔ Estético</li>
-                                        <li>✔ Transparente</li>
-                                        <li>❌ Fragilidad</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card">
-                                <img src="{{ asset('assets/productos/3.jpg') }}" class="card-img-top"
-                                    alt="Panel de Acero">
-                                <div class="card-body">
-                                    <h5 class="card-title">Panel de Acero</h5>
-                                    <ul>
-                                        <li>✔ Alta durabilidad</li>
-                                        <li>✔ Resistente al fuego</li>
-                                        <li>❌ No es económico</li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Carrito de Compras</h1>
+        @if(session('cart'))
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio</th>
+                        <th>Subtotal</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @php $total = 0 @endphp
+                @foreach(session('cart') as $id => $details)
+                    @php $total += $details['price'] * $details['quantity'] @endphp
+                    <tr>
+                        <td>
+                            <img src="{{ asset($details['image']) }}" width="100" height="100" class="img-responsive"/>
+                            <span>{{ $details['name'] }}</span>
+                        </td>
+                        <td>
+                            <form class="update-cart-form" action="{{ route('cart.update') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="id" value="{{ $id }}">
+                                <input type="number" name="quantity" value="{{ $details['quantity'] }}" min="1" class="form-control quantity-input" data-stock="{{ $details['stock'] }}" />
+                                <button type="submit" class="btn btn-sm btn-warning mt-2">Actualizar</button>
+                            </form>
+                        </td>
+                        <td>${{ $details['price'] }}</td>
+                        <td class="subtotal">${{ $details['price'] * $details['quantity'] }}</td>
+                        <td>
+                            <form class="remove-from-cart-form" action="{{ route('cart.remove') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="id" value="{{ $id }}">
+                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                        <td id="cart-total">${{ $total }}</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <div class="text-center mt-4">
+                <form action="{{ route('cart.purchase') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-success btn-lg">Comprar</button>
+                </form>
             </div>
-
-            <!-- Controles del Carrusel -->
-            <button class="carousel-control-prev" type="button" data-bs-target="#panelCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#panelCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-        </div>
-
-        <!-- Botón "Crear Proyecto" -->
-        <a href="/crear-proyecto" class="btn btn-primary mt-4">Crear un Proyecto</a>
-    </section>
-
-    <!-- Modal de Login / Registro -->
-    <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="authModalLabel">Iniciar Sesión o Registrarse</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Opciones Login / Register -->
-                    <div class="d-flex justify-content-around">
-                        <a href="{{ route('login') }}" class="btn btn-primary">Iniciar Sesión</a>
-                        <a href="{{ route('register') }}" class="btn btn-success">Registrarse</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @else
+            <p>Tu carrito está vacío.</p>
+        @endif
     </div>
 
-    <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $('.quantity-input').on('input', function() {
+                var input = $(this);
+                var stock = parseInt(input.data('stock'));
+                var value = parseInt(input.val());
+
+                if (value > stock) {
+                    input.val(stock);
+                    alert('No puedes seleccionar más productos de los que hay en stock.');
+                } else if (value < 1) {
+                    input.val(1);
+                }
+
+                updateSubtotal(input);
+            });
+
+            $('.update-cart-form').submit(function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = form.attr('action');
+                var formData = form.serialize();
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function(response) {
+                        alert(response.success);
+                        updateSubtotal(form.find('.quantity-input'));
+                        updateCartTotal();
+                    },
+                    error: function(xhr) {
+                        alert('Error al actualizar el carrito');
+                    }
+                });
+            });
+
+            $('.remove-from-cart-form').submit(function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = form.attr('action');
+                var formData = form.serialize();
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function(response) {
+                        alert(response.success);
+                        form.closest('tr').remove();
+                        updateCartTotal();
+                    },
+                    error: function(xhr) {
+                        alert('Error al eliminar el producto del carrito');
+                    }
+                });
+            });
+
+            function updateSubtotal(input) {
+                var quantity = parseInt(input.val());
+                var price = parseFloat(input.closest('tr').find('td:eq(2)').text().replace('$', ''));
+                var subtotal = quantity * price;
+                input.closest('tr').find('.subtotal').text('$' + subtotal.toFixed(2));
+            }
+
+            function updateCartTotal() {
+                var total = 0;
+                $('.subtotal').each(function() {
+                    total += parseFloat($(this).text().replace('$', ''));
+                });
+                $('#cart-total').text('$' + total.toFixed(2));
+            }
+        });
+    </script>
 </body>
 
 </html>

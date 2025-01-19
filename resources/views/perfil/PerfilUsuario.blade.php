@@ -124,7 +124,7 @@
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
             <a class="navbar-brand"
-                href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
+                href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
                 <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
                     style="height: 6vh; max-height: 100%; width: auto;">
             </a>
@@ -136,8 +136,8 @@
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
                         <a class="nav-link"
-                            href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
-                            Menú
+                            href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">Menú
+
                         </a>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="#">Productos</a></li>
@@ -165,7 +165,7 @@
                 <div class="d-flex align-items-center">
                     @auth
                         @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3)
-                        <a href="#">
+                            <a href="#">
                                 <img src="{{ asset('media/carro-de-la-compra.png') }}" alt="Carrito" width="30" height="30">
                             </a>
                             <span class="mx-3">|</span>
@@ -241,8 +241,6 @@
                                             </ul>
                                         </div>
                                     @endif
-
-
                                     <div class="row mb-3">
                                         <div class="col-md-6">
                                             <label class="form-label">Nombres</label>

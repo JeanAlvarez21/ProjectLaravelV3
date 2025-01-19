@@ -1,3 +1,11 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Productos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* Personalización adicional */
         .hero-section {
@@ -181,3 +189,98 @@
         </div>
     </nav>
 
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Productos Disponibles</h1>
+        <div class="row">
+            @foreach($productos as $producto)
+                <div class="col-md-3">
+                    <div class="card mb-4">
+                        <img src="{{ asset($producto->imagen) }}" class="card-img-top" alt="{{ $producto->nombre }}">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ $producto->nombre }}</h5>
+                            <p class="card-text">{{ Str::limit($producto->descripcion, 100) }}</p>
+                            <p class="card-text"><strong>Precio:</strong> ${{ number_format($producto->costo, 2) }}</p>
+                            <p class="card-text">
+                                <strong>Stock:</strong> 
+                                @if($producto->stock > 0)
+                                    <span class="stock-display">{{ $producto->stock }}</span> unidades disponibles
+                                @else
+                                    <span class="text-danger">Agotado</span>
+                                @endif
+                            </p>
+                            <form class="add-to-cart-form" action="{{ route('cart.add', $producto->id) }}" method="POST" @if($producto->stock == 0) style="display: none;" @endif>
+                                @csrf
+                                <div class="form-group">
+                                    <label for="cantidad-{{ $producto->id }}">Cantidad:</label>
+                                    <input type="number" name="quantity" id="cantidad-{{ $producto->id }}" min="1" max="{{ $producto->stock }}" value="1" class="form-control quantity-input" required data-stock="{{ $producto->stock }}">
+                                </div>
+                                <button type="submit" class="btn btn-warning mt-2">Agregar al carrito</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            $('.quantity-input').on('input', function() {
+                var input = $(this);
+                var stock = parseInt(input.data('stock'));
+                var value = parseInt(input.val());
+
+                if (value > stock) {
+                    input.val(stock);
+                    alert('No puedes seleccionar más productos de los que hay en stock.');
+                } else if (value < 1) {
+                    input.val(1);
+                }
+            });
+
+            $('.add-to-cart-form').submit(function(e) {
+                e.preventDefault();
+                var form = $(this);
+                var url = form.attr('action');
+                var formData = form.serialize();
+
+                $.ajax({
+                    type: 'POST',
+                    url: url,
+                    data: formData,
+                    success: function(response) {
+                        alert(response.success);
+                        // Update stock display
+                        var quantityInput = form.find('.quantity-input');
+                        var stockDisplay = form.siblings('.stock-display');
+                        var newStock = parseInt(stockDisplay.text()) - parseInt(quantityInput.val());
+                        stockDisplay.text(newStock);
+                        if (newStock === 0) {
+                            stockDisplay.parent().html('<strong>Stock:</strong> <span class="text-danger">Agotado</span>');
+                            form.hide();
+                        }
+                        quantityInput.attr('max', newStock).data('stock', newStock);
+                        if (newStock === 0) {
+                            form.find('button[type="submit"]').prop('disabled', true);
+                        }
+                    },
+                    error: function(xhr) {
+                        alert('Error al agregar el producto al carrito');
+                    }
+                });
+            });
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

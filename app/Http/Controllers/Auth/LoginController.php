@@ -19,7 +19,7 @@ class LoginController extends Controller
      */
     protected function redirectTo()
     {
-        $role = auth()->user()->rol; // Asume que 'rol' es el campo que identifica el rol del usuario
+        $role = auth()->user()->rol; 
         return '/home'; // Ruta por defecto si el rol no coincide
     }
 
@@ -53,7 +53,7 @@ class LoginController extends Controller
         }
 
         // Intentar autenticar con las credenciales proporcionadas
-        $remember = $request->has('remember'); // Verificar si el checkbox "Guardar contraseña" está marcado
+        $remember = $request->has('remember'); 
         if (!Auth::attempt($request->only('email', 'password'), $remember)) {
             return back()->withErrors([
                 'password' => 'La contraseña es incorrecta.',

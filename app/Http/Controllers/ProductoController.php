@@ -48,7 +48,7 @@ class ProductoController extends Controller
             'nombre_sucursal' => 'required|string|max:100', // Nombre de la sucursal (obligatorio)
             'direccion_sucursal' => 'required|string|max:100', // Dirección de la sucursal (obligatorio)
         ]);
-        
+
 
         // Manejar la categoría
         if ($request->id_categoria === 'nueva') {
@@ -64,14 +64,14 @@ class ProductoController extends Controller
         // Manejar la imagen
         $rutaImagen = null;
         // En tu lógica para manejar la imagen
-            if ($request->hasFile('imagen')) {
-                $imagen = $request->file('imagen');
-                $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
-                $imagen->move(public_path('assets/productos'), $nombreImagen);
-                $rutaImagen = 'assets/productos/' . $nombreImagen;
-            } else {
-                $rutaImagen = null; // Si no se sube imagen, puedes asignar null o mantener el valor actual
-            }
+        if ($request->hasFile('imagen')) {
+            $imagen = $request->file('imagen');
+            $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
+            $imagen->move(public_path('assets/productos'), $nombreImagen);
+            $rutaImagen = 'assets/productos/' . $nombreImagen;
+        } else {
+            $rutaImagen = null; // Si no se sube imagen, puedes asignar null o mantener el valor actual
+        }
 
         Producto::create([
             'nombre' => $request->nombre, // Nuevo nombre de columna
@@ -114,7 +114,7 @@ class ProductoController extends Controller
             'nombre_sucursal' => 'required|string|max:100', // Nombre de la sucursal (obligatorio)
             'direccion_sucursal' => 'required|string|max:100', // Dirección de la sucursal (obligatorio)
         ]);
-        
+
 
         // Manejar la categoría
         if ($request->id_categoria === 'nueva') {
@@ -154,7 +154,7 @@ class ProductoController extends Controller
             'nombre_sucursal' => $request->nombre_sucursal, // Nombre de la sucursal
             'direccion_sucursal' => $request->direccion_sucursal, // Dirección de la sucursal
         ]);
-        
+
 
         return redirect()->route('productos.index')
             ->with('success', 'Producto actualizado exitosamente.');
@@ -165,7 +165,7 @@ class ProductoController extends Controller
         if ($producto->link_imagen && file_exists(public_path($producto->link_imagen))) {
             unlink(public_path($producto->link_imagen));
         }
-        
+
         $producto->delete();
         return redirect()->route('productos.index')
             ->with('success', 'Producto eliminado exitosamente.');

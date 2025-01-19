@@ -18,6 +18,7 @@ use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CarpinteroController;
+use App\Http\Controllers\CartController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -87,3 +88,18 @@ Route::post('/carpinteros', [CarpinteroController::class, 'store'])->name('carpi
 Route::get('/carpinteros/{id}/edit', [CarpinteroController::class, 'edit'])->name('carpinteros.edit');
 Route::put('/carpinteros/{id}', [CarpinteroController::class, 'update'])->name('carpinteros.update');
 Route::delete('/carpinteros/{id}', [CarpinteroController::class, 'destroy'])->name('carpinteros.destroy');
+
+
+
+
+//productos clientes
+Route::get('/productos-clientes', [ProductoController::class, 'showForClients'])->name('productos.clientes');
+
+// Ruta para agregar productos al carrito
+Route::post('cart-add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
+Route::post('cart-update', [CartController::class, 'updateCart'])->name('cart.update');
+Route::post('cart-remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
+Route::get('cart', [CartController::class, 'viewCart'])->name('cart.view');
+Route::post('cart/purchase', [CartController::class, 'purchase'])->name('cart.purchase');
+
+

@@ -79,10 +79,10 @@
                     <a href="/dashboard" class="nav-item">
                         <span>Dashboard</span>
                     </a>
-                    <a href="/productos" class="nav-item active">
+                    <a href="/productos" class="nav-item">
                         <span>Productos</span>
                     </a>
-                    <a href="/categorias" class="nav-item">
+                    <a href="/categorias" class="nav-item active">
                         <span>Familias</span>
                     </a>
                     <a href="/usuarios" class="nav-item">
@@ -95,10 +95,10 @@
                         <span>Reportes</span>
                     </a>
                 @elseif(auth()->user()->rol == 2)
-                    <a href="/productos" class="nav-item active">
+                    <a href="/productos" class="nav-item">
                         <span>Productos</span>
                     </a>
-                    <a href="/categorias" class="nav-item">
+                    <a href="/categorias" class="nav-item active">
                         <span>Familias</span>
                     </a>
                     <a href="/facturacion" class="nav-item">
