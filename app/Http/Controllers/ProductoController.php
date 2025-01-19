@@ -15,16 +15,15 @@ class ProductoController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->input('search'); // Aquí obtienes el valor de la búsqueda
+        $search = trim($request->input('search')); // Elimina espacios adicionales
 
         $productos = Producto::when($search, function ($query, $search) {
-            $query->where('id', $search)
-                ->orWhere('nombre', 'like', '%' . $search . '%');
-        })->paginate(10); // Puedes ajustar el número de elementos por página
+            $query->where('codigo_producto', $search) // Búsqueda exacta por código
+                ->orWhere('nombre', 'like', '%' . $search . '%'); // Búsqueda parcial por nombre
+        })->paginate(10); // Cambia el número de elementos según sea necesario
 
         return view('productos.index', compact('productos', 'search'));
     }
-
     public function create()
     {
         $categorias = Categoria::all();
