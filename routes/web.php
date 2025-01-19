@@ -73,7 +73,9 @@ Route::get('/productos/search', [ProductoController::class, 'search'])->name('pr
 
 // Categoria routes
 Route::resource('categorias', CategoriaController::class);
-Route::get('/categorias', [App\Http\Controllers\CategoriaController::class, 'index'])->name('categorias.index');
+Route::get('/categorias/{id}/confirmar_eliminacion', [CategoriaController::class, 'confirmarEliminacion'])->name('categorias.confirmar_eliminacion');
+
+
 
 
 // Ruta de contacto (asumiendo que quieres mantenerla basada en tu inclusión del ContactController)

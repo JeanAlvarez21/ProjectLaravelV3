@@ -131,47 +131,51 @@
                                             @endforeach
                                         </ul>
                                     </div>
-                                @endif
-                                <div class="d-flex justify-content-between align-items-center mb-4">
-                                <div class="d-flex">
-                                <form method="GET" action="{{ route('categorias.index') }}" class="d-flex">
-                                    <input type="text" name="search" class="form-control me-2"
-                                        placeholder="Buscar Familia" value="{{ request('search') }}">
-                                    <button type="submit" class="btn btn-outline-secondary">Buscar</button>
-                                </form>
-                            </div>
-                            <a href="{{ route('categorias.create') }}" class="btn btn-success">Añadir Familia</a>
-                            
-                            </div>
+                @endif
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="d-flex">
+                        <form method="GET" action="{{ route('categorias.index') }}" class="d-flex">
+                            <input type="text" name="search" class="form-control me-2"
+                                    placeholder="Buscar Familia" value="{{ old('search', $search) }}">
+                            <button type="submit" class="btn btn-outline-secondary">Buscar</button>
+                        </form>
+                    </div>
+                    <a href="{{ route('categorias.create') }}" class="btn btn-success">Añadir Familia</a>
+                </div>
 
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Nombre</th>
-                                        <th>Descripción</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($categorias as $categoria)
-                                        <tr>
-                                            <td>{{ $categoria->id_categoria }}</td>
-                                            <td>{{ $categoria->nombre_categoria }}</td>
-                                            <td>{{ Str::limit($categoria->descripcion, 50) }}</td>
-                                            <td>
-                                                <a href="{{ route('categorias.edit', $categoria->id_categoria) }}"
-                                                    class="btn btn-sm btn-warning">Editar</a>
-                                                <form action="{{ route('categorias.destroy', $categoria->id_categoria) }}"
-                                                    method="POST" style="display: inline-block;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger"
-                                                        onclick="return confirm('¿Estás seguro de que quieres eliminar este producto?')">Eliminar</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($categorias as $categoria)
+                                <tr>
+                                    <td>{{ $categoria->id_categoria }}</td>
+                                    <td>{{ $categoria->nombre_categoria }}</td>
+                                    <td>{{ Str::limit($categoria->descripcion_categoria, 50) }}</td>
+                                    <td>
+                                        <a href="{{ route('categorias.edit', $categoria->id_categoria) }}"
+                                            class="btn btn-sm btn-warning">Editar</a>
+                                        <form action="{{ route('categorias.destroy', $categoria->id_categoria) }}"
+                                                method="POST" style="display: inline-block;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('¿Estás seguro de que quieres eliminar esta categoría?')">Eliminar</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4">No se encontraron categorías.</td>
+                                </tr>
+                            @endforelse
                                 </tbody>
                             </table>
                         </div>

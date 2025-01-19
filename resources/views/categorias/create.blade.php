@@ -132,7 +132,7 @@
                             </div>
                         @endif
 
-                        <form action="{{ route('productos.store') }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('categorias.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="mb-3">
                                 <label for="nombre_categoria" class="form-label">Nombre de Categoría</label>
@@ -140,11 +140,11 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="descripcion" class="form-label">Descripcion</label>
-                                <input type="text" class="form-control" id="descripcion" name="descripcion" required>
+                                <label for="descripcion_categoria" class="form-label">Descripcion</label>
+                                <input type="text" class="form-control" id="descripcion_categoria" name="descripcion_categoria" required>
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Añadir Categoría</button>
+                            <button type="submit" class="btn btn-primary">Añadir Familia</button>
                             <a href="{{ route('categorias.index') }}" class="btn btn-secondary">Cancelar</a>
                         </form>
                         

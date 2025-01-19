@@ -191,12 +191,13 @@
 
                             <div class="mb-3 d-none" id="descripcionCategoriaDiv">
                                 <label for="descripcion_categoria" class="form-label">Descripción de la Nueva Familia</label>
-                                <textarea class="form-control" id="descripcion_categoria" name="descripcion_categoria" rows="3" placeholder="Breve descripción "></textarea>
+                                <input type="text" class="form-control" id="descripcion_categoria" name="descripcion_categoria" placeholder="Breve descripción">      
                             </div>
+                            
 
                             <div class="mb-3">
                                 <label for="imagen" class="form-label">Imagen del Producto</label>
-                                <input type="file" class="form-control" id="imagen" name="imagen" accept="image/jpeg,image/png,image/jpg">
+                                <input type="file" class="form-control" id="imagen" name="imagen" accept="image/jpeg,image/png,image/jpg" required>
                                 <img id="preview" class="preview-image d-none">
                             </div>
 

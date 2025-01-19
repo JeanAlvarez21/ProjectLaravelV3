@@ -57,6 +57,13 @@
         .sidebar .btn-logout:hover {
             background-color: #D44C3C;
         }
+
+        .preview-image {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+        }
+
     </style>
 </head>
 
@@ -132,72 +139,114 @@
                                         </ul>
                                     </div>
                                 @endif
-                                <form action="{{ route('productos.store') }}" method="POST" enctype="multipart/form-data">
-                            @csrf
+                                <form action="{{ route('productos.update', $producto->id) }}" method="POST" enctype="multipart/form-data">
+                                @csrf
+                                @method('PUT')
                             <div class="mb-3">
-                                <label for="id" class="form-label">ID del Producto</label>
+                                <label for="codigo_producto" class="form-label">Código del Producto</label>
                                 <div class="input-group">
-                                    <input type="text" class="form-control" id="id" name="id" required>
-                                    <button type="button" class="btn btn-secondary" id="checkId">Verificar ID</button>
+                                    <input type="text" class="form-control" id="codigo_producto" name="codigo_producto" required value="{{$producto->codigo_producto}}">
                                 </div>
-                                <div id="idFeedback" class="form-text"></div>
+                                <div id="codigoFeedback" class="form-text"></div>
                             </div>
 
                             <div class="mb-3">
                                 <label for="nombre_producto" class="form-label">Nombre del Producto</label>
-                                <input type="text" class="form-control" id="nombre_producto" name="nombre_producto" required>
+                                <input type="text" class="form-control" id="nombre_producto" name="nombre" required value="{{ $producto->nombre}}">
                             </div>
 
                             <div class="mb-3">
                                 <label for="descripcion" class="form-label">Descripción</label>
-                                <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required></textarea>
+                                <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required>{{ $producto->descripcion }}</textarea>
                             </div>
 
                             <div class="mb-3">
-                                <label for="cantidad" class="form-label">Cantidad</label>
-                                <input type="number" name="cantidad" id="cantidad" class="form-control" required min="0" step="1" 
-                                    placeholder="Introduce la cantidad del producto">
-                            </div>
-
-
-                            <div class="mb-3">
-                                <label for="unidad_medida" class="form-label">Unidad de Medida</label>
-                                <input type="text" class="form-control" id="unidad_medida" name="unidad_medida" required>
+                                <label for="precio" class="form-label">Precio</label>
+                                <input type="number" class="form-control" id="precio" name="precio" required min="0" step="0.01" value="{{$producto->precio}}">
                             </div>
 
                             <div class="mb-3">
-                                <label for="imagen" class="form-label">Imagen del Producto</label>
-                                <input type="file" class="form-control" id="imagen" name="imagen" accept="image/jpeg,image/png,image/jpg" required>
-                                <img id="preview" class="preview-image d-none">
+                                <label for="costo" class="form-label">Costo</label>
+                                <input type="number" class="form-control" id="costo" name="costo" required min="0" step="0.01" value="{{$producto->costo}}">
                             </div>
 
                             <div class="mb-3">
-                                <label for="id_categoria" class="form-label">Categoría</label>
+                                <label for="stock" class="form-label">Cantidad en Inventario</label>
+                                <input type="number" class="form-control" id="stock" name="stock" required min="0" step="1" value="{{$producto->stock}}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="min_stock" class="form-label">Stock Mínimo</label>
+                                <input type="number" class="form-control" id="min_stock" name="min_stock" required min="0" step="1" value="{{$producto->min_stock}}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_categoria" class="form-label">Familia</label>
                                 <select class="form-control" id="id_categoria" name="id_categoria" required>
                                     @foreach($categorias as $categoria)
                                         <option value="{{ $categoria->id_categoria }}">
                                             {{ $categoria->nombre_categoria }}
                                         </option>
                                     @endforeach
-                                    <option value="nueva">+ Agregar nueva categoría</option>
+                                    <option value="nueva">+ Agregar nueva Familia</option>
                                 </select>
                             </div>
 
                             <div class="mb-3 d-none" id="nuevaCategoriaDiv">
-                                <label for="nueva_categoria" class="form-label">Nueva Categoría</label>
+                                <label for="nueva_categoria" class="form-label">Nombre de la Nueva Familia</label>
                                 <input type="text" class="form-control" id="nueva_categoria" name="nueva_categoria">
+                            </div>
+
+                            <div class="mb-3 d-none" id="descripcionCategoriaDiv">
+                                <label for="descripcion_categoria" class="form-label">Descripción de la Nueva Familia</label>
+                                <input type="text" class="form-control" id="descripcion_categoria" name="descripcion_categoria" >      
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_categoria" class="form-label">Nombre de la Familia Actual</label>
+                                <input type="text" class="form-control" value="{{ $producto->categoria->nombre_categoria }}" readonly>
+                                <input type="hidden" name="id_categoria" value="{{ $producto->id_categoria }}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_categoria" class="form-label">Descripcion de la Familia Actual</label>
+                                <input type="text" class="form-control" value="{{ $producto->categoria->descripcion_categoria }}" readonly>
+                                <input type="hidden" name="id_categoria" value="{{ $producto->id_categoria }}">
+                            </div>
+
+                            <div class="mb-3">
+                                        <label for="imagen_actual" class="form-label">Imagen Actual</label>
+                                        <div>
+                                            <img src="{{ asset($producto->link_imagen) }}" alt="Imagen del Producto" style="max-width: 200px; max-height: 200px;">
+                                        </div>
+
+
+                            <div class="mb-3">
+                                <label for="imagen" class="form-label">Agregar imagen nueva</label>
+                                <input type="file" class="form-control" id="imagen" name="imagen" accept="image/jpeg,image/png,image/jpg" >
+                                <img id="preview" class="preview-image d-none">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="nombre_sucursal" class="form-label">Nombre de la Sucursal</label>
+                                <input type="text" class="form-control" id="nombre_sucursal" name="nombre_sucursal" required value="{{$producto->nombre_sucursal}}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="direccion_sucursal" class="form-label">Dirección de la Sucursal</label>
+                                <input type="text" class="form-control" id="direccion_sucursal" name="direccion_sucursal" required value="{{$producto->direccion_sucursal}}">
                             </div>
 
                             <div class="form-group">
                                 <label for="visible">Visibilidad</label>
                                 <select name="visible" class="form-control">
                                     <option value="1">Público</option>
-                                    <option value="2">Privado</option>
+                                    <option value="0">Privado</option>
                                 </select>
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Crear Producto</button>
-                        </form>
+                            <button type="submit" class="btn btn-primary">Guardar Producto</button>
+                        </form>                       
                     </div>
                 </div>
             </div>
@@ -205,5 +254,33 @@
     </div>
             <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+<script>
+        document.getElementById('imagen').addEventListener('change', function(e) {
+            const preview = document.getElementById('preview');
+            const file = e.target.files[0];
+            
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+                preview.classList.remove('d-none');
+            }
+        });
 
+        document.getElementById('id_categoria').addEventListener('change', function() {
+            const nuevaCategoriaDiv = document.getElementById('nuevaCategoriaDiv');
+            const descripcionCategoriaDiv  = document.getElementById('descripcionCategoriaDiv');
+
+            if (this.value === 'nueva') {
+                nuevaCategoriaDiv.classList.remove('d-none');
+                descripcionCategoriaDiv.classList.remove('d-none');
+
+            } else {
+                nuevaCategoriaDiv.classList.add('d-none');
+                descripcionCategoriaDiv.classList.add('d-none');
+
+            }
+        });
+        </script>
+</body>
+
+        
 </html>

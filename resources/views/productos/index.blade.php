@@ -116,65 +116,68 @@
             </nav>
         </div>
 
-        <!-- Main content -->
-        <div class="content">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-12">
-                        <h1 class="mb-4">Productos</h1>
-                        @if(session('success'))
-                            <div class="alert alert-success">
-                                {{ session('success') }}
-                            </div>
-                        @endif
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <div class="d-flex">
-                                <form method="GET" action="{{ route('productos.index') }}" class="d-flex">
-                                    <input type="text" name="search" class="form-control me-2"
-                                        placeholder="Buscar producto" value="{{ request('search') }}">
-                                    <button type="submit" class="btn btn-outline-secondary">Buscar</button>
-                                </form>
-                            </div>
-                            <a href="{{ route('categorias.create') }}" class="btn btn-success">Añadir Familia</a>
-                            <a href="{{ route('productos.create') }}" class="btn btn-primary">Añadir nuevo
-                                producto</a>
-                        </div>
+            <!-- Main content -->
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <h1 class="mb-4">Productos</h1>
 
-                        <div class="table-responsive">
-                            <table class="table table-striped table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Nombre</th>
-                                        <th>Descripción</th>
-                                        <th>Unidad de Medida</th>
-                                        <th>Categoría</th>
-                                        <th>Visible</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($productos as $producto)
-                                        <tr>
-                                            <td>{{ $producto->id }}</td>
-                                            <td>{{ $producto->nombre_producto }}</td>
-                                            <td>{{ Str::limit($producto->descripcion, 50) }}</td>
-                                            <td>{{ $producto->unidad_medida }}</td>
-                                            <td>{{ $producto->categoria->nombre_categoria }}</td>
-                                            <td>{{ $producto->visible ? 'Sí' : 'No' }}</td>
-                                            <td>
-                                                <a href="{{ route('productos.edit', $producto->id) }}"
-                                                    class="btn btn-sm btn-warning">Editar</a>
-                                                <form action="{{ route('productos.destroy', $producto->id) }}"
-                                                    method="POST" style="display: inline-block;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-danger"
-                                                        onclick="return confirm('¿Estás seguro de que quieres eliminar este producto?')">Eliminar</button>
-                                                </form>
-                                            </td>
-                                        </tr>
-                                    @endforeach
+                            <!-- Mensaje de éxito -->
+                            @if(session('success'))
+                                <div class="alert alert-success">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="d-flex">
+                        <!-- Formulario de búsqueda -->
+                        <form method="GET" action="{{ route('productos.index') }}" class="d-flex">
+                            <input type="text" name="search" class="form-control me-2"
+                                        placeholder="Buscar por ID o Nombre" value="{{ request('search') }}">
+                            <button type="submit" class="btn btn-outline-secondary">Buscar</button>
+                        </form>
+                    </div>
+                    <a href="{{ route('categorias.create') }}" class="btn btn-success">Añadir Familia</a>
+                    <a href="{{ route('productos.create') }}" class="btn btn-primary">Añadir nuevo producto</a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Categoría</th>
+                                <th>Visible</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($productos as $producto)
+                                <tr>
+                                    <td>{{ $producto->codigo_producto }}</td>
+                                    <td>{{ $producto->nombre }}</td>
+                                    <td>{{ Str::limit($producto->descripcion, 50) }}</td>
+                                    <td>{{ $producto->categoria->nombre_categoria ?? 'Sin categoría' }}</td>
+                                    <td>{{ $producto->visible ? 'Sí' : 'No' }}</td>
+                                    <td>
+                                        <a href="{{ route('productos.edit', $producto->id) }}" class="btn btn-sm btn-warning">Editar</a>
+                                        <form action="{{ route('productos.destroy', $producto->id) }}" method="POST" style="display: inline-block;">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                    onclick="return confirm('¿Estás seguro de que quieres eliminar este producto?')">Eliminar</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="6" class="text-center">No se encontraron productos.</td>
+                                </tr>
+                            @endforelse
                                 </tbody>
                             </table>
                         </div>
