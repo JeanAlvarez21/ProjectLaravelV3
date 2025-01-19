@@ -148,16 +148,17 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="dimension" class="form-label">Dimensiones</label>
-                                <div class="d-flex gap-2">
-                                    <input type="text" class="form-control" id="length" name="length" placeholder="Largo (ej. 2440mm)" required>
-                                    <span class="align-self-center">x</span>
-                                    <input type="text" class="form-control" id="width" name="width" placeholder="Ancho (ej. 1220mm)" required>
-                                    <span class="align-self-center">x</span>
-                                    <input type="text" class="form-control" id="thickness" name="thickness" placeholder="Grosor (ej. 18mm)" required>
-                                </div>
+                                <label for="descripcion" class="form-label">Dimensiones (Formato: Largo x Ancho x Grosor)</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="descripcion" 
+                                    name="descripcion" 
+                                    placeholder="Ejemplo: 2440mm x 1220mm x 18mm" 
+                                    required 
+                                    pattern="^\d+mm x \d+mm x \d+mm$" 
+                                    title="Ingrese las dimensiones en el formato: Largo x Ancho x Grosor, por ejemplo, 2440mm x 1220mm x 18mm">
                             </div>
-
 
                             <div class="mb-3">
                                 <label for="precio" class="form-label">Precio</label>
