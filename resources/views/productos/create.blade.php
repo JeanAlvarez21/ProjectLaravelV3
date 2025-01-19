@@ -148,9 +148,16 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="descripcion" class="form-label">Descripción</label>
-                                <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required></textarea>
+                                <label for="dimension" class="form-label">Dimensiones</label>
+                                <div class="d-flex gap-2">
+                                    <input type="text" class="form-control" id="length" name="length" placeholder="Largo (ej. 2440mm)" required>
+                                    <span class="align-self-center">x</span>
+                                    <input type="text" class="form-control" id="width" name="width" placeholder="Ancho (ej. 1220mm)" required>
+                                    <span class="align-self-center">x</span>
+                                    <input type="text" class="form-control" id="thickness" name="thickness" placeholder="Grosor (ej. 18mm)" required>
+                                </div>
                             </div>
+
 
                             <div class="mb-3">
                                 <label for="precio" class="form-label">Precio</label>
@@ -193,7 +200,7 @@
                                 <label for="descripcion_categoria" class="form-label">Descripción de la Nueva Familia</label>
                                 <input type="text" class="form-control" id="descripcion_categoria" name="descripcion_categoria" placeholder="Breve descripción">      
                             </div>
-                            
+
 
                             <div class="mb-3">
                                 <label for="imagen" class="form-label">Imagen del Producto</label>

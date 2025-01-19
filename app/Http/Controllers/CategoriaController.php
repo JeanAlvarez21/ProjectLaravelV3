@@ -40,16 +40,22 @@ class CategoriaController extends Controller
     {
         $request->validate([
             'nombre_categoria' => 'required|string|max:255',
-            'descripcion_categoria' => 'required|string|max:255'
+            'descripcion_categoria' => 'required|string|max:255',
         ]);
 
+        // Transformar los datos antes de guardarlos
+        $nombreCategoria = ucfirst(strtolower($request->nombre_categoria));
+        $descripcionCategoria = ucfirst(strtolower($request->descripcion_categoria));
+
+        // Crear la nueva categoría con los datos transformados
         Categoria::create([
-            'nombre_categoria' => $request->nombre_categoria,
-            'descripcion_categoria' => $request->descripcion_categoria,
+            'nombre_categoria' => $nombreCategoria,
+            'descripcion_categoria' => $descripcionCategoria,
         ]);
 
         return redirect()->route('categorias.index')->with('success', 'Familia añadida exitosamente.');
     }
+
 
     public function update(Request $request, Categoria $categoria)
 {

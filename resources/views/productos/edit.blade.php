@@ -184,13 +184,15 @@
                                 <label for="id_categoria" class="form-label">Familia</label>
                                 <select class="form-control" id="id_categoria" name="id_categoria" required>
                                     @foreach($categorias as $categoria)
-                                        <option value="{{ $categoria->id_categoria }}">
+                                        <option value="{{ $categoria->id_categoria }}" 
+                                            {{ $producto->id_categoria == $categoria->id_categoria ? 'selected' : '' }}>
                                             {{ $categoria->nombre_categoria }}
                                         </option>
                                     @endforeach
                                     <option value="nueva">+ Agregar nueva Familia</option>
                                 </select>
                             </div>
+
 
                             <div class="mb-3 d-none" id="nuevaCategoriaDiv">
                                 <label for="nueva_categoria" class="form-label">Nombre de la Nueva Familia</label>
