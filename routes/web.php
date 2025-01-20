@@ -20,6 +20,8 @@ use App\Http\Controllers\CarpinteroController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\ProyectoController;
 use App\Http\Controllers\CorteController;
+use App\Http\Controllers\DashboardController;
+
 
 
 Route::get('/', function () {
@@ -43,9 +45,8 @@ Route::get('/admin', function () {
     return view('roles.admin'); // Carga la vista
 })->name('adminsito');
 Route::get('/notificaciones', [NotificationCenterController::class, 'index'])->name('notificaciones');
-Route::get('/dashboard', function () {
-    return view('dashboard'); // Nombre del archivo en resources/views/dashboard.blade.php
-})->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index']);
+
 Route::get('/usuarios', [UserController::class, 'index'])->name('usuarios.index');
 Route::get('/usuarios/crear', [UserController::class, 'create'])->name('usuarios.create');
 Route::get('/usuarios/{user}/editar', [UserController::class, 'edit'])->name('usuarios.edit');

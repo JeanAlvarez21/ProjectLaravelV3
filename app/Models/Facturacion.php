@@ -10,8 +10,10 @@ class Facturacion extends Model
     use HasFactory;
     protected $guarded = [];
     public $timestaps = false;
-    
-    public function pedidos() 
+    protected $table = 'facturas'; // Cambia 'facturacions' por 'facturas'
+
+
+    public function pedidos()
     {
         return $this->belongsTo(Pedidos::class);
     }
