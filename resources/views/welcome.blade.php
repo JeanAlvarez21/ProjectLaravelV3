@@ -140,8 +140,8 @@
                             Menú
                         </a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#">Productos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Proyectos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Productos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('login') }}">Proyectos</a></li>
                     @auth
                         @if(Auth::user()->rol == 1 || Auth::user()->rol == 2)
                             <li class="nav-item"><a class="nav-link" href="{{ route('carpinteros.index') }}">Carpinteros</a>
