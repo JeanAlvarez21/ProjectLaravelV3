@@ -2,26 +2,46 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Pedidos extends Model
 {
-    use HasFactory;
-    protected $guarded = [];
-    public $timestaps = false;
+    protected $table = 'pedidos';
+    protected $primaryKey = 'id_pedido';
+    public $timestamps = false;
 
-    public function detalles_pedidos() 
+    protected $fillable = [
+        'id_usuario',
+        'fecha_pedido',
+        'direccion_pedido',
+        'total'
+    ];
+
+    // Definir las fechas para que Laravel las maneje automáticamente
+    protected $dates = [
+        'fecha_pedido'
+    ];
+
+    // Mutador para asegurar que fecha_pedido siempre sea un objeto Carbon
+    public function setFechaPedidoAttribute($value)
     {
-        return $this->hasMany(Detalles_Pedido::class);
-    }
-    public function facturacions() 
-    {
-        return $this->hasMany(Facturacion::class);
+        $this->attributes['fecha_pedido'] = $value instanceof Carbon ? $value : Carbon::parse($value);
     }
 
-    public function usuarios() 
+    // Accessor para asegurar que siempre devolvemos un objeto Carbon
+    public function getFechaPedidoAttribute($value)
     {
-        return $this->belongsTo(User::class);
+        return $value ? Carbon::parse($value) : null;
+    }
+
+    public function usuario()
+    {
+        return $this->belongsTo(User::class, 'id_usuario');
+    }
+
+    public function detalles()
+    {
+        return $this->hasMany(Detalles_Pedido::class, 'pedido_id');
     }
 }

@@ -12,14 +12,14 @@ class CartController extends Controller
         $product = Producto::findOrFail($id);
         $cart = session()->get('cart', []);
 
-        if(isset($cart[$id])) {
+        if (isset($cart[$id])) {
             $cart[$id]['quantity'] += $request->quantity;
         } else {
             $cart[$id] = [
                 "name" => $product->nombre,
                 "quantity" => $request->quantity,
                 "price" => $product->costo,
-                "image" => $product->link_imagen, 
+                "image" => $product->link_imagen,
                 "stock" => $product->stock
             ];
         }
@@ -35,24 +35,24 @@ class CartController extends Controller
 
     public function updateCart(Request $request)
     {
-        if($request->id && $request->quantity){
+        if ($request->id && $request->quantity) {
             $cart = session()->get('cart');
             $product = Producto::findOrFail($request->id);
-            
-            if($request->quantity <= $product->stock) {
+
+            if ($request->quantity <= $product->stock) {
                 $cart[$request->id]["quantity"] = $request->quantity;
                 session()->put('cart', $cart);
-                
+
                 if ($request->ajax()) {
                     return response()->json(['success' => 'Carrito actualizado exitosamente!']);
                 }
-                
+
                 return redirect()->back()->with('success', 'Carrito actualizado exitosamente!');
             } else {
                 if ($request->ajax()) {
                     return response()->json(['error' => 'No hay suficiente stock disponible.'], 400);
                 }
-                
+
                 return redirect()->back()->with('error', 'No hay suficiente stock disponible.');
             }
         }
@@ -60,17 +60,17 @@ class CartController extends Controller
 
     public function removeFromCart(Request $request)
     {
-        if($request->id) {
+        if ($request->id) {
             $cart = session()->get('cart');
-            if(isset($cart[$request->id])) {
+            if (isset($cart[$request->id])) {
                 unset($cart[$request->id]);
                 session()->put('cart', $cart);
             }
-            
+
             if ($request->ajax()) {
                 return response()->json(['success' => 'Producto eliminado del carrito exitosamente!']);
             }
-            
+
             return redirect()->back()->with('success', 'Producto eliminado del carrito exitosamente!');
         }
     }
@@ -83,7 +83,7 @@ class CartController extends Controller
     public function purchase(Request $request)
     {
         $cart = session()->get('cart', []);
-        
+
         foreach ($cart as $id => $details) {
             $product = Producto::find($id);
             if ($product) {
@@ -101,6 +101,22 @@ class CartController extends Controller
         session()->forget('cart');
 
         return redirect()->route('cart.view')->with('success', '¡Compra realizada con éxito!');
+    }
+
+    public function checkout()
+    {
+        $cart = session()->get('cart', []);
+
+        if (empty($cart)) {
+            return redirect()->route('cart.view')->with('error', 'El carrito está vacío.');
+        }
+
+        $total = 0;
+        foreach ($cart as $item) {
+            $total += $item['price'] * $item['quantity'];
+        }
+
+        return view('order_confirmation', compact('cart', 'total'));
     }
 }
 

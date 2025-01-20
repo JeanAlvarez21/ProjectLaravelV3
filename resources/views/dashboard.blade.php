@@ -106,9 +106,10 @@
 
 <body>
     <div class="sidebar">
-        <div class="logo">
+        <div class="logo" style="text-align: center; margin-bottom: 2rem;">
             <a href="home">
-                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid">
+                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
+                    style="height: 7vh; max-height: auto; width: 70%;">
             </a>
         </div>
 
@@ -122,7 +123,7 @@
             <a href="/categorias" class="nav-item">
                 <span>Familias</span>
             </a>
-            <a href="{{route('usuarios.index')}}" class="nav-item ">
+            <a href="/usuarios" class="nav-item ">
                 <span>Usuarios</span>
             </a>
             <a href="/facturacion" class="nav-item">
@@ -131,24 +132,17 @@
             <a href="/reportes" class="nav-item">
                 <span>Reportes</span>
             </a>
-            <hr>
-            <a href="#" class="nav-item">
-                <span>Configuración</span>
-            </a>
-            <a href="#" class="nav-item" onclick="document.getElementById('logout-form').submit();">
-                <span>Cerrar sesión</span>
-            </a>
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+            <!-- Botón de cerrar sesión -->
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
                 @csrf
+                <button type="submit" class="btn-logout">Cerrar sesión</button>
             </form>
         </nav>
     </div>
 
     <div class="main-content">
-
         <div class="container-fluid">
             <div class="row">
-                <!-- Main content -->
                 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                     @if(isset($error))
                         <div class="alert alert-danger" role="alert">
@@ -159,6 +153,13 @@
                     <div
                         class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
                         <h1 class="h2">Dashboard</h1>
+                        <div class="btn-toolbar mb-2 mb-md-0">
+                            <div class="btn-group me-2">
+                                <a href="{{ route('cart.view') }}" class="btn btn-sm btn-outline-secondary">
+                                    <i class="bi bi-cart"></i> Carrito ({{ $cartItemCount }})
+                                </a>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Stats Cards -->
@@ -178,6 +179,51 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="col-12 col-sm-6 col-xl-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-success bg-opacity-10 rounded p-3 me-3">
+                                            <i class="bi bi-cart-check fs-4 text-success"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="card-title text-muted mb-0">Pedidos Totales</h6>
+                                            <h2 class="mt-2 mb-0">{{ $totalPedidos }}</h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-xl-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-warning bg-opacity-10 rounded p-3 me-3">
+                                            <i class="bi bi-box-seam fs-4 text-warning"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="card-title text-muted mb-0">Productos en Stock</h6>
+                                            <h2 class="mt-2 mb-0">{{ $totalProductos }}</h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-xl-3">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center">
+                                        <div class="bg-info bg-opacity-10 rounded p-3 me-3">
+                                            <i class="bi bi-currency-dollar fs-4 text-info"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="card-title text-muted mb-0">Ingresos Totales</h6>
+                                            <h2 class="mt-2 mb-0">${{ number_format($ingresosTotales, 2) }}</h2>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Sales Chart -->
@@ -188,50 +234,151 @@
                         </div>
                     </div>
 
-                    <!-- Recent Orders -->
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h5 class="card-title mb-0">Pedidos Recientes</h5>
-                                <button class="btn btn-primary btn-sm">Ver todos</button>
+                    <!-- Recent Orders and Top Products -->
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5 class="card-title mb-0">Pedidos Recientes</h5>
+                                        <a href="{{ route('pedidos.index') }}" class="btn btn-primary btn-sm">Ver
+                                            todos</a>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-middle">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Usuario</th>
+                                                    <th>Fecha</th>
+                                                    <th>Total</th>
+                                                    <th>Estado</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($pedidosRecientes as $pedido)
+                                                    <tr>
+                                                        <td>#{{ $pedido->id_pedido }}</td>
+                                                        <td>{{ $pedido->usuario->name }}</td>
+                                                        <td>
+                                                            @if($pedido->fecha_pedido instanceof \Carbon\Carbon)
+                                                                {{ $pedido->fecha_pedido->format('d/m/Y H:i') }}
+                                                            @else
+                                                                {{ \Carbon\Carbon::parse($pedido->fecha_pedido)->format('d/m/Y H:i') }}
+                                                            @endif
+                                                        </td>
+                                                        <td>${{ number_format($pedido->total, 2) }}</td>
+                                                        <td>
+                                                            <span
+                                                                class="badge bg-{{ $pedido->estado == 'Completado' ? 'success' : 'warning' }}">
+                                                                {{ $pedido->estado ?? 'Pendiente' }}
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            <a href="{{ route('pedidos.show', $pedido->id_pedido) }}"
+                                                                class="btn btn-sm btn-outline-primary me-1">
+                                                                <i class="bi bi-eye"></i>
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Cliente</th>
-                                            <th>Fecha</th>
-                                            <th>Total</th>
-                                            <th>Estado</th>
-                                            <th>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($pedidosRecientes as $pedido)
-                                            <tr>
-                                                <td>#{{ $pedido->id }}</td>
-                                                <td>{{ $pedido->cliente->nombres }} {{ $pedido->cliente->apellidos }}</td>
-                                                <td>{{ $pedido->fecha }}</td>
-                                                <td>${{ number_format($pedido->total, 2) }}</td>
-                                                <td>
-                                                    <span
-                                                        class="badge bg-{{ $pedido->estado == 'Completado' ? 'success' : 'warning' }}">
-                                                        {{ $pedido->estado }}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-outline-primary me-1">
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
-                                                    <button class="btn btn-sm btn-outline-danger">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </td>
-                                            </tr>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Productos Más Vendidos</h5>
+                                    <ul class="list-group list-group-flush">
+                                        @foreach($topProductos as $producto)
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                {{ $producto->nombre }}
+                                                <span
+                                                    class="badge bg-primary rounded-pill">{{ $producto->total_vendidos }}</span>
+                                            </li>
                                         @endforeach
-                                    </tbody>
-                                </table>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Projects and Carpenters -->
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Proyectos Activos</h5>
+                                    <ul class="list-group list-group-flush">
+                                        @foreach($proyectosActivos as $proyecto)
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                {{ $proyecto->nombre }}
+                                                <span
+                                                    class="badge bg-{{ $proyecto->estado == 'En proceso' ? 'warning' : 'success' }} rounded-pill">
+                                                    {{ $proyecto->estado }}
+                                                </span>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Carpinteros Disponibles</h5>
+                                    <ul class="list-group list-group-flush">
+                                        @foreach($carpinterosDisponibles as $carpintero)
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                {{ $carpintero->nombre }}
+                                                <span
+                                                    class="badge bg-info rounded-pill">{{ $carpintero->especialidad }}</span>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Low Stock Products -->
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Productos con Bajo Stock</h5>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover align-middle">
+                                            <thead>
+                                                <tr>
+                                                    <th>Producto</th>
+                                                    <th>Stock Actual</th>
+                                                    <th>Stock Mínimo</th>
+                                                    <th>Acciones</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach($productosConBajoStock as $producto)
+                                                    <tr>
+                                                        <td>{{ $producto->nombre }}</td>
+                                                        <td>{{ $producto->stock }}</td>
+                                                        <td>{{ $producto->min_stock }}</td>
+                                                        <td>
+                                                            <a href="{{ route('productos.edit', $producto->id) }}"
+                                                                class="btn btn-sm btn-warning">
+                                                                <i class="bi bi-pencil"></i> Editar
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página de Inicio</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Carrito de Compras</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -115,11 +116,11 @@
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
             <a class="navbar-brand"
-            href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
-            <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
+                href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
+                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
                     style="height: 6vh; max-height: 100%; width: auto;">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -130,7 +131,7 @@
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
                         <a class="nav-link"
-                            href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2|| Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">Menú
+                            href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">Menú
                         </a>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('productos.clientes') }}">Productos</a></li>
@@ -211,7 +212,8 @@
                         @php $total += $details['price'] * $details['quantity'] @endphp
                         <tr>
                             <td>
-                            <img src="{{ asset($details['image']) }}" alt="{{ $details['name'] }}" width="100" height="100" class="img-responsive"/>                            <span>{{ $details['name'] }}</span>
+                                <img src="{{ asset($details['image']) }}" alt="{{ $details['name'] }}" width="100" height="100"
+                                    class="img-responsive" /> <span>{{ $details['name'] }}</span>
                             </td>
                             <td>
                                 <form class="update-cart-form" action="{{ route('cart.update') }}" method="POST">
@@ -243,10 +245,7 @@
                 </tfoot>
             </table>
             <div class="text-center mt-4">
-                <form action="{{ route('cart.purchase') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-success btn-lg">Comprar</button>
-                </form>
+                <a href="{{ route('cart.checkout') }}" class="btn btn-success btn-lg">Proceder al Checkout</a>
             </div>
         @else
             <p>Tu carrito está vacío.</p>
