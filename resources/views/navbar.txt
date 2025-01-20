@@ -1,27 +1,9 @@
     <style>
-        /* Personalización adicional */
-        .hero-section {
-            background: url('{{ asset('media/background_main.png') }}') no-repeat center center;
-            background-size: cover;
-            color: white;
-            padding: 100px 0;
-        }
-
-        .hero-overlay {
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 50px;
-            border-radius: 10px;
-        }
-
-        .carousel-item img {
-            max-height: 200px;
-            max-width: 100%;
-            object-fit: contain;
-            margin: 0 auto;
-        }
-
         body {
-            padding-top: 70px;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding-top: 70px; /* Added padding to prevent content from being hidden behind the fixed navbar */
         }
 
         .navbar {
@@ -33,16 +15,59 @@
             color: inherit;
         }
 
-        .navbar-brand img {
-            height: 6vh;
-            max-height: 100%;
-            width: auto;
+        .carousel-item img {
+            max-height: 200px;
+            max-width: 100%;
+            object-fit: contain;
+            margin: 0 auto;
+        }
+
+        .logo-responsive {
+            max-width: 150px;
+            width: 100%;
+            height: auto;
+        }
+
+        @media (max-width: 768px) {
+            .logo-responsive {
+                max-width: 100px;
+            }
+
+            .contact-heading {
+                font-size: 1.8rem;
+            }
         }
 
         @media (max-width: 576px) {
+            .logo-responsive {
+                max-width: 80px;
+            }
+
+            .contact-heading {
+                font-size: 1.5rem;
+                text-align: center;
+            }
+
             .navbar-brand img {
                 height: 5vh;
             }
+
+            iframe {
+                height: 250px;
+            }
+        }
+
+        iframe {
+            border: 0;
+        }
+
+        .copy-icon {
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        .copy-icon:hover {
+            color: #007bff;
         }
 
         /* From Uiverse.io by suda-code */
@@ -61,44 +86,6 @@
             background-color: #FFFAEB;
             box-shadow: 0 0 20px #6fc5ff50;
             transform: scale(1.1);
-        }
-
-        button:active {
-            background-color: rgb(255, 255, 255);
-            transition: all 0.25s;
-            -webkit-transition: all 0.10s;
-            box-shadow: none;
-            transform: scale(0.98);
-        }
-
-        /* Estilos para los botones del carrusel */
-        .carousel-control-prev,
-        .carousel-control-next {
-            margin-left: 20px;
-            margin-right: 20px;
-            z-index: 5;
-        }
-
-        .carousel-control-prev-icon,
-        .carousel-control-next-icon {
-            background-color: #495E57;
-            border-radius: 50%;
-            padding: 15px;
-        }
-
-        .carousel-control-prev,
-        .carousel-control-next {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .carousel-control-prev {
-            left: 10px;
-        }
-
-        .carousel-control-next {
-            right: 10px;
         }
     </style>
 </head>
@@ -123,7 +110,7 @@
                         </a>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('productos.clientes') }}">Productos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Proyectos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/proyectos">Proyectos</a></li>
                     @auth
                         @if(Auth::user()->rol == 1 || Auth::user()->rol == 2)
                             <li class="nav-item"><a class="nav-link" href="{{ route('carpinteros.index') }}">Carpinteros</a>

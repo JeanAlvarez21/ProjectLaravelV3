@@ -79,7 +79,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+<nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
             <a class="navbar-brand"
             href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
@@ -94,21 +94,20 @@
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
                         <a class="nav-link"
-                            href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
-                            Menú
+                            href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2|| Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">Menú
                         </a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="#">Productos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Proyectos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('productos.clientes') }}">Productos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/proyectos">Proyectos</a></li>
                     @auth
                         @if(Auth::user()->rol == 1 || Auth::user()->rol == 2)
-                            <li class="nav-item"><a class="nav-link active" href="{{ route('carpinteros.index') }}">Carpinteros</a>
+                            <li class="nav-item"><a class="nav-link" href="{{ route('carpinteros.index') }}">Carpinteros</a>
                             </li>
                         @else
-                            <li class="nav-item"><a class="nav-link active" href="/carpinteros">Carpinteros</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/carpinteros">Carpinteros</a></li>
                         @endif
                     @else
-                        <li class="nav-item"><a class="nav-link active" href="/carpinteros">Carpinteros</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/carpinteros">Carpinteros</a></li>
                     @endauth
                     <li class="nav-item"><a class="nav-link" href="/contacto">Contacto</a></li>
                     @auth
@@ -122,7 +121,7 @@
                 <div class="d-flex align-items-center">
                     @auth
                         @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3)
-                        <a href="#">
+                            <a href="{{ route('cart.view') }}">
                                 <img src="{{ asset('media/carro-de-la-compra.png') }}" alt="Carrito" width="30" height="30">
                             </a>
                             <span class="mx-3">|</span>

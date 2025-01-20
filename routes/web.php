@@ -9,7 +9,6 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\ResetPasswordController;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\NotificationCenterController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\InventarioController;
@@ -19,6 +18,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\CarpinteroController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\ProyectoController;
+use App\Http\Controllers\CorteController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -89,9 +91,6 @@ Route::get('/carpinteros/{id}/edit', [CarpinteroController::class, 'edit'])->nam
 Route::put('/carpinteros/{id}', [CarpinteroController::class, 'update'])->name('carpinteros.update');
 Route::delete('/carpinteros/{id}', [CarpinteroController::class, 'destroy'])->name('carpinteros.destroy');
 
-
-
-
 //productos clientes
 Route::get('/productos-clientes', [ProductoController::class, 'showForClients'])->name('productos.clientes');
 
@@ -101,5 +100,16 @@ Route::post('cart-update', [CartController::class, 'updateCart'])->name('cart.up
 Route::post('cart-remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
 Route::get('cart', [CartController::class, 'viewCart'])->name('cart.view');
 Route::post('cart/purchase', [CartController::class, 'purchase'])->name('cart.purchase');
+
+
+// Rutas de proyectos
+Route::resource('proyectos', ProyectoController::class);
+Route::get('/proyectos/{proyecto}/cortes', [CorteController::class, 'create'])->name('proyectos.cortes.create');
+Route::get('/cortes/create/{proyecto_id}', [CorteController::class, 'create'])->name('cortes.create');
+
+// Rutas de cortes
+Route::resource('cortes', CorteController::class);
+Route::get('/cortes/create/{proyecto_id}', [CorteController::class, 'create'])->name('cortes.create');
+Route::post('/cortes/store', [CorteController::class, 'store'])->name('cortes.store');
 
 
