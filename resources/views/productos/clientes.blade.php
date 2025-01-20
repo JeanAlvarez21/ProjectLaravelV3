@@ -196,7 +196,7 @@
             @foreach($productos as $producto)
                 <div class="col-md-3">
                     <div class="card mb-4">
-                        <img src="{{ asset($producto->imagen) }}" class="card-img-top" alt="{{ $producto->nombre }}">
+                        <img src="{{ asset($producto->link_imagen) }}" class="card-img-top" alt="{{ $producto->nombre }}">
                         <div class="card-body">
                             <h5 class="card-title">{{ $producto->nombre }}</h5>
                             <p class="card-text">{{ Str::limit($producto->descripcion, 100) }}</p>

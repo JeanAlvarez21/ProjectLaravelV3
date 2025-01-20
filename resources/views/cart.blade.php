@@ -9,7 +9,7 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<style>
+    <style>
         /* Personalización adicional */
         .hero-section {
             background: url('{{ asset('media/background_main.png') }}') no-repeat center center;
@@ -118,8 +118,8 @@
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
             <a class="navbar-brand"
-            href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
-            <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
+                href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
+                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
                     style="height: 6vh; max-height: 100%; width: auto;">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -194,7 +194,6 @@
         </div>
     </nav>
 
-
     <div class="container mt-5">
         <h1 class="text-center mb-4">Carrito de Compras</h1>
         @if(session('cart'))
@@ -209,33 +208,33 @@
                     </tr>
                 </thead>
                 <tbody>
-                @php $total = 0 @endphp
-                @foreach(session('cart') as $id => $details)
-                    @php $total += $details['price'] * $details['quantity'] @endphp
-                    <tr>
-                        <td>
-                            <img src="{{ asset($details['image']) }}" width="100" height="100" class="img-responsive"/>
-                            <span>{{ $details['name'] }}</span>
-                        </td>
-                        <td>
-                            <form class="update-cart-form" action="{{ route('cart.update') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="id" value="{{ $id }}">
-                                <input type="number" name="quantity" value="{{ $details['quantity'] }}" min="1" class="form-control quantity-input" data-stock="{{ $details['stock'] }}" />
-                                <button type="submit" class="btn btn-sm btn-warning mt-2">Actualizar</button>
-                            </form>
-                        </td>
-                        <td>${{ $details['price'] }}</td>
-                        <td class="subtotal">${{ $details['price'] * $details['quantity'] }}</td>
-                        <td>
-                            <form class="remove-from-cart-form" action="{{ route('cart.remove') }}" method="POST">
-                                @csrf
-                                <input type="hidden" name="id" value="{{ $id }}">
-                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
+                    @php $total = 0 @endphp
+                    @foreach(session('cart') as $id => $details)
+                        @php $total += $details['price'] * $details['quantity'] @endphp
+                        <tr>
+                            <td>
+                            <img src="{{ asset($details['image']) }}" alt="{{ $details['name'] }}" width="100" height="100" class="img-responsive"/>                            <span>{{ $details['name'] }}</span>
+                            </td>
+                            <td>
+                                <form class="update-cart-form" action="{{ route('cart.update') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="id" value="{{ $id }}">
+                                    <input type="number" name="quantity" value="{{ $details['quantity'] }}" min="1"
+                                        class="form-control quantity-input" data-stock="{{ $details['stock'] }}" />
+                                    <button type="submit" class="btn btn-sm btn-warning mt-2">Actualizar</button>
+                                </form>
+                            </td>
+                            <td>${{ $details['price'] }}</td>
+                            <td class="subtotal">${{ $details['price'] * $details['quantity'] }}</td>
+                            <td>
+                                <form class="remove-from-cart-form" action="{{ route('cart.remove') }}" method="POST">
+                                    @csrf
+                                    <input type="hidden" name="id" value="{{ $id }}">
+                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
                 <tfoot>
                     <tr>
@@ -259,14 +258,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
 
-            $('.quantity-input').on('input', function() {
+            $('.quantity-input').on('input', function () {
                 var input = $(this);
                 var stock = parseInt(input.data('stock'));
                 var value = parseInt(input.val());
@@ -281,7 +280,7 @@
                 updateSubtotal(input);
             });
 
-            $('.update-cart-form').submit(function(e) {
+            $('.update-cart-form').submit(function (e) {
                 e.preventDefault();
                 var form = $(this);
                 var url = form.attr('action');
@@ -291,18 +290,18 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function(response) {
+                    success: function (response) {
                         alert(response.success);
                         updateSubtotal(form.find('.quantity-input'));
                         updateCartTotal();
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         alert('Error al actualizar el carrito');
                     }
                 });
             });
 
-            $('.remove-from-cart-form').submit(function(e) {
+            $('.remove-from-cart-form').submit(function (e) {
                 e.preventDefault();
                 var form = $(this);
                 var url = form.attr('action');
@@ -312,12 +311,12 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function(response) {
+                    success: function (response) {
                         alert(response.success);
                         form.closest('tr').remove();
                         updateCartTotal();
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         alert('Error al eliminar el producto del carrito');
                     }
                 });
@@ -332,7 +331,7 @@
 
             function updateCartTotal() {
                 var total = 0;
-                $('.subtotal').each(function() {
+                $('.subtotal').each(function () {
                     total += parseFloat($(this).text().replace('$', ''));
                 });
                 $('#cart-total').text('$' + total.toFixed(2));

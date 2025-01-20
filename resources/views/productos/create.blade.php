@@ -148,8 +148,16 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="descripcion" class="form-label">Descripción</label>
-                                <textarea class="form-control" id="descripcion" name="descripcion" rows="3" required></textarea>
+                                <label for="descripcion" class="form-label">Dimensiones (Formato: Largo x Ancho x Grosor)</label>
+                                <input 
+                                    type="text" 
+                                    class="form-control" 
+                                    id="descripcion" 
+                                    name="descripcion" 
+                                    placeholder="Ejemplo: 2440mm x 1220mm x 18mm" 
+                                    required 
+                                    pattern="^\d+mm x \d+mm x \d+mm$" 
+                                    title="Ingrese las dimensiones en el formato: Largo x Ancho x Grosor, por ejemplo, 2440mm x 1220mm x 18mm">
                             </div>
 
                             <div class="mb-3">
@@ -191,12 +199,12 @@
 
                             <div class="mb-3 d-none" id="descripcionCategoriaDiv">
                                 <label for="descripcion_categoria" class="form-label">Descripción de la Nueva Familia</label>
-                                <textarea class="form-control" id="descripcion_categoria" name="descripcion_categoria" rows="3" placeholder="Breve descripción "></textarea>
+                                <input type="text" class="form-control" id="descripcion_categoria" name="descripcion_categoria" placeholder="Breve descripción">      
                             </div>
 
                             <div class="mb-3">
                                 <label for="imagen" class="form-label">Imagen del Producto</label>
-                                <input type="file" class="form-control" id="imagen" name="imagen" accept="image/jpeg,image/png,image/jpg">
+                                <input type="file" class="form-control" id="imagen" name="imagen" accept="image/jpeg,image/png,image/jpg" required>
                                 <img id="preview" class="preview-image d-none">
                             </div>
 

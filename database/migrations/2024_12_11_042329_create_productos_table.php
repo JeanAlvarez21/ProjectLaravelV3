@@ -22,7 +22,7 @@ return new class extends Migration
             $table->integer('stock'); // Cantidad disponible en inventario
             $table->integer('min_stock'); // Stock mínimo permitido
             $table->boolean('visible')->default(1); // Producto visible al público
-            $table->string('imagen', 255)->nullable(); // URL de la imagen del producto
+            $table->string('link_imagen', 255)->nullable(); // URL de la imagen del producto
             $table->string('nombre_sucursal', 100);
             $table->string('direccion_sucursal', 100);
             $table->timestamps(); // Campos created_at y updated_at

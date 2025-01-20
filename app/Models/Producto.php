@@ -10,7 +10,7 @@ class Producto extends Model
     use HasFactory;
 
     protected $primaryKey = 'id';
-
+    
     protected $fillable = [
         'nombre',
         'descripcion',
@@ -21,9 +21,9 @@ class Producto extends Model
         'stock',
         'min_stock',
         'visible',
-        'imagen',
-        'nombre_sucursa',
-        'doreccion_sucursa', 
+        'link_imagen',
+        'nombre_sucursal',
+        'direccion_sucursal', 
     ];
 
     public function categoria()
