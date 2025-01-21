@@ -651,10 +651,7 @@ class ComposerStaticInit626b9e7ddd47fb7eff9aaa53cce0c9ad
         'App\\Http\\Controllers\\ProductoController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProductoController.php',
         'App\\Http\\Controllers\\ProfileController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProfileController.php',
         'App\\Http\\Controllers\\ProyectoController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProyectoController.php',
-<<<<<<< HEAD
         'App\\Http\\Controllers\\ReporteController' => __DIR__ . '/../..' . '/app/Http/Controllers/ReporteController.php',
-=======
->>>>>>> 06d1bbca163da9850b78020ae03e61a744ee6080
         'App\\Http\\Controllers\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/UserController.php',
         'App\\Http\\Middleware\\RoleMiddleware' => __DIR__ . '/../..' . '/app/Http/Middleware/RoleMiddleware.php',
         'App\\Models\\Carpintero' => __DIR__ . '/../..' . '/app/Models/Carpintero.php',
