@@ -79,44 +79,26 @@
             transform: scale(0.98);
         }
 
-        /* Estilos para los botones del carrusel */
-        .carousel-control-prev,
-        .carousel-control-next {
-            margin-left: 20px;
-            margin-right: 20px;
-            z-index: 5;
-        }
-
-        .carousel-control-prev-icon,
-        .carousel-control-next-icon {
-            background-color: #495E57;
-            border-radius: 50%;
-            padding: 15px;
-        }
-
-        .carousel-control-prev,
-        .carousel-control-next {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .carousel-control-prev {
-            left: 10px;
-        }
-
-        .carousel-control-next {
-            right: 10px;
+        .card-img-top {
+            width: 100%;
+            /* Asegura que la imagen ocupe todo el ancho del contenedor */
+            height: 200px;
+            /* Define una altura fija */
+            object-fit: cover;
+            /* Mantiene las proporciones recortando el exceso si es necesario */
+            border-top-left-radius: 0.25rem;
+            /* Opcional: preserva el borde redondeado de las tarjetas */
+            border-top-right-radius: 0.25rem;
         }
     </style>
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
             <a class="navbar-brand"
-            href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
-            <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
+                href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
+                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
                     style="height: 6vh; max-height: 100%; width: auto;">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -127,7 +109,7 @@
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
                         <a class="nav-link"
-                            href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2|| Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">Menú
+                            href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">Menú
                         </a>
                     </li>
                     <li class="nav-item"><a class="nav-link" href="{{ route('productos.clientes') }}">Productos</a></li>
@@ -202,18 +184,21 @@
                             <p class="card-text">{{ Str::limit($producto->descripcion, 100) }}</p>
                             <p class="card-text"><strong>Precio:</strong> ${{ number_format($producto->costo, 2) }}</p>
                             <p class="card-text">
-                                <strong>Stock:</strong> 
+                                <strong>Stock:</strong>
                                 @if($producto->stock > 0)
                                     <span class="stock-display">{{ $producto->stock }}</span> unidades disponibles
                                 @else
                                     <span class="text-danger">Agotado</span>
                                 @endif
                             </p>
-                            <form class="add-to-cart-form" action="{{ route('cart.add', $producto->id) }}" method="POST" @if($producto->stock == 0) style="display: none;" @endif>
+                            <form class="add-to-cart-form" action="{{ route('cart.add', $producto->id) }}" method="POST"
+                                @if($producto->stock == 0) style="display: none;" @endif>
                                 @csrf
                                 <div class="form-group">
                                     <label for="cantidad-{{ $producto->id }}">Cantidad:</label>
-                                    <input type="number" name="quantity" id="cantidad-{{ $producto->id }}" min="1" max="{{ $producto->stock }}" value="1" class="form-control quantity-input" required data-stock="{{ $producto->stock }}">
+                                    <input type="number" name="quantity" id="cantidad-{{ $producto->id }}" min="1"
+                                        max="{{ $producto->stock }}" value="1" class="form-control quantity-input" required
+                                        data-stock="{{ $producto->stock }}">
                                 </div>
                                 <button type="submit" class="btn btn-warning mt-2">Agregar al carrito</button>
                             </form>
@@ -227,14 +212,14 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
 
-            $('.quantity-input').on('input', function() {
+            $('.quantity-input').on('input', function () {
                 var input = $(this);
                 var stock = parseInt(input.data('stock'));
                 var value = parseInt(input.val());
@@ -247,7 +232,7 @@
                 }
             });
 
-            $('.add-to-cart-form').submit(function(e) {
+            $('.add-to-cart-form').submit(function (e) {
                 e.preventDefault();
                 var form = $(this);
                 var url = form.attr('action');
@@ -257,7 +242,7 @@
                     type: 'POST',
                     url: url,
                     data: formData,
-                    success: function(response) {
+                    success: function (response) {
                         alert(response.success);
                         // Update stock display
                         var quantityInput = form.find('.quantity-input');
@@ -273,7 +258,7 @@
                             form.find('button[type="submit"]').prop('disabled', true);
                         }
                     },
-                    error: function(xhr) {
+                    error: function (xhr) {
                         alert('Error al agregar el producto al carrito');
                     }
                 });

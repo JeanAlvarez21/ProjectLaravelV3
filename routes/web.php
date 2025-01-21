@@ -28,7 +28,7 @@ use App\Http\Controllers\ReporteController;
 
 // Welcome page
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
 
 // Authentication routes
@@ -51,7 +51,7 @@ Route::middleware(['auth'])->group(function () {
         return view('roles.admin');
     })->name('adminsito');
     Route::get('/dashboard', [DashboardController::class, 'index']);
-
+    
     // Added route within authenticated middleware group
     Route::get('/pedidos/{pedido}/detalles', [PedidoController::class, 'detalles'])->name('pedidos.detalles');
 });

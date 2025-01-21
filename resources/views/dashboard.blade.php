@@ -278,7 +278,9 @@
                                                 @foreach($pedidosRecientes as $pedido)
                                                     <tr>
                                                         <td>#{{ $pedido->id_pedido }}</td>
-                                                        <td>{{ $pedido->usuario->name }}</td>
+                                                        <td>{{ $pedido->usuario->nombres }}
+                                                            {{ $pedido->usuario->apellidos }}
+                                                        </td>
                                                         <td>
                                                             @if($pedido->fecha_pedido instanceof \Carbon\Carbon)
                                                                 {{ $pedido->fecha_pedido->format('d/m/Y H:i') }}
