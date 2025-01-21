@@ -29,7 +29,10 @@ return array(
     'App\\Http\\Controllers\\ProductoController' => $baseDir . '/app/Http/Controllers/ProductoController.php',
     'App\\Http\\Controllers\\ProfileController' => $baseDir . '/app/Http/Controllers/ProfileController.php',
     'App\\Http\\Controllers\\ProyectoController' => $baseDir . '/app/Http/Controllers/ProyectoController.php',
+<<<<<<< HEAD
     'App\\Http\\Controllers\\ReporteController' => $baseDir . '/app/Http/Controllers/ReporteController.php',
+=======
+>>>>>>> 06d1bbca163da9850b78020ae03e61a744ee6080
     'App\\Http\\Controllers\\UserController' => $baseDir . '/app/Http/Controllers/UserController.php',
     'App\\Http\\Middleware\\RoleMiddleware' => $baseDir . '/app/Http/Middleware/RoleMiddleware.php',
     'App\\Models\\Carpintero' => $baseDir . '/app/Models/Carpintero.php',
