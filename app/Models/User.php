@@ -60,8 +60,9 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class, 'rol', 'id_rol');
     }
 
-        public function pedidos() 
+    public function pedidos()
     {
-        return $this->hasMany(Pedidos::class);
+        return $this->hasMany(Pedidos::class, 'id_usuario');
     }
+
 }
