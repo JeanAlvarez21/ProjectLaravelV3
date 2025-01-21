@@ -10,9 +10,8 @@
         body {
             font-family: Arial, sans-serif;
         }
-
-        /* Sidebar Styles */
-        .sidebar {
+/* Sidebar Styles */
+.sidebar {
             width: 250px;
             background-color: #FFD700;
             min-height: 100vh;
@@ -57,13 +56,6 @@
         .sidebar .btn-logout:hover {
             background-color: #D44C3C;
         }
-
-        .preview-image {
-            max-width: 200px;
-            max-height: 200px;
-            margin-top: 10px;
-        }
-
     </style>
 </head>
 
@@ -81,10 +73,10 @@
             <nav>
                 @if(auth()->user()->rol == 1)
                     <!-- Menú completo para rol 3 -->
-                    <a href="/dashboard" class="nav-item active">
+                    <a href="/dashboard" class="nav-item">
                         <span>Dashboard</span>
                     </a>
-                    <a href="/productos" class="nav-item">
+                    <a href="/productos" class="nav-item active">
                         <span>Productos</span>
                     </a>
                     <a href="/categorias" class="nav-item">
@@ -93,8 +85,8 @@
                     <a href="/usuarios" class="nav-item">
                         <span>Usuarios</span>
                     </a>
-                    <a href="/facturacion" class="nav-item">
-                        <span>Facturación</span>
+                    <a href="/pedidos" class="nav-item">
+                        <span>Pedidos</span>
                     </a>
                     <a href="/reportes" class="nav-item">
                         <span>Reportes</span>
@@ -107,8 +99,8 @@
                     <a href="/categorias" class="nav-item">
                         <span>Familias</span>
                     </a>
-                    <a href="/facturacion" class="nav-item">
-                        <span>Facturación</span>
+                    <a href="/pedidos" class="nav-item">
+                        <span>Pedidos</span>
                     </a>
                     <a href="/reportes" class="nav-item">
                         <span>Reportes</span>

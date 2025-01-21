@@ -7,248 +7,185 @@
     <title>Detalles del Pedido</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body {
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            padding-top: 70px;
-            /* Added padding to prevent content from being hidden behind the fixed navbar */
-        }
-
-        .navbar {
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
             background-color: #FFD700;
+            min-height: 100vh;
+            padding: 1rem;
         }
 
-        .no-link {
+        .sidebar .logo {
+            margin-bottom: 2rem;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .sidebar .nav-item {
+            padding: 0.75rem 1rem;
+            margin-bottom: 0.5rem;
+            border-radius: 0.5rem;
+            color: #000;
             text-decoration: none;
-            color: inherit;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .carousel-item img {
-            max-height: 200px;
-            max-width: 100%;
-            object-fit: contain;
-            margin: 0 auto;
+        .sidebar .nav-item.active {
+            background-color: rgba(0, 0, 0, 0.1);
         }
 
-        .logo-responsive {
-            max-width: 150px;
-            width: 100%;
-            height: auto;
-        }
-
-        @media (max-width: 768px) {
-            .logo-responsive {
-                max-width: 100px;
-            }
-
-            .contact-heading {
-                font-size: 1.8rem;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .logo-responsive {
-                max-width: 80px;
-            }
-
-            .contact-heading {
-                font-size: 1.5rem;
-                text-align: center;
-            }
-
-            .navbar-brand img {
-                height: 5vh;
-            }
-
-            iframe {
-                height: 250px;
-            }
-        }
-
-        iframe {
-            border: 0;
-        }
-
-        .copy-icon {
+        .sidebar .btn-logout {
+            background-color: #FF6347;
+            /* Rojo */
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
             cursor: pointer;
-            margin-left: 5px;
+            text-align: center;
+            width: 100%;
+            display: block;
+            margin-top: auto;
         }
 
-        .copy-icon:hover {
-            color: #007bff;
-        }
-
-        /* From Uiverse.io by suda-code */
-        button {
-            padding: 7px 15px;
-            border: 0;
-            border-radius: 100px;
-            background-color: rgb(255, 255, 255);
-            color: #ffffff;
-            font-weight: Bold;
-            transition: all 0.5s;
-            -webkit-transition: all 0.5s;
-        }
-
-        button:hover {
-            background-color: #FFFAEB;
-            box-shadow: 0 0 20px #6fc5ff50;
-            transform: scale(1.1);
+        .sidebar .btn-logout:hover {
+            background-color: #D44C3C;
         }
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
-        <div class="container">
-            <a class="navbar-brand"
-                href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
-                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
-                    style="height: 6vh; max-height: 100%; width: auto;">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item">
-                        <a class="nav-link"
-                            href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">Menú
-                        </a>
-                    </li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('productos.clientes') }}">Productos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/proyectos">Proyectos</a></li>
-                    @auth
-                        @if(Auth::user()->rol == 1 || Auth::user()->rol == 2)
-                            <li class="nav-item"><a class="nav-link" href="{{ route('carpinteros.index') }}">Carpinteros</a>
-                            </li>
-                        @else
-                            <li class="nav-item"><a class="nav-link" href="/carpinteros">Carpinteros</a></li>
-                        @endif
-                    @else
-                        <li class="nav-item"><a class="nav-link" href="/carpinteros">Carpinteros</a></li>
-                    @endauth
-                    <li class="nav-item"><a class="nav-link" href="/contacto">Contacto</a></li>
-                    @auth
-                        @if(Auth::user()->rol == 1)
-                            <li class="nav-item"><a href="/dashboard" class="nav-link no-link">Admin</a></li>
-                        @elseif(Auth::user()->rol == 2)
-                            <li class="nav-item"><a href="/productos" class="nav-link no-link">Empleado</a></li>
-                        @endif
-                    @endauth
-                </ul>
-                <div class="d-flex align-items-center">
-                    @auth
-                        @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3)
-                            <a href="{{ route('cart.view') }}">
-                                <img src="{{ asset('media/carro-de-la-compra.png') }}" alt="Carrito" width="30" height="30">
-                            </a>
-                            <span class="mx-3">|</span>
-                            <a href="{{ route('profile') }}">
-                                <img src="{{ asset('media/boton-usuario.png') }}" alt="Profile" width="30" height="30">
-                            </a>
-                            <span class="mx-3">|</span>
-                            <a href="{{ route('notificaciones') }}">
-                                <img src="{{ asset('media/boton-notificaciones.png') }}" alt="Notificaciones" width="30"
-                                    height="30">
-                            </a>
-                        @else
-                            <div class="d-flex align-items-center">
-                                <button style="font-size: 16px;">
-                                    <a href="{{ route('login') }}" class="text-dark text-decoration-none">
-                                        Iniciar Sesión / Regístrate
-                                    </a>
-                                </button>
-                            </div>
-                        @endif
-                    @else
-                        <div class="d-flex align-items-center">
-                            <button style="font-size: 16px;">
-                                <a href="{{ route('login') }}" class="text-dark text-decoration-none">
-                                    Iniciar Sesión / Regístrate
-                                </a>
-                            </button>
-                        </div>
-                    @endauth
-                </div>
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo" style="text-align: center; margin-bottom: 2rem;">
+                <a href="home">
+                    <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
+                        style="height: 7vh; max-height: auto; width: 70%;">
+                </a>
             </div>
+
+            <nav>
+                @if(auth()->user()->rol == 1)
+                    <!-- Menú completo para rol 3 -->
+                    <a href="/dashboard" class="nav-item">
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="/productos" class="nav-item">
+                        <span>Productos</span>
+                    </a>
+                    <a href="/categorias" class="nav-item">
+                        <span>Familias</span>
+                    </a>
+                    <a href="/usuarios" class="nav-item">
+                        <span>Usuarios</span>
+                    </a>
+                    <a href="/pedidos" class="nav-item  active">
+                        <span>Pedidos</span>
+                    </a>
+                    <a href="/reportes" class="nav-item">
+                        <span>Reportes</span>
+                    </a>
+                @elseif(auth()->user()->rol == 2)
+                    <!-- Menú reducido para rol 2 -->
+                    <a href="/productos" class="nav-item">
+                        <span>Productos</span>
+                    </a>
+                    <a href="/categorias" class="nav-item">
+                        <span>Familias</span>
+                    </a>
+                    <a href="/pedidos" class="nav-item  active">
+                        <span>Pedidos</span>
+                    </a>
+                    <a href="/reportes" class="nav-item">
+                        <span>Reportes</span>
+                    </a>
+                @endif
+
+                <!-- Botón de cerrar sesión -->
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
+                    @csrf
+                    <button type="submit" class="btn-logout">Cerrar sesión</button>
+                </form>
+            </nav>
         </div>
-    </nav>
 
-
-    <div class="container mt-5">
-        <div class="row">
-            <div class="col-md-8 offset-md-2">
-                <div class="card">
-                    <div class="card-header">
-                        <h2>Pedido #{{ $pedido->id_pedido }}</h2>
-                    </div>
-                    <div class="card-body">
-                        <div class="row mb-4">
-                            <div class="col-sm-6">
-                                <h6 class="mb-3">Cliente:</h6>
-                                <div>
-                                    <strong>{{ $pedido->usuario->name }}</strong>
-                                </div>
-                                <div>{{ $pedido->usuario->email }}</div>
-                                <div>{{ $pedido->direccion_pedido }}</div>
-                            </div>
-                            <div class="col-sm-6">
-                                <h6 class="mb-3">Detalles del Pedido:</h6>
-                                <div>
-                                    Fecha:
-                                    @if($pedido->fecha_pedido instanceof \Carbon\Carbon)
-                                        {{ $pedido->fecha_pedido->format('d/m/Y H:i') }}
-                                    @else
-                                        {{ \Carbon\Carbon::parse($pedido->fecha_pedido)->format('d/m/Y H:i') }}
-                                    @endif
-                                </div>
-                                <div>Estado: <span class="badge bg-primary">{{ $pedido->estado ?? 'Pendiente' }}</span>
-                                </div>
-                            </div>
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-md-8 offset-md-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>Pedido #{{ $pedido->id_pedido }}</h2>
                         </div>
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="col-sm-6">
+                                    <h6 class="mb-3">Cliente:</h6>
+                                    <div>
+                                        <strong>{{ $pedido->usuario->nombres }}
+                                            {{ $pedido->usuario->apellidos }}
+                                        </strong>
+                                    </div>
+                                    <div>{{ $pedido->usuario->email }}</div>
+                                    <div>{{ $pedido->direccion_pedido }}</div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <h6 class="mb-3">Detalles del Pedido:</h6>
+                                    <div>
+                                        Fecha:
+                                        @if($pedido->fecha_pedido instanceof \Carbon\Carbon)
+                                            {{ $pedido->fecha_pedido->format('d/m/Y H:i') }}
+                                        @else
+                                            {{ \Carbon\Carbon::parse($pedido->fecha_pedido)->format('d/m/Y H:i') }}
+                                        @endif
+                                    </div>
+                                    <div>Estado: <span
+                                            class="badge bg-primary">{{ $pedido->estado ?? 'Pendiente' }}</span>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Producto</th>
-                                        <th>Cantidad</th>
-                                        <th>Precio Unitario</th>
-                                        <th>Subtotal</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($pedido->detalles as $detalle)
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
                                         <tr>
-                                            <td>{{ $detalle->producto->nombre }}</td>
-                                            <td>{{ $detalle->cantidad }}</td>
-                                            <td>${{ number_format($detalle->subtotal / $detalle->cantidad, 2) }}</td>
-                                            <td>${{ number_format($detalle->subtotal, 2) }}</td>
+                                            <th>Producto</th>
+                                            <th>Cantidad</th>
+                                            <th>Precio Unitario</th>
+                                            <th>Subtotal</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <td colspan="3" class="text-end"><strong>Total:</strong></td>
-                                        <td><strong>${{ number_format($pedido->total, 2) }}</strong></td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($pedido->detalles as $detalle)
+                                            <tr>
+                                                <td>{{ $detalle->producto->nombre }}</td>
+                                                <td>{{ $detalle->cantidad }}</td>
+                                                <td>${{ number_format($detalle->subtotal / $detalle->cantidad, 2) }}</td>
+                                                <td>${{ number_format($detalle->subtotal, 2) }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                            <td><strong>${{ number_format($pedido->total, 2) }}</strong></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
 
-                        <div class="text-center mt-4">
-                            <a href="{{ route('pedidos.index') }}" class="btn btn-primary">Volver a Pedidos</a>
-                            <a href="{{ route('home') }}" class="btn btn-secondary">Ir al Inicio</a>
+                            <div class="text-center mt-4">
+                                <a href="{{ route('pedidos.index') }}" class="btn btn-primary">Volver a Pedidos</a>
+                                <a href="{{ route('home') }}" class="btn btn-secondary">Ir al Inicio</a>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

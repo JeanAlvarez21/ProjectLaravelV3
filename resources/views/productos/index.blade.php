@@ -86,8 +86,8 @@
                     <a href="/usuarios" class="nav-item">
                         <span>Usuarios</span>
                     </a>
-                    <a href="/facturacion" class="nav-item">
-                        <span>Facturación</span>
+                    <a href="/pedidos" class="nav-item">
+                        <span>Pedidos</span>
                     </a>
                     <a href="/reportes" class="nav-item">
                         <span>Reportes</span>
@@ -100,8 +100,8 @@
                     <a href="/categorias" class="nav-item">
                         <span>Familias</span>
                     </a>
-                    <a href="/facturacion" class="nav-item">
-                        <span>Facturación</span>
+                    <a href="/pedidos" class="nav-item">
+                        <span>Pedidos</span>
                     </a>
                     <a href="/reportes" class="nav-item">
                         <span>Reportes</span>

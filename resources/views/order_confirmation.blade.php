@@ -51,7 +51,8 @@
                                     required>{{ Auth::user()->direccion }}</textarea>
                             </div>
                             <div class="d-grid gap-2">
-                                <button type="submit" class="btn btn-primary">Confirmar Pedido</button>
+                                <a href="/profile#pedidos" class="btn btn-primary"
+                                    onclick="activatePedidosTab()">Confirmar Pedido</a>
                                 <a href="{{ route('cart.view') }}" class="btn btn-secondary">Volver al Carrito</a>
                             </div>
                         </form>

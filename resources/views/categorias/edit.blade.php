@@ -86,8 +86,8 @@
                     <a href="/usuarios" class="nav-item">
                         <span>Usuarios</span>
                     </a>
-                    <a href="/facturacion" class="nav-item">
-                        <span>Facturación</span>
+                    <a href="/pedidos" class="nav-item">
+                        <span>Pedidos</span>
                     </a>
                     <a href="/reportes" class="nav-item">
                         <span>Reportes</span>
@@ -100,8 +100,8 @@
                     <a href="/categorias" class="nav-item active">
                         <span>Familias</span>
                     </a>
-                    <a href="/facturacion" class="nav-item">
-                        <span>Facturación</span>
+                    <a href="/pedidos" class="nav-item">
+                        <span>Pedidos</span>
                     </a>
                     <a href="/reportes" class="nav-item">
                         <span>Reportes</span>
@@ -116,13 +116,12 @@
             </nav>
         </div>
 
-
-                <div class="content">
+        <div class="content">
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12">
                         <h1 class="mb-4">Editar Familia</h1>
-                        
+
                         @if ($errors->any())
                             <div class="alert alert-danger">
                                 <ul>
@@ -143,7 +142,8 @@
                                 @csrf
                                 @method('DELETE')
                                 <input type="hidden" name="confirmar_eliminacion" value="1">
-                                <button type="submit" class="btn btn-danger">Eliminar Categoría y Productos Asociados</button>
+                                <button type="submit" class="btn btn-danger">Eliminar Categoría y Productos
+                                    Asociados</button>
                                 <a href="{{ route('categorias.index') }}" class="btn btn-secondary">Cancelar</a>
                             </form>
                         @else
@@ -153,19 +153,22 @@
                                 @method('PUT')
                                 <div class="mb-3">
                                     <label for="nombre_categoria" class="form-label">Nombre de la Familia</label>
-                                    <input type="text" class="form-control" id="nombre_categoria" name="nombre_categoria" required value="{{ $categoria->nombre_categoria }}">
+                                    <input type="text" class="form-control" id="nombre_categoria" name="nombre_categoria"
+                                        required value="{{ $categoria->nombre_categoria }}">
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="descripcion_categoria" class="form-label">Descripción</label>
-                                    <textarea class="form-control" id="descripcion_categoria" name="descripcion_categoria" rows="3">{{ $categoria->descripcion_categoria }}</textarea>
+                                    <textarea class="form-control" id="descripcion_categoria" name="descripcion_categoria"
+                                        rows="3">{{ $categoria->descripcion_categoria }}</textarea>
                                 </div>
 
                                 <button type="submit" class="btn btn-primary">Guardar Familia</button>
                             </form>
 
                             <!-- Botón para eliminar la categoría -->
-                            <form action="{{ route('categorias.destroy', $categoria->id_categoria) }}" method="POST" class="mt-3">
+                            <form action="{{ route('categorias.destroy', $categoria->id_categoria) }}" method="POST"
+                                class="mt-3">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger">Eliminar Categoría</button>
@@ -177,7 +180,7 @@
         </div>
 
 
-            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    </body>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 
 </html>
