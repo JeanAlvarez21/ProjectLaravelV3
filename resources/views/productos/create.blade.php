@@ -148,17 +148,53 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="descripcion" class="form-label">Dimensiones (Formato: Largo x Ancho x Grosor)</label>
-                                <input 
-                                    type="text" 
-                                    class="form-control" 
-                                    id="descripcion" 
-                                    name="descripcion" 
-                                    placeholder="Ejemplo: 2440mm x 1220mm x 18mm" 
-                                    required 
-                                    pattern="^\d+mm x \d+mm x \d+mm$" 
-                                    title="Ingrese las dimensiones en el formato: Largo x Ancho x Grosor, por ejemplo, 2440mm x 1220mm x 18mm">
-                            </div>
+                                    <label class="form-label">Dimensiones</label>
+                                    <div class="row g-2">
+                                        <div class="col-md">
+                                            <label for="largo" class="form-label">Largo (mm)</label>
+                                            <input 
+                                                type="number" 
+                                                class="form-control" 
+                                                id="largo" 
+                                                name="largo" 
+                                                placeholder="Ejemplo: 2440" 
+                                                required 
+                                                min="1">
+                                        </div>
+                                        <div class="col-md">
+                                            <label for="ancho" class="form-label">Ancho (mm)</label>
+                                            <input 
+                                                type="number" 
+                                                class="form-control" 
+                                                id="ancho" 
+                                                name="ancho" 
+                                                placeholder="Ejemplo: 1220" 
+                                                required 
+                                                min="1">
+                                        </div>
+                                        <div class="col-md">
+                                            <label for="grosor" class="form-label">Grosor (mm)</label>
+                                            <input 
+                                                type="number" 
+                                                class="form-control" 
+                                                id="grosor" 
+                                                name="grosor" 
+                                                placeholder="Ejemplo: 18" 
+                                                required 
+                                                min="1">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="descripcion_opcional" class="form-label">Descripción adicional (opcional)</label>
+                                    <textarea 
+                                        class="form-control" 
+                                        id="descripcion_opcional" 
+                                        name="descripcion_opcional" ></textarea>
+                                </div>
+
+
 
                             <div class="mb-3">
                                 <label for="precio" class="form-label">Precio</label>
@@ -211,12 +247,16 @@
 
                             <div class="mb-3">
                                 <label for="nombre_sucursal" class="form-label">Nombre de la Sucursal</label>
-                                <input type="text" class="form-control" id="nombre_sucursal" name="nombre_sucursal" required>
+                                <input type="text" class="form-control" id="nombre_sucursal" name="nombre_sucursal" value="Loja" required>
                             </div>
 
                             <div class="mb-3">
                                 <label for="direccion_sucursal" class="form-label">Dirección de la Sucursal</label>
-                                <input type="text" class="form-control" id="direccion_sucursal" name="direccion_sucursal" required>
+                                <select class="form-control" id="direccion_sucursal" name="direccion_sucursal" required>
+                                    <option value="" disabled selected>Selecciona una opción</option>
+                                    <option value="Norte">Norte</option>
+                                    <option value="Sur">Sur</option>
+                                </select>
                             </div>
 
                             <div class="form-group">
