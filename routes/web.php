@@ -23,6 +23,8 @@ use App\Http\Controllers\CorteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\ReporteController;
+
 
 // Welcome page
 Route::get('/', function () {
@@ -130,4 +132,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/pedidos/{pedido}/editar', [PedidoController::class, 'edit'])->name('pedidos.edit');
     Route::put('/pedidos/{pedido}', [PedidoController::class, 'update'])->name('pedidos.update');
     Route::delete('/pedidos/{pedido}', [PedidoController::class, 'destroy'])->name('pedidos.destroy');
+});
+
+//Rutas reportes
+// Rutas para reportes
+Route::prefix('reportes')->middleware(['auth'])->group(function () {
+    Route::get('/', [ReporteController::class, 'index'])->name('reportes.index');
+    Route::get('/ventas-periodo', [ReporteController::class, 'ventasPorPeriodo'])->name('reportes.ventas-periodo');
+    Route::get('/productos-populares', [ReporteController::class, 'productosPopulares'])->name('reportes.productos-populares');
+    Route::get('/inventario-bajo', [ReporteController::class, 'inventarioBajo'])->name('reportes.inventario-bajo');
+    Route::get('/clientes-top', [ReporteController::class, 'clientesTop'])->name('reportes.clientes-top');
 });
