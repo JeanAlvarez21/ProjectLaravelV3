@@ -9,20 +9,31 @@ class Proyecto extends Model
 {
     use HasFactory;
 
+    // Nombre de la tabla
+    protected $table = 'proyectos';
+
+    // Campos permitidos para asignación masiva
     protected $fillable = [
         'nombre',
         'ciudad',
         'local',
-        'producto_id',
+        'estado',
+        'id_producto', // Llave foránea para el producto asociado
     ];
 
+    /**
+     * Relación: Un proyecto pertenece a un producto.
+     */
     public function producto()
     {
-        return $this->belongsTo(Producto::class, 'producto_id', 'id_producto');
+        return $this->belongsTo(Producto::class, 'id_producto');
     }
 
+    /**
+     * Relación: Un proyecto tiene muchos cortes.
+     */
     public function cortes()
     {
-        return $this->hasMany(Corte::class, 'proyecto_id');
+    return $this->hasMany(Corte::class, 'proyecto_id');
     }
 }
