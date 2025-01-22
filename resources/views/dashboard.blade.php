@@ -26,6 +26,11 @@
             display: flex;
         }
 
+        .container-fluid {
+            padding-left: 0;
+            padding-right: 0;
+        }
+
         .sidebar {
             width: var(--sidebar-width);
             background-color: var(--primary-color);
@@ -80,11 +85,6 @@
             width: 300px;
         }
 
-        .container-fluid {
-            padding-left: 0;
-            padding-right: 0;
-        }
-
         .btn-logout {
             background-color: #FF6347;
             color: white;
@@ -114,30 +114,48 @@
         </div>
 
         <nav>
-            <a href="/dashboard" class="nav-item active">
-                <span>Dashboard</span>
-            </a>
-            <a href="/productos" class="nav-item">
-                <span>Productos</span>
-            </a>
-            <a href="/categorias" class="nav-item">
-                <span>Familias</span>
-            </a>
-            <a href="/usuarios" class="nav-item ">
-                <span>Usuarios</span>
-            </a>
-            <a href="/facturacion" class="nav-item">
-                <span>Facturación</span>
-            </a>
-            <a href="/reportes" class="nav-item">
-                <span>Reportes</span>
-            </a>
-            <!-- Botón de cerrar sesión -->
-            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
-                @csrf
-                <button type="submit" class="btn-logout">Cerrar sesión</button>
-            </form>
-        </nav>
+                @if(auth()->user()->rol == 1)
+                    <!-- Menú completo para rol 3 -->
+                    <a href="/dashboard" class="nav-item active">
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="/productos" class="nav-item">
+                        <span>Productos</span>
+                    </a>
+                    <a href="/categorias" class="nav-item">
+                        <span>Familias</span>
+                    </a>
+                    <a href="/usuarios" class="nav-item">
+                        <span>Usuarios</span>
+                    </a>
+                    <a href="/pedidos" class="nav-item">
+                        <span>Pedidos</span>
+                    </a>
+                    <a href="/reportes" class="nav-item">
+                        <span>Reportes</span>
+                    </a>
+                @elseif(auth()->user()->rol == 2)
+                    <!-- Menú reducido para rol 2 -->
+                    <a href="/productos" class="nav-item active">
+                        <span>Productos</span>
+                    </a>
+                    <a href="/categorias" class="nav-item">
+                        <span>Familias</span>
+                    </a>
+                    <a href="/pedidos" class="nav-item">
+                        <span>Pedidos</span>
+                    </a>
+                    <a href="/reportes" class="nav-item">
+                        <span>Reportes</span>
+                    </a>
+                @endif
+
+                <!-- Botón de cerrar sesión -->
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
+                    @csrf
+                    <button type="submit" class="btn-logout">Cerrar sesión</button>
+                </form>
+            </nav>
     </div>
 
     <div class="main-content">
@@ -260,7 +278,9 @@
                                                 @foreach($pedidosRecientes as $pedido)
                                                     <tr>
                                                         <td>#{{ $pedido->id_pedido }}</td>
-                                                        <td>{{ $pedido->usuario->name }}</td>
+                                                        <td>{{ $pedido->usuario->nombres }}
+                                                            {{ $pedido->usuario->apellidos }}
+                                                        </td>
                                                         <td>
                                                             @if($pedido->fecha_pedido instanceof \Carbon\Carbon)
                                                                 {{ $pedido->fecha_pedido->format('d/m/Y H:i') }}

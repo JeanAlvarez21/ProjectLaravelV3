@@ -19,7 +19,7 @@ class ProfileController extends Controller
         $validated = $request->validate([
             'nombres' => 'required|string|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
             'apellidos' => 'required|string|max:255|regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
-            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id, 
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'telefono' => 'required|string|max:20|regex:/^\d+$/',
             'password' => 'nullable|string|min:8|confirmed',
         ], [
@@ -64,5 +64,20 @@ class ProfileController extends Controller
         $user->save();
 
         return redirect()->back()->with('success', 'Dirección actualizada exitosamente');
+    }
+    public function getUserOrders()
+    {
+        try {
+            $user = auth()->user();
+            $orders = $user->pedidos()->orderBy('fecha_pedido', 'desc')->get();
+
+            return response()->json($orders);
+        } catch (\Exception $e) {
+            \Log::error('Error al obtener pedidos del usuario: ' . $e->getMessage(), [
+                'user_id' => auth()->id(),
+                'error' => $e->getTraceAsString()
+            ]);
+            return response()->json(['error' => 'Error al cargar los pedidos'], 500);
+        }
     }
 }

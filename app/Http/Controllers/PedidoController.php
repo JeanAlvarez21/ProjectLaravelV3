@@ -8,6 +8,7 @@ use App\Models\Detalles_Pedido;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class PedidoController extends Controller
 {
@@ -75,6 +76,18 @@ class PedidoController extends Controller
         }
     }
 
+    public function show2($id)
+    {
+        try {
+            $pedido = Pedidos::with(['usuario', 'detalles.producto'])->findOrFail($id);
+            return response()->json($pedido);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json(['error' => 'Pedido no encontrado'], 404);
+        } catch (\Exception $e) {
+            \Log::error('Error en show2: ' . $e->getMessage());
+            return response()->json(['error' => 'Error al cargar los detalles del pedido'], 500);
+        }
+    }
     public function show(Pedidos $pedido)
     {
         // Cargar las relaciones necesarias
@@ -89,4 +102,19 @@ class PedidoController extends Controller
             ->paginate(10);
         return view('pedidos.index', compact('pedidos'));
     }
+
+    public function detalles($id)
+    {
+        try {
+            $pedido = Pedidos::with(['detalles.producto'])
+                ->where('id_usuario', Auth::id())
+                ->findOrFail($id);
+
+            return view('pedidos.detalles', compact('pedido'));
+        } catch (\Exception $e) {
+            \Log::error('Error al cargar los detalles del pedido: ' . $e->getMessage());
+            return back()->with('error', 'Error al cargar los detalles del pedido');
+        }
+    }
 }
+

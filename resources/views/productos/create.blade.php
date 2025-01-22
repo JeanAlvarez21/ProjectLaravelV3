@@ -41,6 +41,7 @@
 
         .sidebar .btn-logout {
             background-color: #FF6347;
+            /* Rojo */
             color: white;
             border: none;
             padding: 0.75rem 1rem;
@@ -55,12 +56,6 @@
         .sidebar .btn-logout:hover {
             background-color: #D44C3C;
         }
-
-        .preview-image {
-            max-width: 200px;
-            max-height: 200px;
-            margin-top: 10px;
-        }
     </style>
 </head>
 
@@ -70,12 +65,14 @@
         <div class="sidebar">
             <div class="logo" style="text-align: center; margin-bottom: 2rem;">
                 <a href="home">
-                    <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid" style="height: 7vh; max-height: auto; width: 70%;">
+                    <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
+                        style="height: 7vh; max-height: auto; width: 70%;">
                 </a>
             </div>
 
             <nav>
                 @if(auth()->user()->rol == 1)
+                    <!-- Menú completo para rol 3 -->
                     <a href="/dashboard" class="nav-item">
                         <span>Dashboard</span>
                     </a>
@@ -88,27 +85,29 @@
                     <a href="/usuarios" class="nav-item">
                         <span>Usuarios</span>
                     </a>
-                    <a href="/facturacion" class="nav-item">
-                        <span>Facturación</span>
+                    <a href="/pedidos" class="nav-item">
+                        <span>Pedidos</span>
                     </a>
                     <a href="/reportes" class="nav-item">
                         <span>Reportes</span>
                     </a>
                 @elseif(auth()->user()->rol == 2)
+                    <!-- Menú reducido para rol 2 -->
                     <a href="/productos" class="nav-item active">
                         <span>Productos</span>
                     </a>
                     <a href="/categorias" class="nav-item">
                         <span>Familias</span>
                     </a>
-                    <a href="/facturacion" class="nav-item">
-                        <span>Facturación</span>
+                    <a href="/pedidos" class="nav-item">
+                        <span>Pedidos</span>
                     </a>
                     <a href="/reportes" class="nav-item">
                         <span>Reportes</span>
                     </a>
                 @endif
 
+                <!-- Botón de cerrar sesión -->
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
                     @csrf
                     <button type="submit" class="btn-logout">Cerrar sesión</button>

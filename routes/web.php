@@ -23,10 +23,12 @@ use App\Http\Controllers\CorteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PedidoController;
+use App\Http\Controllers\ReporteController;
+
 
 // Welcome page
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
 
 // Authentication routes
@@ -49,6 +51,9 @@ Route::middleware(['auth'])->group(function () {
         return view('roles.admin');
     })->name('adminsito');
     Route::get('/dashboard', [DashboardController::class, 'index']);
+    
+    // Added route within authenticated middleware group
+    Route::get('/pedidos/{pedido}/detalles', [PedidoController::class, 'detalles'])->name('pedidos.detalles');
 });
 
 // Notification routes
@@ -68,7 +73,8 @@ Route::prefix('usuarios')->group(function () {
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
 Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 Route::put('/profile/address', [ProfileController::class, 'updateAddress'])->name('address.update');
-
+Route::get('/user/orders', [ProfileController::class, 'getUserOrders'])->name('user.orders');
+Route::get('/user/orders', [ProfileController::class, 'getUserOrders'])->name('user.orders')->middleware('auth');
 // Authentication actions
 Route::post('/register', [RegisterController::class, 'register']);
 Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
@@ -135,3 +141,15 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/pedidos/{pedido}', [PedidoController::class, 'update'])->name('pedidos.update');
     Route::delete('/pedidos/{pedido}', [PedidoController::class, 'destroy'])->name('pedidos.destroy');
 });
+
+//Rutas reportes
+// Rutas para reportes
+Route::prefix('reportes')->middleware(['auth'])->group(function () {
+    Route::get('/', [ReporteController::class, 'index'])->name('reportes.index');
+    Route::get('/ventas-periodo', [ReporteController::class, 'ventasPorPeriodo'])->name('reportes.ventas-periodo');
+    Route::get('/productos-populares', [ReporteController::class, 'productosPopulares'])->name('reportes.productos-populares');
+    Route::get('/inventario-bajo', [ReporteController::class, 'inventarioBajo'])->name('reportes.inventario-bajo');
+    Route::get('/clientes-top', [ReporteController::class, 'clientesTop'])->name('reportes.clientes-top');
+});
+Route::get('/pedidos/{id}', [PedidoController::class, 'show2'])->name('pedidos.show2')->middleware('auth');
+Route::get('/pedidos/{id}/detalles', [PedidoController::class, 'detalles'])->name('pedidos.detalles')->middleware('auth');
