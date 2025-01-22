@@ -234,7 +234,7 @@
                 <div class="card order-details-card">
                     <div class="card-header bg-white p-4 border-bottom-0">
                         <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="mb-0">Detalles del Pedido #{{ $pedido->id_pedido }}</h4>
+                            <h4 class="mb-0">Detalles de Pedido - Código de pedido #{{ $pedido->id_pedido }}</h4>
                             <a href="{{ route('profile') }}" class="btn back-button">
                                 Volver al perfil
                             </a>

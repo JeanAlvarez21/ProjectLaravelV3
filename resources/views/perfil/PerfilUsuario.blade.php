@@ -355,6 +355,8 @@
                             </div>
                         </div>
                     </div>
+
+
                     <div class="tab-pane fade" id="proyectos" role="tabpanel" aria-labelledby="v-pills-proyectos-tab">
                         <div class="card">
                             <div class="card-header">
@@ -425,7 +427,7 @@
                                 <div class="col-md-6 mb-4">
                                     <div class="card order-card h-100">
                                         <div class="card-body">
-                                            <h5 class="card-title">Pedido #${order.id_pedido}</h5>
+                                            <h5 class="card-title">Código de Pedido #${order.id_pedido}</h5>
                                             <p class="card-text">Fecha: ${new Date(order.fecha_pedido).toLocaleDateString()}</p>
                                             <p class="card-text">Total: $${parseFloat(order.total).toFixed(2)}</p>
                                             <span class="badge bg-${order.estado === 'Completado' ? 'success' : order.estado === 'Pendiente' ? 'warning' : 'info'}">${order.estado || 'Pendiente'}</span>

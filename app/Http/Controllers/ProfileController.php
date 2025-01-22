@@ -80,4 +80,21 @@ class ProfileController extends Controller
             return response()->json(['error' => 'Error al cargar los pedidos'], 500);
         }
     }
+
+    public function getUserProjects()
+{
+    try {
+        $user = auth()->user(); // Obtén al usuario autenticado
+        $proyectos = $user->proyectos()->get(); // Asumiendo que tienes una relación "proyectos" definida en el modelo User
+
+        return response()->json($proyectos); // Devuelve los proyectos en formato JSON
+    } catch (\Exception $e) {
+        \Log::error('Error al obtener proyectos del usuario: ' . $e->getMessage(), [
+            'user_id' => auth()->id(),
+            'error' => $e->getTraceAsString()
+        ]);
+        return response()->json(['error' => 'Error al cargar los proyectos'], 500);
+    }
+}
+
 }

@@ -1,6 +1,5 @@
-<!DOCTYPE
-html >
-  <html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -210,71 +209,71 @@ html >
         </div>
     </div>
 
-<!-- Confirmation Modal -->
-<div class="modal fade" id="cartMessageModal" tabindex="-1" aria-labelledby="cartMessageModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="cartMessageModalLabel">Mensaje del sistema</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p id="cartMessageContent"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+    <!-- Confirmation Modal -->
+    <div class="modal fade" id="cartMessageModal" tabindex="-1" aria-labelledby="cartMessageModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cartMessageModalLabel">Mensaje del sistema</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="cartMessageContent"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const addToCartForms = document.querySelectorAll('.add-to-cart-form');
-        const cartMessageModal = new bootstrap.Modal(document.getElementById('cartMessageModal'));
-        const cartMessageContent = document.getElementById('cartMessageContent');
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const addToCartForms = document.querySelectorAll('.add-to-cart-form');
+            const cartMessageModal = new bootstrap.Modal(document.getElementById('cartMessageModal'));
+            const cartMessageContent = document.getElementById('cartMessageContent');
 
-        addToCartForms.forEach(form => {
-            const quantityInput = form.querySelector('.quantity-input');
-            
-            form.addEventListener('submit', function (event) {
-                event.preventDefault();
+            addToCartForms.forEach(form => {
+                const quantityInput = form.querySelector('.quantity-input');
 
-                const stock = parseInt(quantityInput.getAttribute('data-stock'), 10);
-                const quantity = parseInt(quantityInput.value, 10);
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault();
 
-                if (quantity > stock) {
-                    cartMessageContent.textContent = "La cantidad seleccionada supera el stock disponible.";
-                    cartMessageModal.show();
-                    quantityInput.value = stock; // Set the input value to the maximum available stock
-                } else {
-                    // Simulate adding to cart (you can replace this with an actual AJAX call)
-                    const formData = new FormData(form);
-                    fetch(form.action, {
-                        method: 'POST',
-                        body: formData,
-                    })
-                        .then(response => {
-                            if (response.ok) {
-                                cartMessageContent.textContent = "Producto agregado al carrito con éxito.";
-                            } else {
-                                throw new Error("Ocurrió un error al agregar el producto al carrito.");
-                            }
-                            cartMessageModal.show();
+                    const stock = parseInt(quantityInput.getAttribute('data-stock'), 10);
+                    const quantity = parseInt(quantityInput.value, 10);
+
+                    if (quantity > stock) {
+                        cartMessageContent.textContent = "La cantidad seleccionada supera el stock disponible.";
+                        cartMessageModal.show();
+                        quantityInput.value = stock; // Set the input value to the maximum available stock
+                    } else {
+                        // Simulate adding to cart (you can replace this with an actual AJAX call)
+                        const formData = new FormData(form);
+                        fetch(form.action, {
+                            method: 'POST',
+                            body: formData,
                         })
-                        .catch(error => {
-                            cartMessageContent.textContent = error.message;
-                            cartMessageModal.show();
-                        });
-                }
+                            .then(response => {
+                                if (response.ok) {
+                                    cartMessageContent.textContent = "Producto agregado al carrito con éxito.";
+                                } else {
+                                    throw new Error("Ocurrió un error al agregar el producto al carrito.");
+                                }
+                                cartMessageModal.show();
+                            })
+                            .catch(error => {
+                                cartMessageContent.textContent = error.message;
+                                cartMessageModal.show();
+                            });
+                    }
+                });
             });
         });
-    });
-</script>
+    </script>
 
 
-    </body>
+</body>
 
 </html>
-
