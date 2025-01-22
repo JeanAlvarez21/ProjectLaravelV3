@@ -203,8 +203,7 @@
                             role="tab" aria-controls="direcciones" aria-selected="false">Mis Direcciones</a>
                         <a class="nav-link" id="v-pills-pedidos-tab" data-bs-toggle="pill" href="#pedidos" role="tab"
                             aria-controls="pedidos" aria-selected="false">Mis Pedidos</a>
-                        <a class="nav-link" id="v-pills-proyectos-tab" data-bs-toggle="pill" href="#proyectos"
-                            role="tab" aria-controls="proyectos" aria-selected="false">Mis Proyectos</a>
+                        
                         <a class="nav-link text-danger text-center d-block" href="{{ route('logout') }}"
                             onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             Cerrar Sesión

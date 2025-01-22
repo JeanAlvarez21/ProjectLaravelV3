@@ -177,68 +177,40 @@
     </style>
 </head>
 <body>
-<div class="sidebar">
-            <div class="logo" style="text-align: center; margin-bottom: 2rem;">
-                <a href="home">
-                    <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
-                        style="height: 7vh; max-height: auto; width: 70%;">
-                </a>
-            </div>
-
-            <nav>
-            @if(auth()->user()->rol == 1)
-                    <!-- Menú completo para rol 3 -->
-                    <a href="/dashboard" class="nav-item">
-                        <span>Dashboard</span>
-                    </a>
-                    <a href="/productos" class="nav-item">
-                        <span>Productos</span>
-                    </a>
-                    <a href="/categorias" class="nav-item">
-                        <span>Familias</span>
-                    </a>
-                    <a href="/usuarios" class="nav-item active">
-                        <span>Usuarios</span>
-                    </a>
-                    <a href="/pedidos" class="nav-item">
-                        <span>Pedidos</span>
-                    </a>
-                    <a href="/reportes" class="nav-item">
-                        <span>Reportes</span>
-                    </a>
-                @elseif(auth()->user()->rol == 2)
-                    <!-- Menú reducido para rol 2 -->
-                    <a href="/productos" class="nav-item active">
-                        <span>Productos</span>
-                    </a>
-                    <a href="/categorias" class="nav-item">
-                        <span>Familias</span>
-                    </a>
-                    <a href="/pedidos" class="nav-item">
-                        <span>Pedidos</span>
-                    </a>
-                    <a href="/reportes" class="nav-item">
-                        <span>Reportes</span>
-                    </a>
-                @endif
-
-                <!-- Botón de cerrar sesión -->
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
-                    @csrf
-                    <button type="submit" class="btn-logout">Cerrar sesión</button>
-                </form>
-            </nav>
+    <div class="sidebar">
+        <div class="logo" style="text-align: center; margin-bottom: 2rem;">
+            <a href="home">
+                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid" style="height: 7vh; width: 70%;">
+            </a>
         </div>
-
+        <nav>
+            @if(auth()->user()->rol == 1)
+                <a href="/dashboard" class="nav-item"><span>Dashboard</span></a>
+                <a href="/productos" class="nav-item"><span>Productos</span></a>
+                <a href="/categorias" class="nav-item"><span>Familias</span></a>
+                <a href="/usuarios" class="nav-item active"><span>Usuarios</span></a>
+                <a href="/pedidos" class="nav-item"><span>Pedidos</span></a>
+                <a href="/reportes" class="nav-item"><span>Reportes</span></a>
+            @elseif(auth()->user()->rol == 2)
+                <a href="/productos" class="nav-item active"><span>Productos</span></a>
+                <a href="/categorias" class="nav-item"><span>Familias</span></a>
+                <a href="/pedidos" class="nav-item"><span>Pedidos</span></a>
+                <a href="/reportes" class="nav-item"><span>Reportes</span></a>
+            @endif
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
+                @csrf
+                <button type="submit" class="btn-logout">Cerrar sesión</button>
+            </form>
+        </nav>
+    </div>
     <div class="main-content">
         <div class="header">
             <h1>Usuarios</h1>
             <div class="actions">
-                <input type="text" class="search-bar" placeholder="Buscar...">
+                <input type="text" id="search-bar" class="search-bar" placeholder="Buscar...">
             </div>
         </div>
-
-        <table>
+        <table id="user-table">
             <thead>
                 <tr>
                     <th>Nombres y Apellidos</th>
@@ -250,7 +222,7 @@
             <tbody>
                 @foreach($users as $user)
                 <tr>
-                    <td>
+                    <td class="user-name">
                         {{ $user->nombres }} {{ $user->apellidos }}
                         <div class="text-sm text-gray-500">{{ $user->email }}</div>
                     </td>
@@ -272,8 +244,6 @@
                     <td>{{ $user->created_at->format('d F Y') }}</td>
                     <td>
                         <a href="{{ route('usuarios.edit', $user) }}" class="btn btn-edit">Editar</a>
-
-                        <!-- Botón de eliminar -->
                         <form action="{{ route('usuarios.destroy', $user) }}" method="POST" style="display:inline;">
                             @csrf
                             @method('DELETE')
@@ -285,5 +255,20 @@
             </tbody>
         </table>
     </div>
+    <script>
+        document.getElementById('search-bar').addEventListener('input', function () {
+            const searchValue = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#user-table tbody tr');
+
+            rows.forEach(row => {
+                const nameCell = row.querySelector('.user-name').textContent.toLowerCase();
+                if (nameCell.includes(searchValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </body>
 </html>

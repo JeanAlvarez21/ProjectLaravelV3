@@ -20,7 +20,7 @@ class ProductoController extends Controller
         $productos = Producto::when($search, function ($query, $search) {
             $query->where('codigo_producto', $search) // Búsqueda exacta por código
                 ->orWhere('nombre', 'like', '%' . $search . '%'); // Búsqueda parcial por nombre
-        })->paginate(10); // Cambia el número de elementos según sea necesario
+        })->get(); // Cambia el número de elementos según sea necesario
 
         return view('productos.index', compact('productos', 'search'));
     }
@@ -42,37 +42,43 @@ class ProductoController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nombre' => 'required|string|max:255', // Nombre del producto (obligatorio y con longitud máxima)
-            'descripcion' => 'required|string|max:255', // Descripción detallada (obligatoria)
-            'id_categoria' => 'required', // Validación estándar
-            //'nueva_categoria' => 'nullable|string|max:255|required_if:id_categoria,nueva',  Solo requerida si se selecciona "nueva"
-            //'descripcion_categoria' => 'nullable|string|required_if:id_categoria,nueva', // Solo requerida si se selecciona "nueva"
-            'codigo_producto' => 'required|string|max:100|unique:productos,codigo_producto', // Código único del producto
-            'precio' => 'required|numeric|min:0', // Precio del producto (debe ser un número positivo)
-            'costo' => 'required|numeric|min:0', // Costo unitario (debe ser un número positivo)
-            'stock' => 'required|integer|min:0', // Cantidad disponible (mínimo 0)
-            'min_stock' => 'required|integer|min:0', // Stock mínimo permitido (mínimo 0)
-            'visible' => 'required|boolean', // Producto visible (1 o 0)
+            'nombre' => 'required|string|max:255', 
+            'largo' => 'required|integer|min:1',
+            'ancho' => 'required|integer|min:1',
+            'grosor' => 'required|integer|min:1',
+            'descripcion_opcional' => 'nullable|string|max:255',
+            'id_categoria' => 'required', 
+            'codigo_producto' => 'required|string|max:100|unique:productos,codigo_producto',
+            'precio' => 'required|numeric|min:0',
+            'costo' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'min_stock' => 'required|integer|min:0',
+            'visible' => 'required|boolean',
             'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'nombre_sucursal' => 'required|string|max:100', // Nombre de la sucursal (obligatorio)
-            'direccion_sucursal' => 'required|string|max:100', // Dirección de la sucursal (obligatorio)
-            ],
-            ['codigo_producto.unique'=>'Ya existe un producto con este Código' ]);
+            'nombre_sucursal' => 'required|string|max:100',
+            'direccion_sucursal' => 'required|string|max:100',
+        ], [
+            'codigo_producto.unique' => 'Ya existe un producto con este Código'
+        ]);
     
-        
-
-        // Manejar la categoría
+        // Construir la descripción combinada
+        $dimensiones = "{$request->largo}mm X {$request->ancho}mm X {$request->grosor}mm";
+        $descripcionCompleta = $request->descripcion_opcional 
+            ? "{$dimensiones}\n{$request->descripcion_opcional}" 
+            : $dimensiones;
+    
+        // Manejo de categorías
         if ($request->id_categoria === 'nueva') {
             $categoria = Categoria::create([
                 'nombre_categoria' => ucfirst(strtolower($request->nueva_categoria)),
-                'descripcion_categoria' => ucfirst(strtolower($request->descripcion_categoria)) // Aquí se usa la nueva descripción
+                'descripcion_categoria' => ucfirst(strtolower($request->descripcion_categoria))
             ]);
             $id_categoria = $categoria->id_categoria;
         } else {
             $id_categoria = $request->id_categoria;
         }
-
-               // Manejar la imagen
+    
+        // Manejo de la imagen
         $rutaImagen = null;
         
         if ($request->hasFile('imagen')) {
@@ -81,21 +87,21 @@ class ProductoController extends Controller
             $imagen->move(public_path('assets/productos'), $nombreImagen);
             $rutaImagen = 'assets/productos/' . $nombreImagen;
         }
-
+    
+        // Crear el producto
         Producto::create([
-            'codigo_producto' => $request->codigo_producto, // Código único del producto
-            'nombre' => $request->nombre, // Nuevo nombre de columna
-            'descripcion' => $request->descripcion,
-            'id_categoria' => $id_categoria, // ID de la categoría
-            //'descripcion_categoria' => $request->descripcion,
-            'precio' => $request->precio, // Precio del producto
-            'costo' => $request->costo, // Costo del producto
-            'stock' => $request->stock, // Cantidad en inventario
-            'min_stock' => $request->min_stock, // Stock mínimo permitido
-            'visible' => $request->visible, // Visibilidad del producto (1 o 0)
-            'link_imagen' => $rutaImagen, // Ruta de la imagen (asegúrate de manejarla antes)
-            'nombre_sucursal' => $request->nombre_sucursal, // Nombre de la sucursal
-            'direccion_sucursal' => $request->direccion_sucursal, // Dirección de la sucursal
+            'codigo_producto' => $request->codigo_producto,
+            'nombre' => $request->nombre,
+            'descripcion' => $descripcionCompleta,
+            'id_categoria' => $id_categoria,
+            'precio' => $request->precio,
+            'costo' => $request->costo,
+            'stock' => $request->stock,
+            'min_stock' => $request->min_stock,
+            'visible' => $request->visible,
+            'link_imagen' => $rutaImagen,
+            'nombre_sucursal' => $request->nombre_sucursal,
+            'direccion_sucursal' => $request->direccion_sucursal,
         ]);
     
         return redirect()->route('productos.index')
@@ -191,6 +197,7 @@ class ProductoController extends Controller
         return redirect()->route('productos.index')
             ->with('success', 'Producto eliminado exitosamente.');
     }
+
 
     public function showForClients()
 {

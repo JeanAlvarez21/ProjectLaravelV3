@@ -41,7 +41,6 @@
 
         .sidebar .btn-logout {
             background-color: #FF6347;
-            /* Rojo */
             color: white;
             border: none;
             padding: 0.75rem 1rem;
@@ -56,6 +55,12 @@
         .sidebar .btn-logout:hover {
             background-color: #D44C3C;
         }
+
+        .preview-image {
+            max-width: 200px;
+            max-height: 200px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 
@@ -65,14 +70,12 @@
         <div class="sidebar">
             <div class="logo" style="text-align: center; margin-bottom: 2rem;">
                 <a href="home">
-                    <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
-                        style="height: 7vh; max-height: auto; width: 70%;">
+                    <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid" style="height: 7vh; max-height: auto; width: 70%;">
                 </a>
             </div>
 
             <nav>
                 @if(auth()->user()->rol == 1)
-                    <!-- Menú completo para rol 3 -->
                     <a href="/dashboard" class="nav-item">
                         <span>Dashboard</span>
                     </a>
@@ -85,29 +88,27 @@
                     <a href="/usuarios" class="nav-item">
                         <span>Usuarios</span>
                     </a>
-                    <a href="/pedidos" class="nav-item">
-                        <span>Pedidos</span>
+                    <a href="/facturacion" class="nav-item">
+                        <span>Facturación</span>
                     </a>
                     <a href="/reportes" class="nav-item">
                         <span>Reportes</span>
                     </a>
                 @elseif(auth()->user()->rol == 2)
-                    <!-- Menú reducido para rol 2 -->
                     <a href="/productos" class="nav-item active">
                         <span>Productos</span>
                     </a>
                     <a href="/categorias" class="nav-item">
                         <span>Familias</span>
                     </a>
-                    <a href="/pedidos" class="nav-item">
-                        <span>Pedidos</span>
+                    <a href="/facturacion" class="nav-item">
+                        <span>Facturación</span>
                     </a>
                     <a href="/reportes" class="nav-item">
                         <span>Reportes</span>
                     </a>
                 @endif
 
-                <!-- Botón de cerrar sesión -->
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
                     @csrf
                     <button type="submit" class="btn-logout">Cerrar sesión</button>
@@ -147,17 +148,53 @@
                             </div>
 
                             <div class="mb-3">
-                                <label for="descripcion" class="form-label">Dimensiones (Formato: Largo x Ancho x Grosor)</label>
-                                <input 
-                                    type="text" 
-                                    class="form-control" 
-                                    id="descripcion" 
-                                    name="descripcion" 
-                                    placeholder="Ejemplo: 2440mm x 1220mm x 18mm" 
-                                    required 
-                                    pattern="^\d+mm x \d+mm x \d+mm$" 
-                                    title="Ingrese las dimensiones en el formato: Largo x Ancho x Grosor, por ejemplo, 2440mm x 1220mm x 18mm">
-                            </div>
+                                    <label class="form-label">Dimensiones</label>
+                                    <div class="row g-2">
+                                        <div class="col-md">
+                                            <label for="largo" class="form-label">Largo (mm)</label>
+                                            <input 
+                                                type="number" 
+                                                class="form-control" 
+                                                id="largo" 
+                                                name="largo" 
+                                                placeholder="Ejemplo: 2440" 
+                                                required 
+                                                min="1">
+                                        </div>
+                                        <div class="col-md">
+                                            <label for="ancho" class="form-label">Ancho (mm)</label>
+                                            <input 
+                                                type="number" 
+                                                class="form-control" 
+                                                id="ancho" 
+                                                name="ancho" 
+                                                placeholder="Ejemplo: 1220" 
+                                                required 
+                                                min="1">
+                                        </div>
+                                        <div class="col-md">
+                                            <label for="grosor" class="form-label">Grosor (mm)</label>
+                                            <input 
+                                                type="number" 
+                                                class="form-control" 
+                                                id="grosor" 
+                                                name="grosor" 
+                                                placeholder="Ejemplo: 18" 
+                                                required 
+                                                min="1">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="descripcion_opcional" class="form-label">Descripción adicional (opcional)</label>
+                                    <textarea 
+                                        class="form-control" 
+                                        id="descripcion_opcional" 
+                                        name="descripcion_opcional" ></textarea>
+                                </div>
+
+
 
                             <div class="mb-3">
                                 <label for="precio" class="form-label">Precio</label>
