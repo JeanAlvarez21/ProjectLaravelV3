@@ -11,7 +11,7 @@ class Categoria extends Model
 
     protected $table = 'categorias'; // Esto es opcional, solo si el nombre de la tabla no sigue la convención
     protected $primaryKey = 'id_categoria'; // Definir la clave primaria
-    protected $fillable = ['nombre_categoria']; // Campos asignables en masa
+    protected $fillable = ['nombre_categoria', 'descripcion_categoria']; // Campos asignables en masa
     public $timestamps = false; // Si no estás utilizando timestamps
 
     public function productos()

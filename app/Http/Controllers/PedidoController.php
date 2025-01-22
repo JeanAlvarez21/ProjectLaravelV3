@@ -66,7 +66,8 @@ class PedidoController extends Controller
 
             DB::commit();
 
-            return redirect()->route('pedidos.show', $pedido->id_pedido)
+            // Redirect to the detalles page instead of pedidos.show
+            return redirect()->route('pedidos.detalles', $pedido->id_pedido)
                 ->with('success', 'Pedido creado exitosamente.');
 
         } catch (\Exception $e) {

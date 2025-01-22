@@ -63,7 +63,7 @@
 
     <!-- Main Content -->
     <div class="container mt-5">
-        <h1 class="mb-4">Agregar / Ver Cortes del Proyecto: {{ $proyectoTemporal['nombre'] ?? $proyecto->nombre }}</h1>
+        <h1 class="mb-4">Agregar / Ver Cortes del Proyecto: {{ $proyecto->nombre ?? $proyectoTemporal['nombre'] }}</h1>
 
         <!-- Errores de validación -->
         @if ($errors->any())
@@ -107,7 +107,7 @@
             </div>
         @endif
 
-        <!-- Formulario para agregar cortes -->
+        <!-- Formulario para agregar cortes temporalmente -->
         @if (!isset($proyecto))
             <form action="{{ route('proyectos.guardarCorteTemporal') }}" method="POST">
                 @csrf

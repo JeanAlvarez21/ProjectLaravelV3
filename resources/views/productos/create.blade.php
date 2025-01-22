@@ -201,6 +201,7 @@
                                 <input type="text" class="form-control" id="descripcion_categoria" name="descripcion_categoria" placeholder="Breve descripción">      
                             </div>
 
+
                             <div class="mb-3">
                                 <label for="imagen" class="form-label">Imagen del Producto</label>
                                 <input type="file" class="form-control" id="imagen" name="imagen" accept="image/jpeg,image/png,image/jpg" required>
@@ -209,12 +210,16 @@
 
                             <div class="mb-3">
                                 <label for="nombre_sucursal" class="form-label">Nombre de la Sucursal</label>
-                                <input type="text" class="form-control" id="nombre_sucursal" name="nombre_sucursal" required>
+                                <input type="text" class="form-control" id="nombre_sucursal" name="nombre_sucursal" value="Loja" required>
                             </div>
 
                             <div class="mb-3">
                                 <label for="direccion_sucursal" class="form-label">Dirección de la Sucursal</label>
-                                <input type="text" class="form-control" id="direccion_sucursal" name="direccion_sucursal" required>
+                                <select class="form-control" id="direccion_sucursal" name="direccion_sucursal" required>
+                                    <option value="" disabled selected>Selecciona una opción</option>
+                                    <option value="Norte">Norte</option>
+                                    <option value="Sur">Sur</option>
+                                </select>
                             </div>
 
                             <div class="form-group">

@@ -118,19 +118,28 @@ Route::prefix('cart')->group(function () {
     Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 });
 
-// Project routes
-Route::resource('proyectos', ProyectoController::class)->except(['show']);
-Route::get('proyectos/{proyecto}/crear-cortes', [ProyectoController::class, 'crearCortes'])->name('proyectos.crearCortes');
-Route::post('proyectos/{proyecto}/guardar-cortes', [CorteController::class, 'store'])->name('cortes.store');
-Route::post('proyectos/guardar-proyecto', [ProyectoController::class, 'guardarProyecto'])->name('proyectos.guardarProyecto');
-// Cut routes
-Route::get('proyectos/{proyecto}/crear-cortes', [ProyectoController::class, 'verCrearCortes'])->name('proyectos.verCrearCortes');
-Route::resource('cortes', CorteController::class);
-Route::get('proyectos/crear-cortes', [ProyectoController::class, 'crearCortes'])->name('proyectos.crearCortes');
-Route::post('proyectos/guardar-corte', [ProyectoController::class, 'guardarCorte'])->name('proyectos.guardarCorte');
-Route::post('proyectos/guardar-corte-temporal', [ProyectoController::class, 'guardarCorteTemporal'])->name('proyectos.guardarCorteTemporal');
-Route::get('proyectos/{proyecto}/ver-cortes', [ProyectoController::class, 'verCortes'])->name('proyectos.verCortes');
+// Agrupar las rutas bajo el middleware `auth` para asegurar que el usuario esté autenticado
+Route::middleware(['auth'])->group(function () {
 
+    // Rutas principales para proyectos
+    Route::resource('proyectos', ProyectoController::class)->except(['show']);
+
+    // Ruta para crear cortes en un proyecto
+    Route::get('proyectos/crear-cortes', [ProyectoController::class, 'crearCortes'])->name('proyectos.crearCortes');
+
+    // Ruta para guardar un proyecto con cortes temporales
+    Route::post('proyectos/guardar-proyecto', [ProyectoController::class, 'guardarProyecto'])->name('proyectos.guardarProyecto');
+
+    // Ruta para ver los cortes de un proyecto ya guardado
+    Route::get('proyectos/{proyecto}/ver-cortes', [ProyectoController::class, 'verCortes'])->name('proyectos.verCortes');
+
+    // Rutas para manejar cortes
+    Route::post('proyectos/guardar-corte-temporal', [ProyectoController::class, 'guardarCorteTemporal'])->name('proyectos.guardarCorteTemporal');
+    Route::post('proyectos/{proyecto}/guardar-cortes', [CorteController::class, 'store'])->name('cortes.store');
+
+    // Rutas para cortes individuales (CRUD)
+    Route::resource('cortes', CorteController::class)->except(['create', 'edit']);
+});
 // Order routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
