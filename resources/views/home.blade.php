@@ -316,7 +316,7 @@
         </div>
 
         <!-- Botón "Crear Proyecto" -->
-        <a href="/crear-proyecto" class="btn btn-primary mt-4">Crear un Proyecto</a>
+        <a href="/proyectos/create" class="btn btn-primary mt-4">Crear un Proyecto</a>
     </section>
 
     <!-- Modal de Login / Registro -->
