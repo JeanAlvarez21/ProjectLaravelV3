@@ -67,9 +67,9 @@ class ProductoController extends Controller
                 'nombre_categoria' => ucfirst(strtolower($request->nueva_categoria)),
                 'descripcion_categoria' => ucfirst(strtolower($request->descripcion_categoria)) // Aquí se usa la nueva descripción
             ]);
-            $id_categoria = $categoria->id_categoria; // Usar el ID de la categoría recién creada
+            $id_categoria = $categoria->id_categoria;
         } else {
-            $id_categoria = $request->id_categoria; // Si el usuario eligió una familia existente
+            $id_categoria = $request->id_categoria;
         }
 
                // Manejar la imagen
@@ -97,10 +97,11 @@ class ProductoController extends Controller
             'nombre_sucursal' => $request->nombre_sucursal, // Nombre de la sucursal
             'direccion_sucursal' => $request->direccion_sucursal, // Dirección de la sucursal
         ]);
-
+    
         return redirect()->route('productos.index')
             ->with('success', 'Producto creado exitosamente.');
     }
+    
 
     public function edit(Producto $producto)
     {
