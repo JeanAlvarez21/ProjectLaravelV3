@@ -127,7 +127,7 @@
                                 </span>
                             </td>
                             <td>
-                                <a href="{{ route('proyectos.verCrearCortes', $proyecto->id) }}" class="btn btn-ver btn-sm">Ver / Crear Cortes</a>
+                                <a href="{{ route('proyectos.verCortes', $proyecto->id) }}" class="btn btn-ver btn-sm">Ver Cortes</a>
                                 <form action="{{ route('proyectos.destroy', $proyecto->id) }}" method="POST" style="display: inline-block;">
                                     @csrf
                                     @method('DELETE')

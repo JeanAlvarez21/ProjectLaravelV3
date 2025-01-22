@@ -19,6 +19,7 @@ class Proyecto extends Model
         'local',
         'estado',
         'id_producto', // Llave foránea para el producto asociado
+        'user_id',     // Llave foránea para el usuario asociado
     ];
 
     /**
@@ -35,5 +36,10 @@ class Proyecto extends Model
     public function cortes()
     {
     return $this->hasMany(Corte::class, 'proyecto_id');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
