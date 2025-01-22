@@ -252,6 +252,23 @@
         @endif
     </div>
 
+    <div class="modal fade" id="cartMessageModal" tabindex="-1" aria-labelledby="cartMessageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cartMessageModalLabel">Mensaje del carrito</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="cartMessageContent"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
@@ -262,6 +279,14 @@
                 }
             });
 
+            const cartMessageModal = new bootstrap.Modal(document.getElementById('cartMessageModal'));
+            const cartMessageContent = document.getElementById('cartMessageContent');
+
+            function showCartMessage(message) {
+                cartMessageContent.textContent = message;
+                cartMessageModal.show();
+            }
+
             $('.quantity-input').on('input', function () {
                 var input = $(this);
                 var stock = parseInt(input.data('stock'));
@@ -269,7 +294,7 @@
 
                 if (value > stock) {
                     input.val(stock);
-                    alert('No puedes seleccionar más productos de los que hay en stock.');
+                    showCartMessage('No puedes seleccionar más productos de los que hay en stock.');
                 } else if (value < 1) {
                     input.val(1);
                 }
@@ -288,12 +313,12 @@
                     url: url,
                     data: formData,
                     success: function (response) {
-                        alert(response.success);
+                        showCartMessage(response.success);
                         updateSubtotal(form.find('.quantity-input'));
                         updateCartTotal();
                     },
                     error: function (xhr) {
-                        alert('Error al actualizar el carrito');
+                        showCartMessage('Error al actualizar el carrito');
                     }
                 });
             });
@@ -309,12 +334,12 @@
                     url: url,
                     data: formData,
                     success: function (response) {
-                        alert(response.success);
+                        showCartMessage(response.success);
                         form.closest('tr').remove();
                         updateCartTotal();
                     },
                     error: function (xhr) {
-                        alert('Error al eliminar el producto del carrito');
+                        showCartMessage('Error al eliminar el producto del carrito');
                     }
                 });
             });
@@ -335,6 +360,7 @@
             }
         });
     </script>
+
 </body>
 
 </html>

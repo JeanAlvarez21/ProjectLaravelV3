@@ -1,5 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE
+html >
+  <html lang="en">
 
 <head>
     <meta charset="UTF-8">
@@ -209,63 +210,71 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+<!-- Confirmation Modal -->
+<div class="modal fade" id="cartMessageModal" tabindex="-1" aria-labelledby="cartMessageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cartMessageModalLabel">Mensaje del sistema</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="cartMessageContent"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const addToCartForms = document.querySelectorAll('.add-to-cart-form');
+        const cartMessageModal = new bootstrap.Modal(document.getElementById('cartMessageModal'));
+        const cartMessageContent = document.getElementById('cartMessageContent');
+
+        addToCartForms.forEach(form => {
+            const quantityInput = form.querySelector('.quantity-input');
+            
+            form.addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                const stock = parseInt(quantityInput.getAttribute('data-stock'), 10);
+                const quantity = parseInt(quantityInput.value, 10);
+
+                if (quantity > stock) {
+                    cartMessageContent.textContent = "La cantidad seleccionada supera el stock disponible.";
+                    cartMessageModal.show();
+                    quantityInput.value = stock; // Set the input value to the maximum available stock
+                } else {
+                    // Simulate adding to cart (you can replace this with an actual AJAX call)
+                    const formData = new FormData(form);
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                cartMessageContent.textContent = "Producto agregado al carrito con éxito.";
+                            } else {
+                                throw new Error("Ocurrió un error al agregar el producto al carrito.");
+                            }
+                            cartMessageModal.show();
+                        })
+                        .catch(error => {
+                            cartMessageContent.textContent = error.message;
+                            cartMessageModal.show();
+                        });
                 }
-            });
-
-            $('.quantity-input').on('input', function () {
-                var input = $(this);
-                var stock = parseInt(input.data('stock'));
-                var value = parseInt(input.val());
-
-                if (value > stock) {
-                    input.val(stock);
-                    alert('No puedes seleccionar más productos de los que hay en stock.');
-                } else if (value < 1) {
-                    input.val(1);
-                }
-            });
-
-            $('.add-to-cart-form').submit(function (e) {
-                e.preventDefault();
-                var form = $(this);
-                var url = form.attr('action');
-                var formData = form.serialize();
-
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (response) {
-                        alert(response.success);
-                        // Update stock display
-                        var quantityInput = form.find('.quantity-input');
-                        var stockDisplay = form.siblings('.stock-display');
-                        var newStock = parseInt(stockDisplay.text()) - parseInt(quantityInput.val());
-                        stockDisplay.text(newStock);
-                        if (newStock === 0) {
-                            stockDisplay.parent().html('<strong>Stock:</strong> <span class="text-danger">Agotado</span>');
-                            form.hide();
-                        }
-                        quantityInput.attr('max', newStock).data('stock', newStock);
-                        if (newStock === 0) {
-                            form.find('button[type="submit"]').prop('disabled', true);
-                        }
-                    },
-                    error: function (xhr) {
-                        alert('Error al agregar el producto al carrito');
-                    }
-                });
             });
         });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+    });
+</script>
+
+
+    </body>
 
 </html>
+
