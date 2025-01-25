@@ -1,60 +1,32 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Carpinteros</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <title>Carpinteros - Novocentro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
     <style>
-        /* Estilo de navbar */
-
-        body {
-            padding-top: 70px;
-            /* Added padding to prevent content from being hidden behind the fixed navbar */
-        }
-
-        .navbar {
-            background-color: #FFD700;
-        }
-
-        .no-link {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .navbar-brand img {
-            height: 6vh;
-            max-height: 100%;
-            width: auto;
-        }
-
-        @media (max-width: 576px) {
-            .navbar-brand img {
-                height: 5vh;
-            }
-        }
-
-        /* From Uiverse.io by suda-code */
-        button {
+        .btn-auth {
             padding: 7px 15px;
             border: 0;
             border-radius: 100px;
             background-color: rgb(255, 255, 255);
-            color: #ffffff;
+            color: #333;
             font-weight: Bold;
             transition: all 0.5s;
             -webkit-transition: all 0.5s;
         }
 
-        button:hover {
+        .btn-auth:hover {
             background-color: #FFFAEB;
             box-shadow: 0 0 20px #6fc5ff50;
             transform: scale(1.1);
         }
 
-        button:active {
+        .btn-auth:active {
             background-color: rgb(255, 255, 255);
             transition: all 0.25s;
             -webkit-transition: all 0.10s;
@@ -62,202 +34,307 @@
             transform: scale(0.98);
         }
 
-
-
-        /* Estilo de contacto */
-        .copy-icon {
+        .copyable {
             cursor: pointer;
-            font-size: 0.8rem;
-            color: #6c757d;
-            margin-left: 0.3rem;
         }
 
-        .copy-icon:hover {
-            color: #0d6efd;
+        .copy-icon {
+            cursor: pointer;
+            margin-left: 5px;
+        }
+
+        :root {
+            --primary-color: #FFD700;
+            --secondary-color: #495E57;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            color: var(--text-color);
+            padding-top: 76px;
+        }
+
+        .navbar {
+            background-color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+        }
+
+        .navbar-brand img {
+            height: 40px;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand img:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-link {
+            color: var(--text-color) !important;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--secondary-color) !important;
+        }
+
+        .btn-custom {
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .footer {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 40px 0;
+        }
+
+        .footer h4 {
+            color: var(--primary-color);
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: var(--primary-color);
+        }
+
+        .social-icons a {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            color: white;
+            transition: color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: var(--primary-color);
+        }
+
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, .1);
+        }
+
+        .card-header {
+            background-color: var(--primary-color);
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/media/hero-bg.jpg') no-repeat center center;
+            background-size: cover;
+            color: white;
+            padding: 100px 0;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-brand img {
+                height: 30px;
+            }
+        }
+
+        .text-custom {
+            color: var(--text-color);
         }
     </style>
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
             <a class="navbar-brand"
-            href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
-            <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
+                href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
+                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
                     style="height: 6vh; max-height: 100%; width: auto;">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link"
-                            href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2|| Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">Menú
-                        </a>
+                        <a class="nav-link" href="{{ url('/') }}">Inicio</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('productos.clientes') }}">Productos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/proyectos">Proyectos</a></li>
-                    @auth
-                        @if(Auth::user()->rol == 1 || Auth::user()->rol == 2)
-                            <li class="nav-item"><a class="nav-link" href="{{ route('carpinteros.index') }}">Carpinteros</a>
-                            </li>
-                        @else
-                            <li class="nav-item"><a class="nav-link" href="/carpinteros">Carpinteros</a></li>
-                        @endif
-                    @else
-                        <li class="nav-item"><a class="nav-link" href="/carpinteros">Carpinteros</a></li>
-                    @endauth
-                    <li class="nav-item"><a class="nav-link" href="/contacto">Contacto</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('productos.clientes') }}">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/proyectos">Proyectos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/carpinteros">Carpinteros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contacto">Contacto</a>
+                    </li>
                     @auth
                         @if(Auth::user()->rol == 1)
-                            <li class="nav-item"><a href="/dashboard" class="nav-link no-link">Admin</a></li>
+                            <li class="nav-item"><a href="/dashboard" class="nav-link">Admin</a></li>
                         @elseif(Auth::user()->rol == 2)
-                            <li class="nav-item"><a href="/productos" class="nav-link no-link">Empleado</a></li>
+                            <li class="nav-item"><a href="/productos" class="nav-link">Empleado</a></li>
                         @endif
                     @endauth
                 </ul>
-                <div class="d-flex align-items-center">
+                <div class="navbar-nav">
                     @auth
                         @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3)
-                            <a href="{{ route('cart.view') }}">
-                                <img src="{{ asset('media/carro-de-la-compra.png') }}" alt="Carrito" width="30" height="30">
+                            <a href="{{ route('cart.view') }}" class="nav-link">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="badge bg-primary">{{ count((array) session('cart')) }}</span>
                             </a>
-                            <span class="mx-3">|</span>
-                            <a href="{{ route('profile') }}">
-                                <img src="{{ asset('media/boton-usuario.png') }}" alt="Profile" width="30" height="30">
+                            <a href="{{ route('profile') }}" class="nav-link">
+                                <i class="fas fa-user"></i>
                             </a>
-                            <span class="mx-3">|</span>
-                            <a href="{{ route('notificaciones') }}">
-                                <img src="{{ asset('media/boton-notificaciones.png') }}" alt="Notificaciones" width="30"
-                                    height="30">
+                            <a href="{{ route('notificaciones') }}" class="nav-link">
+                                <i class="fas fa-bell"></i>
                             </a>
+                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-custom">Cerrar Sesión</button>
+                            </form>
                         @else
-                            <div class="d-flex align-items-center">
-                                <button style="font-size: 16px;">
-                                    <a href="{{ route('login') }}" class="text-dark text-decoration-none">
-                                        Iniciar Sesión / Regístrate
-                                    </a>
-                                </button>
-                            </div>
+                            <a href="{{ route('login') }}" class="btn-auth">
+                                Iniciar Sesión / Regístrate
+                            </a>
                         @endif
                     @else
-                        <div class="d-flex align-items-center">
-                            <button style="font-size: 16px;">
-                                <a href="{{ route('login') }}" class="text-dark text-decoration-none">
-                                    Iniciar Sesión / Regístrate
-                                </a>
-                            </button>
-                        </div>
+                        <a href="{{ route('login') }}" class="btn-auth">
+                            Iniciar Sesión / Regístrate
+                        </a>
                     @endauth
                 </div>
             </div>
         </div>
     </nav>
 
-
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Carpinteros Disponibles</h1>
+    <main class="container my-5">
+        <h1 class="text-center mb-5">Carpinteros Disponibles</h1>
 
         @auth
             @if(Auth::user()->rol == 1 || Auth::user()->rol == 2)
                 <div class="text-center py-4">
-                    <a href="{{ route('carpinteros.manage') }}" class="btn btn-warning">Agregar Carpintero</a>
+                    <a href="{{ route('carpinteros.manage') }}" class="btn btn-custom">Agregar Carpintero</a>
                 </div>
             @endif
         @endauth
 
         @if($carpinteros->isEmpty())
-            <div class="text-center py-4">
-                <p class="text-gray-600">No hay carpinteros disponibles en este momento.</p>
+            <div class="alert alert-info text-center" role="alert">
+                No hay carpinteros disponibles en este momento.
             </div>
         @else
             <div class="row">
                 @foreach ($carpinteros as $carpintero)
-                    <div class="col-md-3">
-                        <div class="card mb-4">
-                            <img src="{{ $carpintero->foto_perfil }}" class="card-img-top"
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <img src="{{ asset($carpintero->foto_perfil) }}" class="card-img-top"
                                 alt="Foto de {{ $carpintero->nombre }}">
                             <div class="card-body">
-                                <h5 class="card-title">{{ $carpintero->nombre }}</h5>
+                                <h5 class="card-title">{{ $carpintero->nombre }} {{ $carpintero->apellido }}</h5>
                                 <p class="card-text"><strong>Especialidad:</strong> {{ $carpintero->especialidad }}</p>
                                 <p class="card-text">
                                     <strong>Teléfono:</strong>
                                     <span class="copyable">{{ $carpintero->telefono }}</span>
-                                    <i class="bi bi-clipboard copy-icon" data-copy-text="{{ $carpintero->telefono }}"
+                                    <i class="fas fa-copy copy-icon" data-copy-text="{{ $carpintero->telefono }}"
                                         data-copy-type="teléfono" aria-label="Copiar teléfono"></i>
                                 </p>
                                 <p class="card-text">
                                     <strong>Email:</strong>
                                     <span class="copyable">{{ $carpintero->email }}</span>
-                                    <i class="bi bi-clipboard copy-icon" data-copy-text="{{ $carpintero->email }}"
+                                    <i class="fas fa-copy copy-icon" data-copy-text="{{ $carpintero->email }}"
                                         data-copy-type="email" aria-label="Copiar email"></i>
                                 </p>
-                                <p class="card-text">
-                                    <strong>Ubicación:</strong>
-                                    <span class="copyable">{{ $carpintero->ubicacion }}</span>
-                                    <i class="bi bi-clipboard copy-icon" data-copy-text="{{ $carpintero->ubicacion }}"
-                                        data-copy-type="ubicación" aria-label="Copiar ubicación"></i>
-                                </p>
-                                <p class="card-text"><strong>Descripción:</strong> {{ $carpintero->descripcion }}</p>
-                                <p class="card-text">
-                                    <strong>Disponibilidad:</strong>
-                                    @if($carpintero->disponibilidad == 1)
-                                        <span class="badge bg-success">Disponible</span>
-                                    @else
-                                        <span class="badge bg-danger">No disponible</span>
-                                    @endif
-                                </p>
+                                <p class="card-text"><strong>Direccion:</strong> {{ $carpintero->ubicacion }} </p>
+                                <p class="card-text"><strong>Descripcion:</strong> {{ $carpintero->descripcion }} </p>
+                            </div>
+                            <div class="card-footer">
+                                <span class="badge bg-{{ $carpintero->disponibilidad == 1 ? 'success' : 'danger' }}">
+                                    {{ $carpintero->disponibilidad == 1 ? 'Disponible' : 'No disponible' }}
+                                </span>
                             </div>
                         </div>
                     </div>
                 @endforeach
             </div>
         @endif
-    </div>
+    </main>
 
-    <!-- Confirmation Modal -->
-    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="confirmationModalLabel">Información Copiada</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h4>Novocentro</h4>
+                    <p>Transformando la industria de la madera con innovación y calidad desde 1995.</p>
                 </div>
-                <div class="modal-body">
-                    <p id="confirmationMessage"></p>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h4>Enlaces Rápidos</h4>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ url('/') }}">Inicio</a></li>
+                        <li><a href="{{ route('productos.clientes') }}">Productos</a></li>
+                        <li><a href="/proyectos">Proyectos</a></li>
+                        <li><a href="/carpinteros">Carpinteros</a></li>
+                        <li><a href="/contacto">Contacto</a></li>
+                    </ul>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <div class="col-md-4">
+                    <h4>Síguenos</h4>
+                    <div class="social-icons">
+                        <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-4 mb-3">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <p>&copy; 2023 Novocentro. Todos los derechos reservados.</p>
                 </div>
             </div>
         </div>
-    </div>
+    </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const copyIcons = document.querySelectorAll('.copy-icon');
-            const confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
-            const confirmationMessage = document.getElementById('confirmationMessage');
 
-            copyIcons.forEach(icon => {
+            copyIcons.forEach((icon) => {
                 icon.addEventListener('click', function () {
-                    const textToCopy = this.getAttribute('data-copy-text');
-                    const copyType = this.getAttribute('data-copy-type');
+                    const textToCopy = this.dataset.copyText;
+                    const copyType = this.dataset.copyType;
+
                     navigator.clipboard.writeText(textToCopy).then(() => {
-                        // Set confirmation message
-                        confirmationMessage.textContent = `El ${copyType} ha sido copiado al portapapeles.`;
-
-                        // Show modal
-                        confirmationModal.show();
-
-                        // Hide modal after 3 seconds
-                        setTimeout(() => {
-                            confirmationModal.hide();
-                        }, 3000);
+                        alert(`${copyType} copiado al portapapeles: ${textToCopy}`);
+                    }).catch(err => {
+                        console.error('Error al copiar texto: ', err);
                     });
                 });
             });

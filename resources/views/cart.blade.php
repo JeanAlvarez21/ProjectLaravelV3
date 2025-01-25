@@ -4,113 +4,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito de Compras - Novocentro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Carrito de Compras</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <style>
-        /* Personalización adicional */
+        :root {
+            --primary-color: #FFD700;
+            --secondary-color: #495E57;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            color: var(--text-color);
+            padding-top: 76px;
+        }
+
+        .navbar {
+            background-color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+        }
+
+        .navbar-brand img {
+            height: 40px;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand img:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-link {
+            color: var(--text-color) !important;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--secondary-color) !important;
+        }
+
+        .btn-custom {
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .footer {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 40px 0;
+        }
+
+        .footer h4 {
+            color: var(--primary-color);
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: var(--primary-color);
+        }
+
+        .social-icons a {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            color: white;
+            transition: color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: var(--primary-color);
+        }
+
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, .1);
+        }
+
+        .card-header {
+            background-color: var(--primary-color);
+        }
+
         .hero-section {
-            background: url('{{ asset('media/background_main.png') }}') no-repeat center center;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/media/hero-bg.jpg') no-repeat center center;
             background-size: cover;
             color: white;
             padding: 100px 0;
         }
 
-        .hero-overlay {
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 50px;
-            border-radius: 10px;
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
         }
 
-        .carousel-item img {
-            max-height: 200px;
-            max-width: 100%;
-            object-fit: contain;
-            margin: 0 auto;
-        }
-
-        body {
-            padding-top: 70px;
-        }
-
-        .navbar {
-            background-color: #FFD700;
-        }
-
-        .no-link {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        .navbar-brand img {
-            height: 6vh;
-            max-height: 100%;
-            width: auto;
-        }
-
-        @media (max-width: 576px) {
+        @media (max-width: 768px) {
             .navbar-brand img {
-                height: 5vh;
+                height: 30px;
             }
         }
 
-        /* From Uiverse.io by suda-code */
-        button {
-            padding: 7px 15px;
-            border: 0;
-            border-radius: 100px;
-            background-color: rgb(255, 255, 255);
-            color: #ffffff;
-            font-weight: Bold;
-            transition: all 0.5s;
-            -webkit-transition: all 0.5s;
-        }
-
-        button:hover {
-            background-color: #FFFAEB;
-            box-shadow: 0 0 20px #6fc5ff50;
-            transform: scale(1.1);
-        }
-
-        button:active {
-            background-color: rgb(255, 255, 255);
-            transition: all 0.25s;
-            -webkit-transition: all 0.10s;
-            box-shadow: none;
-            transform: scale(0.98);
-        }
-
-        /* Estilos para los botones del carrusel */
-        .carousel-control-prev,
-        .carousel-control-next {
-            margin-left: 20px;
-            margin-right: 20px;
-            z-index: 5;
-        }
-
-        .carousel-control-prev-icon,
-        .carousel-control-next-icon {
-            background-color: #495E57;
-            border-radius: 50%;
-            padding: 15px;
-        }
-
-        .carousel-control-prev,
-        .carousel-control-next {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        .carousel-control-prev {
-            left: 10px;
-        }
-
-        .carousel-control-next {
-            right: 10px;
+        .text-custom {
+            color: var(--text-color);
         }
     </style>
 </head>
@@ -118,10 +134,8 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
-            <a class="navbar-brand"
-                href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
-                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
-                    style="height: 6vh; max-height: 100%; width: auto;">
+            <a class="navbar-brand" href="{{ url('/') }}">
+                <img src="{{ asset('media/logo.png') }}" alt="Novocentro Logo" class="img-fluid">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -130,146 +144,159 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link"
-                            href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">Menú
-                        </a>
+                        <a class="nav-link" href="{{ url('/') }}">Inicio</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('productos.clientes') }}">Productos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/proyectos">Proyectos</a></li>
-                    @auth
-                        @if(Auth::user()->rol == 1 || Auth::user()->rol == 2)
-                            <li class="nav-item"><a class="nav-link" href="{{ route('carpinteros.index') }}">Carpinteros</a>
-                            </li>
-                        @else
-                            <li class="nav-item"><a class="nav-link" href="/carpinteros">Carpinteros</a></li>
-                        @endif
-                    @else
-                        <li class="nav-item"><a class="nav-link" href="/carpinteros">Carpinteros</a></li>
-                    @endauth
-                    <li class="nav-item"><a class="nav-link" href="/contacto">Contacto</a></li>
-                    @auth
-                        @if(Auth::user()->rol == 1)
-                            <li class="nav-item"><a href="/dashboard" class="nav-link no-link">Admin</a></li>
-                        @elseif(Auth::user()->rol == 2)
-                            <li class="nav-item"><a href="/productos" class="nav-link no-link">Empleado</a></li>
-                        @endif
-                    @endauth
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('productos.clientes') }}">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/proyectos">Proyectos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/carpinteros">Carpinteros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contacto">Contacto</a>
+                        @auth
+                                @if(Auth::user()->rol == 1)
+                                    <li class="nav-item"><a href="/dashboard" class="nav-link no-link">Admin</a></li>
+                                @elseif(Auth::user()->rol == 2)
+                                    <li class="nav-item"><a href="/productos" class="nav-link no-link">Empleado</a></li>
+                                @endif
+                        @endauth
+                    </li>
                 </ul>
                 <div class="d-flex align-items-center">
                     @auth
-                        @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3)
-                            <a href="{{ route('cart.view') }}">
-                                <img src="{{ asset('media/carro-de-la-compra.png') }}" alt="Carrito" width="30" height="30">
-                            </a>
-                            <span class="mx-3">|</span>
-                            <a href="{{ route('profile') }}">
-                                <img src="{{ asset('media/boton-usuario.png') }}" alt="Profile" width="30" height="30">
-                            </a>
-                            <span class="mx-3">|</span>
-                            <a href="{{ route('notificaciones') }}">
-                                <img src="{{ asset('media/boton-notificaciones.png') }}" alt="Notificaciones" width="30"
-                                    height="30">
-                            </a>
-                        @else
-                            <div class="d-flex align-items-center">
-                                <button style="font-size: 16px;">
-                                    <a href="{{ route('login') }}" class="text-dark text-decoration-none">
-                                        Iniciar Sesión / Regístrate
-                                    </a>
-                                </button>
-                            </div>
-                        @endif
+                        <a href="{{ route('cart.view') }}" class="btn btn-link active">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="badge bg-primary">{{ count((array) session('cart')) }}</span>
+                        </a>
+                        <a href="{{ route('profile') }}" class="btn btn-link">
+                            <i class="fas fa-user"></i>
+                        </a>
+                        <a href="{{ route('notificaciones') }}" class="nav-link">
+                            <i class="fas fa-bell"></i>
+                        </a>
+                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-custom">Cerrar Sesión</button>
+                        </form>
                     @else
-                        <div class="d-flex align-items-center">
-                            <button style="font-size: 16px;">
-                                <a href="{{ route('login') }}" class="text-dark text-decoration-none">
-                                    Iniciar Sesión / Regístrate
-                                </a>
-                            </button>
-                        </div>
+                        <a href="{{ route('login') }}" class="btn btn-custom">Iniciar Sesión</a>
                     @endauth
                 </div>
             </div>
         </div>
     </nav>
 
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Carrito de Compras</h1>
+    <main class="container my-5">
+        <h1 class="text-center mb-5">Carrito de Compras</h1>
+        <div id="alert-container"></div>
         @if(session('cart'))
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th>Cantidad</th>
-                        <th>Precio</th>
-                        <th>Subtotal</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php $total = 0 @endphp
-                    @foreach(session('cart') as $id => $details)
-                        @php $total += $details['price'] * $details['quantity'] @endphp
-                        <tr>
-                            <td>
-                                <img src="{{ asset($details['image']) }}" alt="{{ $details['name'] }}" width="100" height="100"
-                                    class="img-responsive" /> <span>{{ $details['name'] }}</span>
-                            </td>
-                            <td>
-                                <form class="update-cart-form" action="{{ route('cart.update') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="id" value="{{ $id }}">
-                                    <input type="number" name="quantity" value="{{ $details['quantity'] }}" min="1"
-                                        class="form-control quantity-input" data-stock="{{ $details['stock'] }}" />
-                                    <button type="submit" class="btn btn-sm btn-warning mt-2">Actualizar</button>
-                                </form>
-                            </td>
-                            <td>${{ $details['price'] }}</td>
-                            <td class="subtotal">${{ $details['price'] * $details['quantity'] }}</td>
-                            <td>
-                                <form class="remove-from-cart-form" action="{{ route('cart.remove') }}" method="POST">
-                                    @csrf
-                                    <input type="hidden" name="id" value="{{ $id }}">
-                                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="3" class="text-right"><strong>Total:</strong></td>
-                        <td id="cart-total">${{ $total }}</td>
-                        <td></td>
-                    </tr>
-                </tfoot>
-            </table>
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Producto</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio</th>
+                                    <th>Subtotal</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @php $total = 0 @endphp
+                                @foreach(session('cart') as $id => $details)
+                                    @php $total += $details['price'] * $details['quantity'] @endphp
+                                    <tr data-id="{{ $id }}">
+                                        <td>
+                                            <img src="{{ asset($details['image']) }}" alt="{{ $details['name'] }}"
+                                                class="img-thumbnail" width="50">
+                                            {{ $details['name'] }}
+                                        </td>
+                                        <td>
+                                            <div class="input-group" style="width: 130px;">
+                                                <input type="number" name="quantity" value="{{ $details['quantity'] }}"
+                                                    class="form-control quantity" min="1" max="{{ $details['stock'] }}"
+                                                    style="width: 70px;" />
+                                                <button class="btn btn-primary btn-sm update-cart">
+                                                    <i class="fas fa-sync-alt"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                        <td>${{ number_format($details['price'], 2) }}</td>
+                                        <td class="product-subtotal">
+                                            ${{ number_format($details['price'] * $details['quantity'], 2) }}</td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm remove-from-cart">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                                    <td id="cart-total">${{ number_format($total, 2) }}</td>
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
             <div class="text-center mt-4">
-                <a href="{{ route('cart.checkout') }}" class="btn btn-success btn-lg">Proceder al Checkout</a>
+                <a href="{{ route('productos.clientes') }}" class="btn btn-custom">Continuar Comprando</a>
+                <a href="{{ route('cart.checkout') }}" class="btn btn-success">Proceder al Checkout</a>
             </div>
         @else
-            <p>Tu carrito está vacío.</p>
+            <div class="alert alert-info text-center" role="alert">
+                Tu carrito está vacío. <a href="{{ route('productos.clientes') }}">Continuar comprando</a>
+            </div>
         @endif
-    </div>
+    </main>
 
-    <div class="modal fade" id="cartMessageModal" tabindex="-1" aria-labelledby="cartMessageModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="cartMessageModalLabel">Mensaje del carrito</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h4>Novocentro</h4>
+                    <p>Transformando la industria de la madera con innovación y calidad desde 1995.</p>
                 </div>
-                <div class="modal-body">
-                    <p id="cartMessageContent"></p>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h4>Enlaces Rápidos</h4>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ url('/') }}">Inicio</a></li>
+                        <li><a href="{{ route('productos.clientes') }}">Productos</a></li>
+                        <li><a href="/proyectos">Proyectos</a></li>
+                        <li><a href="/carpinteros">Carpinteros</a></li>
+                        <li><a href="/contacto">Contacto</a></li>
+                    </ul>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <div class="col-md-4">
+                    <h4>Síguenos</h4>
+                    <div class="social-icons">
+                        <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-4 mb-3">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <p>&copy; 2023 Novocentro. Todos los derechos reservados.</p>
                 </div>
             </div>
         </div>
-    </div>
+    </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
@@ -279,88 +306,90 @@
                 }
             });
 
-            const cartMessageModal = new bootstrap.Modal(document.getElementById('cartMessageModal'));
-            const cartMessageContent = document.getElementById('cartMessageContent');
-
-            function showCartMessage(message) {
-                cartMessageContent.textContent = message;
-                cartMessageModal.show();
-            }
-
-            $('.quantity-input').on('input', function () {
-                var input = $(this);
-                var stock = parseInt(input.data('stock'));
-                var value = parseInt(input.val());
-
-                if (value > stock) {
-                    input.val(stock);
-                    showCartMessage('No puedes seleccionar más productos de los que hay en stock.');
-                } else if (value < 1) {
-                    input.val(1);
-                }
-
-                updateSubtotal(input);
-            });
-
-            $('.update-cart-form').submit(function (e) {
-                e.preventDefault();
-                var form = $(this);
-                var url = form.attr('action');
-                var formData = form.serialize();
-
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (response) {
-                        showCartMessage(response.success);
-                        updateSubtotal(form.find('.quantity-input'));
-                        updateCartTotal();
-                    },
-                    error: function (xhr) {
-                        showCartMessage('Error al actualizar el carrito');
-                    }
-                });
-            });
-
-            $('.remove-from-cart-form').submit(function (e) {
-                e.preventDefault();
-                var form = $(this);
-                var url = form.attr('action');
-                var formData = form.serialize();
-
-                $.ajax({
-                    type: 'POST',
-                    url: url,
-                    data: formData,
-                    success: function (response) {
-                        showCartMessage(response.success);
-                        form.closest('tr').remove();
-                        updateCartTotal();
-                    },
-                    error: function (xhr) {
-                        showCartMessage('Error al eliminar el producto del carrito');
-                    }
-                });
-            });
-
-            function updateSubtotal(input) {
-                var quantity = parseInt(input.val());
-                var price = parseFloat(input.closest('tr').find('td:eq(2)').text().replace('$', ''));
-                var subtotal = quantity * price;
-                input.closest('tr').find('.subtotal').text('$' + subtotal.toFixed(2));
+            function showAlert(message, type) {
+                var alertHtml = '<div class="alert alert-' + type + ' alert-dismissible fade show" role="alert">' +
+                    message +
+                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+                    '</div>';
+                $('#alert-container').html(alertHtml);
             }
 
             function updateCartTotal() {
                 var total = 0;
-                $('.subtotal').each(function () {
+                $('.product-subtotal').each(function () {
                     total += parseFloat($(this).text().replace('$', ''));
                 });
                 $('#cart-total').text('$' + total.toFixed(2));
             }
+
+            $(".update-cart").click(function (e) {
+                e.preventDefault();
+                var ele = $(this);
+                var quantity = ele.closest('tr').find('.quantity').val();
+                var id = ele.closest('tr').data('id');
+
+                $.ajax({
+                    url: '{{ route('cart.update') }}',
+                    method: "POST",  // Changed from PATCH to POST
+                    data: {
+                        id: id,
+                        quantity: quantity
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            showAlert('El carrito se ha actualizado', 'success');
+                            var price = parseFloat(ele.closest('tr').find('td:eq(2)').text().replace('$', ''));
+                            var subtotal = price * quantity;
+                            ele.closest('tr').find('.product-subtotal').text('$' + subtotal.toFixed(2));
+                            updateCartTotal();
+                        } else {
+                            showAlert('Error al actualizar el carrito', 'danger');
+                        }
+                    },
+                    error: function (xhr) {
+                        showAlert('Error al actualizar el carrito', 'danger');
+                    }
+                });
+            });
+
+            $(".remove-from-cart").click(function (e) {
+                e.preventDefault();
+                var ele = $(this);
+                var id = ele.closest('tr').data('id');
+
+                if (confirm("¿Estás seguro de que quieres eliminar este producto?")) {
+                    $.ajax({
+                        url: '{{ route('cart.remove') }}',
+                        method: "POST",  // Changed from DELETE to POST
+                        data: {
+                            id: id
+                        },
+                        success: function (response) {
+                            showAlert(response.message, 'success');
+                            ele.closest('tr').remove();
+                            updateCartTotal();
+                            // Update cart count in navbar
+                            var cartCount = $('.badge.bg-primary').text();
+                            $('.badge.bg-primary').text(parseInt(cartCount) - 1);
+                        },
+                        error: function (xhr) {
+                            showAlert(xhr.responseJSON.message || 'Error al eliminar el producto del carrito', 'danger');
+                        }
+                    });
+                }
+            });
+
+            $('.quantity').on('input', function () {
+                var max = parseInt($(this).attr('max'));
+                var value = parseInt($(this).val());
+
+                if (value > max) {
+                    $(this).val(max);
+                    showAlert('La cantidad seleccionada excede el stock disponible.', 'warning');
+                }
+            });
         });
     </script>
-
 </body>
 
 </html>

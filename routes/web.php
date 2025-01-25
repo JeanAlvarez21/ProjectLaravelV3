@@ -51,7 +51,7 @@ Route::middleware(['auth'])->group(function () {
         return view('roles.admin');
     })->name('adminsito');
     Route::get('/dashboard', [DashboardController::class, 'index']);
-    
+
     // Added route within authenticated middleware group
     Route::get('/pedidos/{pedido}/detalles', [PedidoController::class, 'detalles'])->name('pedidos.detalles');
 });
@@ -112,13 +112,14 @@ Route::prefix('carpinteros')->group(function () {
 // Cart routes
 Route::prefix('cart')->group(function () {
     Route::post('add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
-    Route::post('update', [CartController::class, 'updateCart'])->name('cart.update');
-    Route::post('remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
+    Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
+    Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::get('/', [CartController::class, 'viewCart'])->name('cart.view');
     Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 });
 
 // Agrupar las rutas bajo el middleware `auth` para asegurar que el usuario esté autenticado
+
 Route::middleware(['auth'])->group(function () {
 
     // Rutas principales para proyectos
@@ -136,10 +137,13 @@ Route::middleware(['auth'])->group(function () {
     // Rutas para manejar cortes
     Route::post('proyectos/guardar-corte-temporal', [ProyectoController::class, 'guardarCorteTemporal'])->name('proyectos.guardarCorteTemporal');
     Route::post('proyectos/{proyecto}/guardar-cortes', [CorteController::class, 'store'])->name('cortes.store');
-
+    Route::get('/proyectos/{proyecto}/edit', [ProyectoController::class, 'edit'])->name('proyectos.edit');
+    Route::put('/proyectos/{proyecto}', [ProyectoController::class, 'update'])->name('proyectos.update');
     // Rutas para cortes individuales (CRUD)
     Route::resource('cortes', CorteController::class)->except(['create', 'edit']);
+
 });
+
 // Order routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');

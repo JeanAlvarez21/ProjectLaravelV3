@@ -11,17 +11,18 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Estilos originales del blade con mejoras */
         :root {
             --primary-color: #FFD700;
             --secondary-color: #495E57;
             --text-color: #333;
             --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
         }
 
         body {
-            padding-top: 70px;
             font-family: 'Arial', sans-serif;
+            color: var(--text-color);
+            padding-top: 76px;
         }
 
         .navbar {
@@ -30,9 +31,7 @@
         }
 
         .navbar-brand img {
-            height: 6vh;
-            max-height: 100%;
-            width: auto;
+            height: 40px;
             transition: transform 0.3s ease;
         }
 
@@ -98,20 +97,37 @@
             margin-bottom: 1rem;
         }
 
-        footer {
-            background-color: rgb(0, 0, 0);
+        .footer {
+            background-color: var(--dark-bg);
             color: white;
             padding: 40px 0;
         }
 
-
-        @media (max-width: 576px) {
-            .navbar-brand img {
-                height: 5vh;
-            }
+        .footer h4 {
+            color: var(--primary-color);
         }
 
-        /* Login/Register button styles */
+        .footer a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: var(--primary-color);
+        }
+
+        .social-icons a {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            color: white;
+            transition: color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: var(--primary-color);
+        }
+
         .btn-auth {
             padding: 7px 15px;
             border: 0;
@@ -137,7 +153,6 @@
             transform: scale(0.98);
         }
 
-        /* Reset styles for carousel buttons */
         .carousel-control-prev,
         .carousel-control-next {
             background: none;
@@ -159,84 +174,71 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
-
         <div class="container">
             <a class="navbar-brand"
                 href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
-                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
-                    style="height: 6vh; max-height: 100%; width: auto;">
+                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link"
-                            href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">Menú
-                        </a>
+                        <a class="nav-link" href="{{ url('/') }}">Inicio</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('productos.clientes') }}">Productos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/proyectos">Proyectos</a></li>
-                    @auth
-                        @if(Auth::user()->rol == 1 || Auth::user()->rol == 2)
-                            <li class="nav-item"><a class="nav-link" href="{{ route('carpinteros.index') }}">Carpinteros</a>
-                            </li>
-                        @else
-                            <li class="nav-item"><a class="nav-link" href="/carpinteros">Carpinteros</a></li>
-                        @endif
-                    @else
-                        <li class="nav-item"><a class="nav-link" href="/carpinteros">Carpinteros</a></li>
-                    @endauth
-                    <li class="nav-item"><a class="nav-link" href="/contacto">Contacto</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('productos.clientes') }}">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('proyectos.index') }}">Proyectos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('carpinteros.index') }}">Carpinteros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('contact.index') }}">Contacto</a>
+                    </li>
                     @auth
                         @if(Auth::user()->rol == 1)
-                            <li class="nav-item"><a href="/dashboard" class="nav-link no-link">Admin</a></li>
+                            <li class="nav-item"><a href="/dashboard" class="nav-link">Admin</a></li>
                         @elseif(Auth::user()->rol == 2)
-                            <li class="nav-item"><a href="/productos" class="nav-link no-link">Empleado</a></li>
+                            <li class="nav-item"><a href="/productos" class="nav-link">Empleado</a></li>
                         @endif
                     @endauth
                 </ul>
-                <div class="d-flex align-items-center">
+                <div class="navbar-nav">
                     @auth
                         @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3)
-                            <a href="{{ route('cart.view') }}">
-                                <img src="{{ asset('media/carro-de-la-compra.png') }}" alt="Carrito" width="30" height="30">
+                            <a href="{{ route('cart.view') }}" class="nav-link">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="badge bg-primary">{{ count((array) session('cart')) }}</span>
                             </a>
-                            <span class="mx-3">|</span>
-                            <a href="{{ route('profile') }}">
-                                <img src="{{ asset('media/boton-usuario.png') }}" alt="Profile" width="30" height="30">
+                            <a href="{{ route('profile') }}" class="nav-link">
+                                <i class="fas fa-user"></i>
                             </a>
-                            <span class="mx-3">|</span>
-                            <a href="{{ route('notificaciones') }}">
-                                <img src="{{ asset('media/boton-notificaciones.png') }}" alt="Notificaciones" width="30"
-                                    height="30">
+                            <a href="{{ route('notificaciones') }}" class="nav-link">
+                                <i class="fas fa-bell"></i>
                             </a>
+                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-custom">Cerrar Sesión</button>
+                            </form>
                         @else
-                            <div class="d-flex align-items-center">
-                                <button class="btn-auth" style="font-size: 16px;">
-                                    <a href="{{ route('login') }}" class="text-dark text-decoration-none">
-                                        Iniciar Sesión / Regístrate
-                                    </a>
-                                </button>
-                            </div>
+                            <a href="{{ route('login') }}" class="btn-auth">
+                                Iniciar Sesión / Regístrate
+                            </a>
                         @endif
                     @else
-                        <div class="d-flex align-items-center">
-                            <button class="btn-auth" style="font-size: 16px;">
-                                <a href="{{ route('login') }}" class="text-dark text-decoration-none">
-                                    Iniciar Sesión / Regístrate
-                                </a>
-                            </button>
-                        </div>
+                        <a href="{{ route('login') }}" class="btn-auth">
+                            Iniciar Sesión / Regístrate
+                        </a>
                     @endauth
                 </div>
             </div>
         </div>
     </nav>
-
-
 
     <!-- Hero Section -->
     <section class="hero-section text-center d-flex align-items-center justify-content-center">
@@ -356,34 +358,37 @@
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer mt-5">
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-4 mb-md-0">
-                    <h4 class="text-warning">Novocentro</h4>
+                    <h4>Novocentro</h4>
                     <p>Transformando la industria de la madera con innovación y calidad desde 1995.</p>
                 </div>
                 <div class="col-md-4 mb-4 mb-md-0">
-                    <h4 class="text-warning">Enlaces Rápidos</h4>
+                    <h4>Enlaces Rápidos</h4>
                     <ul class="list-unstyled">
-                        <li><a href="/home" class="text-white">Inicio</a></li>
-                        <li><a href="/productos" class="text-white">Productos</a></li>
-                        <li><a href="/proyectos" class="text-white">Proyectos</a></li>
-                        <li><a href="/carpinteros" class="text-white">Carpinteros</a></li>
-                        <li><a href="/contacto" class="text-white">Contacto</a></li>
+                        <li><a href="{{ url('/') }}">Inicio</a></li>
+                        <li><a href="{{ route('productos.clientes') }}">Productos</a></li>
+                        <li><a href="{{ route('proyectos.index') }}">Proyectos</a></li>
+                        <li><a href="{{ route('carpinteros.index') }}">Carpinteros</a></li>
+                        <li><a href="{{ route('contact.index') }}">Contacto</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
-                    <h4 class="text-warning">Síguenos</h4>
+                    <h4>Síguenos</h4>
                     <div class="social-icons">
-                        <a target="_blank" href="https://www.facebook.com/novocentrodistablasa/?locale=es_LA"><i class="fab fa-facebook"></i></a>
-                        <a target="_blank" href="https://x.com/novocentrogarz1"><i class="fab fa-twitter"></i></a>
-                        <a target="_blank" href="https://www.instagram.com/novocentrodistablasa/?hl=es"><i class="fab fa-instagram"></i></a>
-                        <a target="_blank" href="https://ec.linkedin.com/company/distablasa-novopan"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://www.facebook.com/novocentrodistablasa/?locale=es_LA" target="_blank"><i
+                                class="fab fa-facebook"></i></a>
+                        <a href="https://x.com/novocentrogarz1" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/novocentrodistablasa/?hl=es" target="_blank"><i
+                                class="fab fa-instagram"></i></a>
+                        <a href="https://ec.linkedin.com/company/distablasa-novopan" target="_blank"><i
+                                class="fab fa-linkedin"></i></a>
                     </div>
                 </div>
             </div>
-            <hr class="mt-4 mb-3 border-light">
+            <hr class="mt-4 mb-3">
             <div class="row">
                 <div class="col-md-12 text-center">
                     <p>&copy; 2023 Novocentro. Todos los derechos reservados.</p>
@@ -391,25 +396,6 @@
             </div>
         </div>
     </footer>
-
-    <!-- Modal de Login / Registro -->
-    <div class="modal fade" id="authModal" tabindex="-1" aria-labelledby="authModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="authModalLabel">Iniciar Sesión o Registrarse</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- Opciones Login / Register -->
-                    <div class="d-flex justify-content-around">
-                        <a href="{{ route('login') }}" class="btn btn-custom">Iniciar Sesión</a>
-                        <a href="{{ route('register') }}" class="btn btn-custom">Registrarse</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

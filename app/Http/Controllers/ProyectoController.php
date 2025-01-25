@@ -24,43 +24,43 @@ class ProyectoController extends Controller
     }
 
     public function store(Request $request)
-{
-    // Validar datos
-    $request->validate([
-        'nombre' => 'required|string|max:255',
-        'ciudad' => 'required|string|max:255',
-        'local' => 'required|string|max:255',
-        'id_producto' => 'required|exists:productos,id',
-    ]);
+    {
+        // Validar datos
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'ciudad' => 'required|string|max:255',
+            'local' => 'required|string|max:255',
+            'id_producto' => 'required|exists:productos,id',
+        ]);
 
-    // Guardar datos del proyecto en la sesión
-    session([
-        'proyecto_temporal' => [
-            'nombre' => $request->nombre,
-            'ciudad' => $request->ciudad,
-            'local' => $request->local,
-            'id_producto' => $request->id_producto,
-            'estado' => 'Nuevo',
-            'user_id' => auth()->id(), // Asignar el proyecto al usuario autenticado
-        ],
-    ]);
+        // Guardar datos del proyecto en la sesión
+        session([
+            'proyecto_temporal' => [
+                'nombre' => $request->nombre,
+                'ciudad' => $request->ciudad,
+                'local' => $request->local,
+                'id_producto' => $request->id_producto,
+                'estado' => 'Nuevo',
+                'user_id' => auth()->id(), // Asignar el proyecto al usuario autenticado
+            ],
+        ]);
 
-    // Redirigir a una ruta genérica para manejar cortes temporales
-    return redirect()->route('proyectos.crearCortes');
-}
-
-public function crearCortes()
-{
-    $proyectoTemporal = session('proyecto_temporal');
-
-    if (!$proyectoTemporal) {
-        return redirect()->route('proyectos.index')->withErrors('Primero debe crear un proyecto.');
+        // Redirigir a una ruta genérica para manejar cortes temporales
+        return redirect()->route('proyectos.crearCortes');
     }
 
-    $cortesTemporales = session('cortes_temporales', []);
+    public function crearCortes()
+    {
+        $proyectoTemporal = session('proyecto_temporal');
 
-    return view('proyectos.cortes', compact('proyectoTemporal', 'cortesTemporales'));
-}
+        if (!$proyectoTemporal) {
+            return redirect()->route('proyectos.index')->withErrors('Primero debe crear un proyecto.');
+        }
+
+        $cortesTemporales = session('cortes_temporales', []);
+
+        return view('proyectos.cortes', compact('proyectoTemporal', 'cortesTemporales'));
+    }
 
     public function guardarCorteTemporal(Request $request)
     {
@@ -125,5 +125,61 @@ public function crearCortes()
 
         $proyecto->delete();
         return redirect()->route('proyectos.index')->with('success', 'Proyecto eliminado con éxito.');
+    }
+    public function edit(Proyecto $proyecto)
+    {
+        // Verificar que el usuario autenticado sea el propietario del proyecto
+        if ($proyecto->user_id !== auth()->id()) {
+            abort(403, 'No tienes permiso para editar este proyecto.');
+        }
+
+        $productos = Producto::all();
+        $cortes = $proyecto->cortes;
+        return view('proyectos.edit', compact('proyecto', 'productos', 'cortes'));
+    }
+
+    public function update(Request $request, Proyecto $proyecto)
+    {
+        // Verificar que el usuario autenticado sea el propietario del proyecto
+        if ($proyecto->user_id !== auth()->id()) {
+            abort(403, 'No tienes permiso para editar este proyecto.');
+        }
+
+        // Validar datos del proyecto
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'ciudad' => 'required|string|max:255',
+            'local' => 'required|string|max:255',
+            'id_producto' => 'required|exists:productos,id',
+            'estado' => 'required|in:Nuevo,En proceso,Completado',
+            'cortes' => 'required|array',
+            'cortes.*.id' => 'required|exists:cortes,id',
+            'cortes.*.cantidad' => 'required|integer|min:1',
+            'cortes.*.medidas' => 'required|string|max:255',
+            'cortes.*.tipo_borde' => 'required|string|max:255',
+            'cortes.*.color_borde' => 'required|string|max:255',
+        ]);
+
+        // Actualizar el proyecto
+        $proyecto->update([
+            'nombre' => $request->nombre,
+            'ciudad' => $request->ciudad,
+            'local' => $request->local,
+            'id_producto' => $request->id_producto,
+            'estado' => $request->estado,
+        ]);
+
+        // Actualizar los cortes
+        foreach ($request->cortes as $corteData) {
+            $corte = Corte::findOrFail($corteData['id']);
+            $corte->update([
+                'cantidad' => $corteData['cantidad'],
+                'medidas' => $corteData['medidas'],
+                'tipo_borde' => $corteData['tipo_borde'],
+                'color_borde' => $corteData['color_borde'],
+            ]);
+        }
+
+        return redirect()->route('proyectos.index')->with('success', 'Proyecto y cortes actualizados con éxito.');
     }
 }

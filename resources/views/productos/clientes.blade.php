@@ -1,93 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Productos</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Lista de Productos - Novocentro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Personalización adicional */
-        .hero-section {
-            background: url('{{ asset('media/background_main.png') }}') no-repeat center center;
-            background-size: cover;
-            color: white;
-            padding: 100px 0;
-        }
-
-        .hero-overlay {
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 50px;
-            border-radius: 10px;
-        }
-
-        .carousel-item img {
-            max-height: 200px;
-            max-width: 100%;
-            object-fit: contain;
-            margin: 0 auto;
+        :root {
+            --primary-color: #FFD700;
+            --secondary-color: #495E57;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
         }
 
         body {
-            padding-top: 70px;
+            font-family: 'Arial', sans-serif;
+            color: var(--text-color);
+            padding-top: 76px;
         }
 
         .navbar {
-            background-color: #FFD700;
-        }
-
-        .no-link {
-            text-decoration: none;
-            color: inherit;
+            background-color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
         }
 
         .navbar-brand img {
-            height: 6vh;
-            max-height: 100%;
-            width: auto;
+            height: 40px;
+            transition: transform 0.3s ease;
         }
 
-        @media (max-width: 576px) {
-            .navbar-brand img {
-                height: 5vh;
-            }
+        .navbar-brand img:hover {
+            transform: scale(1.05);
         }
 
-        /* From Uiverse.io by suda-code */
-        button {
+        .nav-link {
+            color: var(--text-color) !important;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--secondary-color) !important;
+        }
+
+        .btn-custom {
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: none;
             padding: 7px 15px;
-            border: 0;
             border-radius: 100px;
-            background-color: rgb(255, 255, 255);
-            color: #ffffff;
-            font-weight: Bold;
+            font-weight: bold;
             transition: all 0.5s;
-            -webkit-transition: all 0.5s;
         }
 
-        button:hover {
+        .btn-custom:hover {
             background-color: #FFFAEB;
             box-shadow: 0 0 20px #6fc5ff50;
             transform: scale(1.1);
         }
 
-        button:active {
+        .btn-custom:active {
             background-color: rgb(255, 255, 255);
             transition: all 0.25s;
-            -webkit-transition: all 0.10s;
             box-shadow: none;
             transform: scale(0.98);
         }
 
+        .footer {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 40px 0;
+        }
+
+        .footer h4 {
+            color: var(--primary-color);
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: var(--primary-color);
+        }
+
+        .social-icons a {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            color: white;
+            transition: color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: var(--primary-color);
+        }
+
         .card-img-top {
             width: 100%;
-            /* Asegura que la imagen ocupe todo el ancho del contenedor */
             height: 200px;
-            /* Define una altura fija */
             object-fit: cover;
-            /* Mantiene las proporciones recortando el exceso si es necesario */
             border-top-left-radius: 0.25rem;
-            /* Opcional: preserva el borde redondeado de las tarjetas */
             border-top-right-radius: 0.25rem;
         }
     </style>
@@ -98,79 +115,68 @@
         <div class="container">
             <a class="navbar-brand"
                 href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
-                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
-                    style="height: 6vh; max-height: 100%; width: auto;">
+                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link"
-                            href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">Menú
-                        </a>
+                        <a class="nav-link" href="{{ url('/') }}">Inicio</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('productos.clientes') }}">Productos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/proyectos">Proyectos</a></li>
-                    @auth
-                        @if(Auth::user()->rol == 1 || Auth::user()->rol == 2)
-                            <li class="nav-item"><a class="nav-link" href="{{ route('carpinteros.index') }}">Carpinteros</a>
-                            </li>
-                        @else
-                            <li class="nav-item"><a class="nav-link" href="/carpinteros">Carpinteros</a></li>
-                        @endif
-                    @else
-                        <li class="nav-item"><a class="nav-link" href="/carpinteros">Carpinteros</a></li>
-                    @endauth
-                    <li class="nav-item"><a class="nav-link" href="/contacto">Contacto</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('productos.clientes') }}">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('proyectos.index') }}">Proyectos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('carpinteros.index') }}">Carpinteros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('contact.index') }}">Contacto</a>
+                    </li>
                     @auth
                         @if(Auth::user()->rol == 1)
-                            <li class="nav-item"><a href="/dashboard" class="nav-link no-link">Admin</a></li>
+                            <li class="nav-item"><a href="/dashboard" class="nav-link">Admin</a></li>
                         @elseif(Auth::user()->rol == 2)
-                            <li class="nav-item"><a href="/productos" class="nav-link no-link">Empleado</a></li>
+                            <li class="nav-item"><a href="/productos" class="nav-link">Empleado</a></li>
                         @endif
                     @endauth
                 </ul>
-                <div class="d-flex align-items-center">
+                <div class="navbar-nav">
                     @auth
                         @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3)
-                            <a href="{{ route('cart.view') }}">
-                                <img src="{{ asset('media/carro-de-la-compra.png') }}" alt="Carrito" width="30" height="30">
+                            <a href="{{ route('cart.view') }}" class="nav-link">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="badge bg-primary">{{ count((array) session('cart')) }}</span>
                             </a>
-                            <span class="mx-3">|</span>
-                            <a href="{{ route('profile') }}">
-                                <img src="{{ asset('media/boton-usuario.png') }}" alt="Profile" width="30" height="30">
+                            <a href="{{ route('profile') }}" class="nav-link">
+                                <i class="fas fa-user"></i>
                             </a>
-                            <span class="mx-3">|</span>
-                            <a href="{{ route('notificaciones') }}">
-                                <img src="{{ asset('media/boton-notificaciones.png') }}" alt="Notificaciones" width="30"
-                                    height="30">
+                            <a href="{{ route('notificaciones') }}" class="nav-link">
+                                <i class="fas fa-bell"></i>
                             </a>
+                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-custom">Cerrar Sesión</button>
+                            </form>
                         @else
-                            <div class="d-flex align-items-center">
-                                <button style="font-size: 16px;">
-                                    <a href="{{ route('login') }}" class="text-dark text-decoration-none">
-                                        Iniciar Sesión / Regístrate
-                                    </a>
-                                </button>
-                            </div>
+                            <a href="{{ route('login') }}" class="btn btn-custom">
+                                Iniciar Sesión / Regístrate
+                            </a>
                         @endif
                     @else
-                        <div class="d-flex align-items-center">
-                            <button style="font-size: 16px;">
-                                <a href="{{ route('login') }}" class="text-dark text-decoration-none">
-                                    Iniciar Sesión / Regístrate
-                                </a>
-                            </button>
-                        </div>
+                        <a href="{{ route('login') }}" class="btn btn-custom">
+                            Iniciar Sesión / Regístrate
+                        </a>
                     @endauth
                 </div>
             </div>
         </div>
     </nav>
-
 
     <div class="container mt-5">
         <h1 class="text-center mb-4">Productos Disponibles</h1>
@@ -200,7 +206,7 @@
                                         max="{{ $producto->stock }}" value="1" class="form-control quantity-input" required
                                         data-stock="{{ $producto->stock }}">
                                 </div>
-                                <button type="submit" class="btn btn-warning mt-2">Agregar al carrito</button>
+                                <button type="submit" class="btn btn-custom mt-2">Agregar al carrito</button>
                             </form>
                         </div>
                     </div>
@@ -227,6 +233,45 @@
             </div>
         </div>
     </div>
+
+    <footer class="footer mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h4>Novocentro</h4>
+                    <p>Transformando la industria de la madera con innovación y calidad desde 1995.</p>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h4>Enlaces Rápidos</h4>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ url('/') }}">Inicio</a></li>
+                        <li><a href="{{ route('productos.clientes') }}">Productos</a></li>
+                        <li><a href="{{ route('proyectos.index') }}">Proyectos</a></li>
+                        <li><a href="{{ route('carpinteros.index') }}">Carpinteros</a></li>
+                        <li><a href="{{ route('contact.index') }}">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h4>Síguenos</h4>
+                    <div class="social-icons">
+                        <a href="https://www.facebook.com/novocentrodistablasa/?locale=es_LA" target="_blank"><i
+                                class="fab fa-facebook"></i></a>
+                        <a href="https://x.com/novocentrogarz1" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/novocentrodistablasa/?hl=es" target="_blank"><i
+                                class="fab fa-instagram"></i></a>
+                        <a href="https://ec.linkedin.com/company/distablasa-novopan" target="_blank"><i
+                                class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <hr class="mt-4 mb-3">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <p>&copy; 2023 Novocentro. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -272,8 +317,6 @@
             });
         });
     </script>
-
-
 </body>
 
 </html>

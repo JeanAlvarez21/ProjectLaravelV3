@@ -1,256 +1,389 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Carpinteros</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Gestión de Carpinteros - Novocentro</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
     <style>
+        :root {
+            --primary-color: #FFD700;
+            --secondary-color: #495E57;
+            --text-color: #333;
+            --light-bg: #f8f9fa;
+            --dark-bg: #343a40;
+        }
+
         body {
-            padding-top: 70px;
-            /* Added padding to prevent content from being hidden behind the fixed navbar */
+            font-family: 'Arial', sans-serif;
+            color: var(--text-color);
+            padding-top: 76px;
         }
 
         .navbar {
-            background-color: #FFD700;
-        }
-
-        .no-link {
-            text-decoration: none;
-            color: inherit;
+            background-color: var(--primary-color);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
         }
 
         .navbar-brand img {
-            height: 6vh;
-            max-height: 100%;
-            width: auto;
+            height: 40px;
+            transition: transform 0.3s ease;
         }
 
-        @media (max-width: 576px) {
+        .navbar-brand img:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-link {
+            color: var(--text-color) !important;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--secondary-color) !important;
+        }
+
+        .btn-custom {
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .footer {
+            background-color: var(--dark-bg);
+            color: white;
+            padding: 40px 0;
+        }
+
+        .footer h4 {
+            color: var(--primary-color);
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: var(--primary-color);
+        }
+
+        .social-icons a {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            color: white;
+            transition: color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: var(--primary-color);
+        }
+
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, .1);
+        }
+
+        .card-header {
+            background-color: var(--primary-color);
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/media/hero-bg.jpg') no-repeat center center;
+            background-size: cover;
+            color: white;
+            padding: 100px 0;
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 768px) {
             .navbar-brand img {
-                height: 5vh;
+                height: 30px;
             }
         }
 
-        /* From Uiverse.io by suda-code */
-        button {
+        .text-custom {
+            color: var(--text-color);
+        }
+
+        .btn-auth {
             padding: 7px 15px;
             border: 0;
             border-radius: 100px;
             background-color: rgb(255, 255, 255);
-            color: #ffffff;
+            color: #333;
             font-weight: Bold;
             transition: all 0.5s;
             -webkit-transition: all 0.5s;
         }
 
-        button:hover {
+        .btn-auth:hover {
             background-color: #FFFAEB;
             box-shadow: 0 0 20px #6fc5ff50;
             transform: scale(1.1);
         }
 
-        button:active {
+        .btn-auth:active {
             background-color: rgb(255, 255, 255);
             transition: all 0.25s;
             -webkit-transition: all 0.10s;
             box-shadow: none;
             transform: scale(0.98);
         }
-
-
-        .table th,
-        .table td {
-            vertical-align: middle;
-        }
     </style>
 </head>
 
 <body>
-<nav class="navbar navbar-expand-lg navbar-light fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
             <a class="navbar-brand"
-            href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
-            <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
+                href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
+                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
                     style="height: 6vh; max-height: 100%; width: auto;">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
-                        <a class="nav-link"
-                            href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2|| Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">Menú
-                        </a>
+                        <a class="nav-link" href="{{ url('/') }}">Inicio</a>
                     </li>
-                    <li class="nav-item"><a class="nav-link" href="{{ route('productos.clientes') }}">Productos</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/proyectos">Proyectos</a></li>
-                    @auth
-                        @if(Auth::user()->rol == 1 || Auth::user()->rol == 2)
-                            <li class="nav-item"><a class="nav-link" href="{{ route('carpinteros.index') }}">Carpinteros</a>
-                            </li>
-                        @else
-                            <li class="nav-item"><a class="nav-link" href="/carpinteros">Carpinteros</a></li>
-                        @endif
-                    @else
-                        <li class="nav-item"><a class="nav-link" href="/carpinteros">Carpinteros</a></li>
-                    @endauth
-                    <li class="nav-item"><a class="nav-link" href="/contacto">Contacto</a></li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('productos.clientes') }}">Productos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/proyectos">Proyectos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/carpinteros">Carpinteros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contacto">Contacto</a>
+                    </li>
                     @auth
                         @if(Auth::user()->rol == 1)
-                            <li class="nav-item"><a href="/dashboard" class="nav-link no-link">Admin</a></li>
+                            <li class="nav-item"><a href="/dashboard" class="nav-link">Admin</a></li>
                         @elseif(Auth::user()->rol == 2)
-                            <li class="nav-item"><a href="/productos" class="nav-link no-link">Empleado</a></li>
+                            <li class="nav-item"><a href="/productos" class="nav-link">Empleado</a></li>
                         @endif
                     @endauth
                 </ul>
-                <div class="d-flex align-items-center">
+                <div class="navbar-nav">
                     @auth
                         @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3)
-                            <a href="{{ route('cart.view') }}">
-                                <img src="{{ asset('media/carro-de-la-compra.png') }}" alt="Carrito" width="30" height="30">
+                            <a href="{{ route('cart.view') }}" class="nav-link">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="badge bg-primary">{{ count((array) session('cart')) }}</span>
                             </a>
-                            <span class="mx-3">|</span>
-                            <a href="{{ route('profile') }}">
-                                <img src="{{ asset('media/boton-usuario.png') }}" alt="Profile" width="30" height="30">
+                            <a href="{{ route('profile') }}" class="nav-link">
+                                <i class="fas fa-user"></i>
                             </a>
-                            <span class="mx-3">|</span>
-                            <a href="{{ route('notificaciones') }}">
-                                <img src="{{ asset('media/boton-notificaciones.png') }}" alt="Notificaciones" width="30"
-                                    height="30">
+                            <a href="{{ route('notificaciones') }}" class="nav-link">
+                                <i class="fas fa-bell"></i>
                             </a>
+                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-custom">Cerrar Sesión</button>
+                            </form>
                         @else
-                            <div class="d-flex align-items-center">
-                                <button style="font-size: 16px;">
-                                    <a href="{{ route('login') }}" class="text-dark text-decoration-none">
-                                        Iniciar Sesión / Regístrate
-                                    </a>
-                                </button>
-                            </div>
+                            <a href="{{ route('login') }}" class="btn-auth">
+                                Iniciar Sesión / Regístrate
+                            </a>
                         @endif
                     @else
-                        <div class="d-flex align-items-center">
-                            <button style="font-size: 16px;">
-                                <a href="{{ route('login') }}" class="text-dark text-decoration-none">
-                                    Iniciar Sesión / Regístrate
-                                </a>
-                            </button>
-                        </div>
+                        <a href="{{ route('login') }}" class="btn-auth">
+                            Iniciar Sesión / Regístrate
+                        </a>
                     @endauth
                 </div>
             </div>
         </div>
     </nav>
 
-
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">Gestión de Carpinteros</h1>
+    <main class="container my-5">
+        <h1 class="text-center mb-5">Gestión de Carpinteros</h1>
 
         @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
             </div>
         @endif
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4 class="mb-0">Agregar Nuevo Carpintero</h4>
+            </div>
+            <div class="card-body">
+                <form action="{{ route('carpinteros.store') }}" method="POST" enctype="multipart/form-data">
+                    @csrf
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="nombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="nombre" name="nombre" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="especialidad" class="form-label">Especialidad</label>
+                            <input type="text" class="form-control" id="especialidad" name="especialidad" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="telefono" class="form-label">Teléfono</label>
+                            <input type="tel" class="form-control" id="telefono" name="telefono" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="ubicacion" class="form-label">Dirección</label>
+                            <input type="text" class="form-control" id="ubicacion" name="ubicacion" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="foto_perfil" class="form-label">Foto de Perfil</label>
+                            <input type="file" class="form-control" id="foto_perfil" name="foto_perfil">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="disponibilidad" class="form-label">Disponibilidad</label>
+                            <select class="form-select" id="disponibilidad" name="disponibilidad" required>
+                                <option value="1">Disponible</option>
+                                <option value="0">No Disponible</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="descripcion" class="form-label">Descripción</label>
+                            <textarea class="form-control" id="descripcion" name="descripcion" required></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-custom">Guardar Carpintero</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
-        <form action="{{ route('carpinteros.store') }}" method="POST" enctype="multipart/form-data" class="mb-4">
-            @csrf
-            <div class="row g-3">
-                <div class="col-md-4">
-                    <input type="text" name="nombre" class="form-control" placeholder="Nombre" required>
-                </div>
-                <div class="col-md-4">
-                    <input type="text" name="especialidad" class="form-control" placeholder="Especialidad" required>
-                </div>
-                <div class="col-md-4">
-                    <input type="text" name="telefono" class="form-control" placeholder="Teléfono">
-                </div>
-                <div class="col-md-4">
-                    <input type="email" name="email" class="form-control" placeholder="Email">
-                </div>
-                <div class="col-md-4">
-                    <input type="text" name="ubicacion" class="form-control" placeholder="Ubicación">
-                </div>
-                <div class="col-md-4">
-                    <input type="file" name="foto_perfil" class="form-control" accept="image/*">
-                </div>
-                <div class="col-md-6">
-                    <textarea name="descripcion" class="form-control" placeholder="Descripción"></textarea>
-                </div>
-                <div class="col-md-3">
-                    <select name="disponibilidad" class="form-control">
-                        <option value="1">Disponible</option>
-                        <option value="0">No disponible</option>
-                    </select>
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Lista de Carpinteros</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Especialidad</th>
+                                <th>Teléfono</th>
+                                <th>Email</th>
+                                <th>Foto de Perfil</th>
+                                <th>Descripción</th>
+                                <th>Disponibilidad</th>
+                                <th>Ubicación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($carpinteros as $carpintero)
+                                <tr>
+                                    <td>{{ $carpintero->nombre }}</td>
+                                    <td>{{ $carpintero->especialidad }}</td>
+                                    <td>{{ $carpintero->telefono }}</td>
+                                    <td>{{ $carpintero->email }}</td>
+                                    <td>
+                                        @if($carpintero->foto_perfil)
+                                            <img src="{{ asset($carpintero->foto_perfil) }}" alt="Foto de perfil"
+                                                class="img-thumbnail" style="width: 50px; height: 50px;">
+                                        @else
+                                            <span class="text-muted">Sin foto</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $carpintero->descripcion }}</td>
+                                    <td>
+                                        @if($carpintero->disponibilidad)
+                                            <span class="badge bg-success">Disponible</span>
+                                        @else
+                                            <span class="badge bg-danger">No Disponible</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $carpintero->ubicacion }}</td>
+                                    <td>
+                                        <a href="{{ route('carpinteros.edit', $carpintero->id) }}"
+                                            class="btn btn-sm btn-primary">Editar</a>
+                                        <form action="{{ route('carpinteros.destroy', $carpintero->id) }}" method="POST"
+                                            class="d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                onclick="return confirm('¿Estás seguro de que quieres eliminar este carpintero?')">Eliminar</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <div class="mt-3 d-flex justify-content-between">
-                <button type="submit" class="btn btn-primary">Guardar Carpintero</button>
-                <a href="{{ route('carpinteros.index') }}" class="btn btn-secondary">Volver</a>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h4>Novocentro</h4>
+                    <p>Transformando la industria de la madera con innovación y calidad desde 1995.</p>
+                </div>
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <h4>Enlaces Rápidos</h4>
+                    <ul class="list-unstyled">
+                        <li><a href="{{ url('/') }}">Inicio</a></li>
+                        <li><a href="{{ route('productos.clientes') }}">Productos</a></li>
+                        <li><a href="/proyectos">Proyectos</a></li>
+                        <li><a href="/carpinteros">Carpinteros</a></li>
+                        <li><a href="/contacto">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h4>Síguenos</h4>
+                    <div class="social-icons">
+                        <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
             </div>
-        </form>
+            <hr class="mt-4 mb-3">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <p>&copy; 2023 Novocentro. Todos los derechos reservados.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
 
-        <h2 class="mt-5">Lista de Carpinteros</h2>
-        <table class="table table-bordered table-hover mt-3">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Especialidad</th>
-                    <th>Teléfono</th>
-                    <th>Email</th>
-                    <th>Ubicación</th>
-                    <th>Foto</th>
-                    <th>Descripción</th>
-                    <th>Disponibilidad</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($carpinteros as $carpintero)
-                    <tr>
-                        <td>{{ $carpintero->nombre }}</td>
-                        <td>{{ $carpintero->especialidad }}</td>
-                        <td>{{ $carpintero->telefono }}</td>
-                        <td>{{ $carpintero->email }}</td>
-                        <td>{{ $carpintero->ubicacion }}</td>
-                        <td>
-                            @if($carpintero->foto_perfil)
-                                <img src="{{ $carpintero->foto_perfil }}" alt="Foto de perfil" width="50" height="50">
-                            @else
-                                <span>No disponible</span>
-                            @endif
-                        </td>
-                        <td>{{ $carpintero->descripcion }}</td>
-                        <td>
-                            @if($carpintero->disponibilidad == 1)
-                                <span class="badge bg-success">Disponible</span>
-                            @else
-                                <span class="badge bg-danger">No disponible</span>
-                            @endif
-                        </td>
-                        <td>
-                            <a href="{{ route('carpinteros.edit', $carpintero->id) }}"
-                                class="btn btn-warning btn-sm">Editar</a>
-                            <form action="{{ route('carpinteros.destroy', $carpintero->id) }}" method="POST"
-                                style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="9" class="text-center">No hay carpinteros registrados.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
