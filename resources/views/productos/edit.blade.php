@@ -327,7 +327,7 @@
 
                                         <div class="col-md-6">
                                             <div class="mb-3">
-                                                <label for="precio" class="form-label">Precio</label>
+                                                <label for="precio" class="form-label">Costo de Adquisición</label>
                                                 <div class="input-group">
                                                     <span class="input-group-text">$</span>
                                                     <input type="number" class="form-control" id="precio" name="precio" required min="0" step="0.01" value="{{$producto->precio}}">
@@ -335,7 +335,7 @@
                                             </div>
 
                                             <div class="mb-3">
-                                                <label for="costo" class="form-label">Costo</label>
+                                                <label for="costo" class="form-label">Precio de Venta al Público</label>
                                                 <div class="input-group">
                                                     <span class="input-group-text">$</span>
                                                     <input type="number" class="form-control" id="costo" name="costo" required min="0" step="0.01" value="{{$producto->costo}}">

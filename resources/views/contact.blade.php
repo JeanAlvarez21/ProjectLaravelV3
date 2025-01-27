@@ -368,10 +368,13 @@
                 <div class="col-md-4">
                     <h4>Síguenos</h4>
                     <div class="social-icons">
-                        <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
-                        <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
-                        <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
-                        <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="https://www.facebook.com/novocentrodistablasa/?locale=es_LA" target="_blank"><i
+                                class="fab fa-facebook"></i></a>
+                        <a href="https://x.com/novocentrogarz1" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="https://www.instagram.com/novocentrodistablasa/?hl=es" target="_blank"><i
+                                class="fab fa-instagram"></i></a>
+                        <a href="https://ec.linkedin.com/company/distablasa-novopan" target="_blank"><i
+                                class="fab fa-linkedin"></i></a>
                     </div>
                 </div>
             </div>
