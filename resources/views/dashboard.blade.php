@@ -12,150 +12,308 @@
     <style>
         :root {
             --primary-color: #FFD700;
-            --sidebar-width: 250px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            --primary-dark: #E6C200;
+            --sidebar-width: 280px;
+            --header-height: 70px;
+            --card-border-radius: 12px;
+            --transition-speed: 0.3s;
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8f9fa;
             display: flex;
+            min-height: 100vh;
+            margin: 0;
+            width: 100%;
         }
 
-        .container-fluid {
-            padding-left: 0;
-            padding-right: 0;
-        }
-
+        /* Sidebar Styles */
         .sidebar {
             width: var(--sidebar-width);
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
             min-height: 100vh;
-            padding: 1rem;
+            padding: 1.5rem;
             position: fixed;
+            left: 0;
+            top: 0;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+            z-index: 1000;
         }
 
         .logo {
-            margin-bottom: 2rem;
-            font-weight: bold;
-            font-size: 1.2rem;
+            margin-bottom: 2.5rem;
+            padding: 0.5rem;
             text-align: center;
         }
 
         .logo img {
-            height: 7vh;
-            width: 70%;
+            height: auto;
+            width: 80%;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
         }
 
         .nav-item {
-            padding: 0.75rem 1rem;
+            padding: 0.875rem 1.25rem;
             margin-bottom: 0.5rem;
-            border-radius: 0.5rem;
-            color: #000;
+            border-radius: 10px;
+            color: rgba(0, 0, 0, 0.8);
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.75rem;
+            transition: all var(--transition-speed) ease;
+            font-weight: 500;
+        }
+
+        .nav-item i {
+            font-size: 1.25rem;
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: #000;
+            transform: translateX(5px);
         }
 
         .nav-item.active {
-            background-color: rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            color: #000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
+        /* Main Content Styles */
         .main-content {
+            margin-left: var(--sidebar-width);
             padding: 2rem;
-            flex: 1;
+            width: calc(100% - var(--sidebar-width));
         }
 
-        .header {
+        .main-content .container-fluid {
+            max-width: 1320px;
+            /* Bootstrap's xxl container width */
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .col-md-9.ms-sm-auto.col-lg-10 {
+            width: 100%;
+            max-width: 1200px;
+            /* Fixed width similar to original */
+            margin: 0 auto;
+        }
+
+
+        /* Card Styles */
+        .card {
+            border: none;
+            border-radius: var(--card-border-radius);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-card {
+            background: #fff;
+            padding: 1.5rem;
+        }
+
+        .stats-card .icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
+            justify-content: center;
+            margin-bottom: 1rem;
         }
 
-        .search-bar {
-            padding: 0.5rem;
-            border: 1px solid #ddd;
-            border-radius: 0.25rem;
-            width: 300px;
+        .stats-card .stats-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+            color: #2c3e50;
+        }
+
+        .stats-card .stats-label {
+            color: #6c757d;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Table Styles */
+        .table {
+            margin: 0;
+        }
+
+        .table th {
+            font-weight: 600;
+            color: #2c3e50;
+            border-bottom-width: 2px;
+        }
+
+        .table td {
+            vertical-align: middle;
+            color: #4a5568;
+        }
+
+        /* Badge Styles */
+        .badge {
+            padding: 0.5em 1em;
+            font-weight: 500;
+            font-size: 0.75rem;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 0.5rem 1rem;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all var(--transition-speed) ease;
         }
 
         .btn-logout {
-            background-color: #FF6347;
-            color: white;
-            border: none;
+            background-color: #fff;
+            color: #dc3545;
+            border: 1px solid #dc3545;
             padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
+            border-radius: 10px;
             cursor: pointer;
             text-align: center;
             width: 100%;
-            display: block;
-            margin-top: auto;
+            margin-top: 2rem;
+            font-weight: 500;
+            transition: all var(--transition-speed) ease;
         }
 
         .btn-logout:hover {
-            background-color: #D44C3C;
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        /* Chart Styles */
+        .chart-container {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: var(--card-border-radius);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 80px;
+                padding: 1rem 0.5rem;
+            }
+
+            .sidebar .nav-item span {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 80px;
+                width: calc(100% - 80px);
+            }
+
+            .logo img {
+                width: 40px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        /* Añadir estilos específicos para el contenedor del gráfico */
+        .chart-wrapper {
+            position: relative;
+            height: 300px;
+            /* Altura fija para el gráfico */
+            width: 100%;
         }
     </style>
 </head>
 
 <body>
     <div class="sidebar">
-        <div class="logo" style="text-align: center; margin-bottom: 2rem;">
+        <div class="logo">
             <a href="home">
-                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
-                    style="height: 7vh; max-height: auto; width: 70%;">
+                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid">
             </a>
         </div>
 
         <nav>
-                @if(auth()->user()->rol == 1)
-                    <!-- Menú completo para rol 3 -->
-                    <a href="/dashboard" class="nav-item active">
-                        <span>Dashboard</span>
-                    </a>
-                    <a href="/productos" class="nav-item">
-                        <span>Productos</span>
-                    </a>
-                    <a href="/categorias" class="nav-item">
-                        <span>Familias</span>
-                    </a>
-                    <a href="/usuarios" class="nav-item">
-                        <span>Usuarios</span>
-                    </a>
-                    <a href="/pedidos" class="nav-item">
-                        <span>Pedidos</span>
-                    </a>
-                    <a href="/reportes" class="nav-item">
-                        <span>Reportes</span>
-                    </a>
-                @elseif(auth()->user()->rol == 2)
-                    <!-- Menú reducido para rol 2 -->
-                    <a href="/productos" class="nav-item active">
-                        <span>Productos</span>
-                    </a>
-                    <a href="/categorias" class="nav-item">
-                        <span>Familias</span>
-                    </a>
-                    <a href="/pedidos" class="nav-item">
-                        <span>Pedidos</span>
-                    </a>
-                    <a href="/reportes" class="nav-item">
-                        <span>Reportes</span>
-                    </a>
-                @endif
+            @if(auth()->user()->rol == 1)
+                <a href="/dashboard" class="nav-item active">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/productos" class="nav-item">
+                    <i class="bi bi-box-seam-fill"></i>
+                    <span>Productos</span>
+                </a>
+                <a href="/categorias" class="nav-item">
+                    <i class="bi bi-folder-fill"></i>
+                    <span>Familias</span>
+                </a>
+                <a href="/usuarios" class="nav-item">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Usuarios</span>
+                </a>
+                <a href="/pedidos" class="nav-item">
+                    <i class="bi bi-cart-fill"></i>
+                    <span>Pedidos</span>
+                </a>
+                <a href="/reportes" class="nav-item">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                    <span>Reportes</span>
+                </a>
+            @elseif(auth()->user()->rol == 2)
+                <a href="/productos" class="nav-item active">
+                    <i class="bi bi-box-seam-fill"></i>
+                    <span>Productos</span>
+                </a>
+                <a href="/categorias" class="nav-item">
+                    <i class="bi bi-folder-fill"></i>
+                    <span>Familias</span>
+                </a>
+                <a href="/pedidos" class="nav-item">
+                    <i class="bi bi-cart-fill"></i>
+                    <span>Pedidos</span>
+                </a>
+                <a href="/reportes" class="nav-item">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                    <span>Reportes</span>
+                </a>
+            @endif
 
-                <!-- Botón de cerrar sesión -->
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
-                    @csrf
-                    <button type="submit" class="btn-logout">Cerrar sesión</button>
-                </form>
-            </nav>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn-logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Cerrar sesión</span>
+                </button>
+            </form>
+        </nav>
     </div>
 
     <div class="main-content">
@@ -164,82 +322,58 @@
                 <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                     @if(isset($error))
                         <div class="alert alert-danger" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
                             Error al cargar los datos: {{ $error }}
                         </div>
                     @endif
 
-                    <div
-                        class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                        <h1 class="h2">Dashboard</h1>
-                        <div class="btn-toolbar mb-2 mb-md-0">
-                            <div class="btn-group me-2">
-                                <a href="{{ route('cart.view') }}" class="btn btn-sm btn-outline-secondary">
-                                    <i class="bi bi-cart"></i> Carrito ({{ $cartItemCount }})
-                                </a>
-                            </div>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+                        <div class="d-flex gap-3">
+                            <a href="{{ route('cart.view') }}"
+                                class="btn btn-outline-primary d-flex align-items-center gap-2">
+                                <i class="bi bi-cart"></i>
+                                <span>Carrito ({{ $cartItemCount }})</span>
+                            </a>
                         </div>
                     </div>
 
                     <!-- Stats Cards -->
                     <div class="row g-4 mb-4">
                         <div class="col-12 col-sm-6 col-xl-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="bg-primary bg-opacity-10 rounded p-3 me-3">
-                                            <i class="bi bi-people fs-4 text-primary"></i>
-                                        </div>
-                                        <div>
-                                            <h6 class="card-title text-muted mb-0">Usuarios Totales</h6>
-                                            <h2 class="mt-2 mb-0">{{ $totalUsuarios }}</h2>
-                                        </div>
-                                    </div>
+                            <div class="stats-card card h-100">
+                                <div class="icon-wrapper bg-primary bg-opacity-10">
+                                    <i class="bi bi-people-fill text-primary fs-4"></i>
                                 </div>
+                                <div class="stats-value">{{ $totalUsuarios }}</div>
+                                <div class="stats-label">Usuarios Totales</div>
                             </div>
                         </div>
                         <div class="col-12 col-sm-6 col-xl-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="bg-success bg-opacity-10 rounded p-3 me-3">
-                                            <i class="bi bi-cart-check fs-4 text-success"></i>
-                                        </div>
-                                        <div>
-                                            <h6 class="card-title text-muted mb-0">Pedidos Totales</h6>
-                                            <h2 class="mt-2 mb-0">{{ $totalPedidos }}</h2>
-                                        </div>
-                                    </div>
+                            <div class="stats-card card h-100">
+                                <div class="icon-wrapper bg-success bg-opacity-10">
+                                    <i class="bi bi-cart-check-fill text-success fs-4"></i>
                                 </div>
+                                <div class="stats-value">{{ $totalPedidos }}</div>
+                                <div class="stats-label">Pedidos Totales</div>
                             </div>
                         </div>
                         <div class="col-12 col-sm-6 col-xl-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="bg-warning bg-opacity-10 rounded p-3 me-3">
-                                            <i class="bi bi-box-seam fs-4 text-warning"></i>
-                                        </div>
-                                        <div>
-                                            <h6 class="card-title text-muted mb-0">Productos en Stock</h6>
-                                            <h2 class="mt-2 mb-0">{{ $totalProductos }}</h2>
-                                        </div>
-                                    </div>
+                            <div class="stats-card card h-100">
+                                <div class="icon-wrapper bg-warning bg-opacity-10">
+                                    <i class="bi bi-box-seam-fill text-warning fs-4"></i>
                                 </div>
+                                <div class="stats-value">{{ $totalProductos }}</div>
+                                <div class="stats-label">Productos en Stock</div>
                             </div>
                         </div>
                         <div class="col-12 col-sm-6 col-xl-3">
-                            <div class="card">
-                                <div class="card-body">
-                                    <div class="d-flex align-items-center">
-                                        <div class="bg-info bg-opacity-10 rounded p-3 me-3">
-                                            <i class="bi bi-currency-dollar fs-4 text-info"></i>
-                                        </div>
-                                        <div>
-                                            <h6 class="card-title text-muted mb-0">Ingresos Totales</h6>
-                                            <h2 class="mt-2 mb-0">${{ number_format($ingresosTotales, 2) }}</h2>
-                                        </div>
-                                    </div>
+                            <div class="stats-card card h-100">
+                                <div class="icon-wrapper bg-info bg-opacity-10">
+                                    <i class="bi bi-currency-dollar text-info fs-4"></i>
                                 </div>
+                                <div class="stats-value">${{ number_format($ingresosTotales, 2) }}</div>
+                                <div class="stats-label">Ingresos Totales</div>
                             </div>
                         </div>
                     </div>
@@ -247,8 +381,10 @@
                     <!-- Sales Chart -->
                     <div class="card mb-4">
                         <div class="card-body">
-                            <h5 class="card-title">Ventas últimos 30 días</h5>
-                            <canvas id="salesChart" height="100"></canvas>
+                            <h5 class="card-title mb-4">Ventas últimos 30 días</h5>
+                            <div class="chart-wrapper">
+                                <canvas id="salesChart"></canvas>
+                            </div>
                         </div>
                     </div>
 
@@ -257,13 +393,14 @@
                         <div class="col-md-8">
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-4">
                                         <h5 class="card-title mb-0">Pedidos Recientes</h5>
-                                        <a href="{{ route('pedidos.index') }}" class="btn btn-primary btn-sm">Ver
-                                            todos</a>
+                                        <a href="{{ route('pedidos.index') }}" class="btn btn-primary btn-sm">
+                                            Ver todos
+                                        </a>
                                     </div>
                                     <div class="table-responsive">
-                                        <table class="table table-hover align-middle">
+                                        <table class="table table-hover">
                                             <thead>
                                                 <tr>
                                                     <th>ID</th>
@@ -279,8 +416,7 @@
                                                     <tr>
                                                         <td>#{{ $pedido->id_pedido }}</td>
                                                         <td>{{ $pedido->usuario->nombres }}
-                                                            {{ $pedido->usuario->apellidos }}
-                                                        </td>
+                                                            {{ $pedido->usuario->apellidos }}</td>
                                                         <td>
                                                             @if($pedido->fecha_pedido instanceof \Carbon\Carbon)
                                                                 {{ $pedido->fecha_pedido->format('d/m/Y H:i') }}
@@ -297,7 +433,7 @@
                                                         </td>
                                                         <td>
                                                             <a href="{{ route('pedidos.show', $pedido->id_pedido) }}"
-                                                                class="btn btn-sm btn-outline-primary me-1">
+                                                                class="btn btn-sm btn-outline-primary">
                                                                 <i class="bi bi-eye"></i>
                                                             </a>
                                                         </td>
@@ -312,16 +448,17 @@
                         <div class="col-md-4">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Productos Más Vendidos</h5>
-                                    <ul class="list-group list-group-flush">
+                                    <h5 class="card-title mb-4">Productos Más Vendidos</h5>
+                                    <div class="list-group list-group-flush">
                                         @foreach($topProductos as $producto)
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                {{ $producto->nombre }}
+                                            <div
+                                                class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                <span class="text-truncate">{{ $producto->nombre }}</span>
                                                 <span
                                                     class="badge bg-primary rounded-pill">{{ $producto->total_vendidos }}</span>
-                                            </li>
+                                            </div>
                                         @endforeach
-                                    </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -332,73 +469,71 @@
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Proyectos Activos</h5>
-                                    <ul class="list-group list-group-flush">
+                                    <h5 class="card-title mb-4">Proyectos Activos</h5>
+                                    <div class="list-group list-group-flush">
                                         @foreach($proyectosActivos as $proyecto)
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                {{ $proyecto->nombre }}
+                                            <div
+                                                class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                <span class="text-truncate">{{ $proyecto->nombre }}</span>
                                                 <span
                                                     class="badge bg-{{ $proyecto->estado == 'En proceso' ? 'warning' : 'success' }} rounded-pill">
                                                     {{ $proyecto->estado }}
                                                 </span>
-                                            </li>
+                                            </div>
                                         @endforeach
-                                    </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-body">
-                                    <h5 class="card-title">Carpinteros Disponibles</h5>
-                                    <ul class="list-group list-group-flush">
+                                    <h5 class="card-title mb-4">Carpinteros Disponibles</h5>
+                                    <div class="list-group list-group-flush">
                                         @foreach($carpinterosDisponibles as $carpintero)
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                {{ $carpintero->nombre }}
+                                            <div
+                                                class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                <span class="text-truncate">{{ $carpintero->nombre }}</span>
                                                 <span
                                                     class="badge bg-info rounded-pill">{{ $carpintero->especialidad }}</span>
-                                            </li>
+                                            </div>
                                         @endforeach
-                                    </ul>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Low Stock Products -->
-                    <div class="row mt-4">
-                        <div class="col-md-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Productos con Bajo Stock</h5>
-                                    <div class="table-responsive">
-                                        <table class="table table-hover align-middle">
-                                            <thead>
-                                                <tr>
-                                                    <th>Producto</th>
-                                                    <th>Stock Actual</th>
-                                                    <th>Stock Mínimo</th>
-                                                    <th>Acciones</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($productosConBajoStock as $producto)
-                                                    <tr>
-                                                        <td>{{ $producto->nombre }}</td>
-                                                        <td>{{ $producto->stock }}</td>
-                                                        <td>{{ $producto->min_stock }}</td>
-                                                        <td>
-                                                            <a href="{{ route('productos.edit', $producto->id) }}"
-                                                                class="btn btn-sm btn-warning">
-                                                                <i class="bi bi-pencil"></i> Editar
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <h5 class="card-title mb-4">Productos con Bajo Stock</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th>Stock Actual</th>
+                                            <th>Stock Mínimo</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($productosConBajoStock as $producto)
+                                            <tr>
+                                                <td>{{ $producto->nombre }}</td>
+                                                <td>{{ $producto->stock }}</td>
+                                                <td>{{ $producto->min_stock }}</td>
+                                                <td>
+                                                    <a href="{{ route('productos.edit', $producto->id) }}"
+                                                        class="btn btn-sm btn-warning">
+                                                        <i class="bi bi-pencil"></i> Editar
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -426,6 +561,8 @@
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: true, // Cambiar a true
+                    aspectRatio: 2, // Añadir ratio de aspecto fijo
                     plugins: {
                         legend: {
                             display: false
@@ -434,10 +571,19 @@
                     scales: {
                         y: {
                             beginAtZero: true,
+                            grid: {
+                                borderDash: [2, 4],
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
                             ticks: {
                                 callback: function (value) {
                                     return '$' + value.toLocaleString();
                                 }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
                             }
                         }
                     }
