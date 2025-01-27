@@ -30,7 +30,7 @@
         }
 
         .navbar-brand img {
-            height: 40px;
+            height: 50px;
             transition: transform 0.3s ease;
         }
 
@@ -132,16 +132,17 @@
 </head>
 
 <body>
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
             <a class="navbar-brand" href="{{ url('/') }}">
-                <img src="{{ asset('media/logo.png') }}" alt="Novocentro Logo" class="img-fluid">
+                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
+            <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url('/') }}">Inicio</a>
@@ -150,40 +151,48 @@
                         <a class="nav-link" href="{{ route('productos.clientes') }}">Productos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/proyectos">Proyectos</a>
+                        <a class="nav-link" href="{{ route('proyectos.index') }}">Proyectos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/carpinteros">Carpinteros</a>
+                        <a class="nav-link" href="{{ route('carpinteros.index') }}">Carpinteros</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/contacto">Contacto</a>
-                        @auth
-                                @if(Auth::user()->rol == 1)
-                                    <li class="nav-item"><a href="/dashboard" class="nav-link no-link">Admin</a></li>
-                                @elseif(Auth::user()->rol == 2)
-                                    <li class="nav-item"><a href="/productos" class="nav-link no-link">Empleado</a></li>
-                                @endif
-                        @endauth
+                        <a class="nav-link" href="{{ route('contact.index') }}">Contacto</a>
                     </li>
-                </ul>
-                <div class="d-flex align-items-center">
                     @auth
-                        <a href="{{ route('cart.view') }}" class="btn btn-link active">
-                            <i class="fas fa-shopping-cart"></i>
-                            <span class="badge bg-primary">{{ count((array) session('cart')) }}</span>
-                        </a>
-                        <a href="{{ route('profile') }}" class="btn btn-link">
-                            <i class="fas fa-user"></i>
-                        </a>
-                        <a href="{{ route('notificaciones') }}" class="nav-link">
-                            <i class="fas fa-bell"></i>
-                        </a>
-                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                            @csrf
-                            <button type="submit" class="btn btn-custom">Cerrar Sesión</button>
-                        </form>
+                        @if(Auth::user()->rol == 1)
+                            <li class="nav-item"><a href="/dashboard" class="nav-link">Admin</a></li>
+                        @elseif(Auth::user()->rol == 2)
+                            <li class="nav-item"><a href="/productos" class="nav-link">Empleado</a></li>
+                        @endif
+                    @endauth
+                </ul>
+                <div class="navbar-nav">
+                    @auth
+                        @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3)
+                            <a href="{{ route('cart.view') }}" class="nav-link">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="badge bg-primary">{{ count((array) session('cart')) }}</span>
+                            </a>
+                            <a href="{{ route('profile') }}" class="nav-link">
+                                <i class="fas fa-user"></i>
+                            </a>
+                            <a href="{{ route('notificaciones') }}" class="nav-link">
+                                <i class="fas fa-bell"></i>
+                            </a>
+                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                                @csrf
+                                <button type="submit" class="btn btn-outline-dark">Cerrar Sesión</button>
+                            </form>
+                        @else
+                            <a href="{{ route('login') }}" class="btn btn-outline-dark">
+                                Iniciar Sesión / Regístrate
+                            </a>
+                        @endif
                     @else
-                        <a href="{{ route('login') }}" class="btn btn-custom">Iniciar Sesión</a>
+                        <a href="{{ route('login') }}" class="btn btn-outline-dark">
+                            Iniciar Sesión / Regístrate
+                        </a>
                     @endauth
                 </div>
             </div>
@@ -260,6 +269,7 @@
         @endif
     </main>
 
+    <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="row">

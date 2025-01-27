@@ -29,7 +29,7 @@
         }
 
         .navbar-brand img {
-            height: 40px;
+            height: 50px;
             transition: transform 0.3s ease;
         }
 
@@ -158,10 +158,8 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
-            <a class="navbar-brand"
-                href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
-                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid"
-                    style="height: 6vh; max-height: 100%; width: auto;">
+            <a class="navbar-brand" href="{{ url('/') }}">
+                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -176,13 +174,13 @@
                         <a class="nav-link" href="{{ route('productos.clientes') }}">Productos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/proyectos">Proyectos</a>
+                        <a class="nav-link" href="{{ route('proyectos.index') }}">Proyectos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="/carpinteros">Carpinteros</a>
+                        <a class="nav-link" href="{{ route('carpinteros.index') }}">Carpinteros</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/contacto">Contacto</a>
+                        <a class="nav-link" href="{{ route('contact.index') }}">Contacto</a>
                     </li>
                     @auth
                         @if(Auth::user()->rol == 1)
@@ -207,15 +205,15 @@
                             </a>
                             <form action="{{ route('logout') }}" method="POST" class="d-inline">
                                 @csrf
-                                <button type="submit" class="btn btn-custom">Cerrar Sesión</button>
+                                <button type="submit" class="btn btn-outline-dark">Cerrar Sesión</button>
                             </form>
                         @else
-                            <a href="{{ route('login') }}" class="btn-auth">
+                            <a href="{{ route('login') }}" class="btn btn-outline-dark">
                                 Iniciar Sesión / Regístrate
                             </a>
                         @endif
                     @else
-                        <a href="{{ route('login') }}" class="btn-auth">
+                        <a href="{{ route('login') }}" class="btn btn-outline-dark">
                             Iniciar Sesión / Regístrate
                         </a>
                     @endauth
@@ -223,7 +221,6 @@
             </div>
         </div>
     </nav>
-
     <main class="container my-5">
         <h1 class="text-center mb-5">Gestión de Carpinteros</h1>
 

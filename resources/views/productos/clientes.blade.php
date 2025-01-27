@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Productos - Novocentro</title>
+    <title>Catálogo de Productos - Novocentro</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -28,7 +28,7 @@
         }
 
         .navbar-brand img {
-            height: 40px;
+            height: 50px;
             transition: transform 0.3s ease;
         }
 
@@ -161,15 +161,15 @@
                             </a>
                             <form action="{{ route('logout') }}" method="POST" class="d-inline">
                                 @csrf
-                                <button type="submit" class="btn btn-custom">Cerrar Sesión</button>
+                                <button type="submit" class="btn btn-outline-dark">Cerrar Sesión</button>
                             </form>
                         @else
-                            <a href="{{ route('login') }}" class="btn btn-custom">
+                            <a href="{{ route('login') }}" class="btn btn-outline-dark">
                                 Iniciar Sesión / Regístrate
                             </a>
                         @endif
                     @else
-                        <a href="{{ route('login') }}" class="btn btn-custom">
+                        <a href="{{ route('login') }}" class="btn btn-outline-dark">
                             Iniciar Sesión / Regístrate
                         </a>
                     @endauth
@@ -179,7 +179,7 @@
     </nav>
 
     <div class="container mt-5">
-        <h1 class="text-center mb-4">Productos Disponibles</h1>
+        <h1 class="text-center mb-4">Catálogo de Productos</h1>
         <div class="row">
             @foreach($productos as $producto)
                 <div class="col-md-3">
@@ -246,21 +246,18 @@
                     <ul class="list-unstyled">
                         <li><a href="{{ url('/') }}">Inicio</a></li>
                         <li><a href="{{ route('productos.clientes') }}">Productos</a></li>
-                        <li><a href="{{ route('proyectos.index') }}">Proyectos</a></li>
-                        <li><a href="{{ route('carpinteros.index') }}">Carpinteros</a></li>
-                        <li><a href="{{ route('contact.index') }}">Contacto</a></li>
+                        <li><a href="/proyectos">Proyectos</a></li>
+                        <li><a href="/carpinteros">Carpinteros</a></li>
+                        <li><a href="/contacto">Contacto</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
                     <h4>Síguenos</h4>
                     <div class="social-icons">
-                        <a href="https://www.facebook.com/novocentrodistablasa/?locale=es_LA" target="_blank"><i
-                                class="fab fa-facebook"></i></a>
-                        <a href="https://x.com/novocentrogarz1" target="_blank"><i class="fab fa-twitter"></i></a>
-                        <a href="https://www.instagram.com/novocentrodistablasa/?hl=es" target="_blank"><i
-                                class="fab fa-instagram"></i></a>
-                        <a href="https://ec.linkedin.com/company/distablasa-novopan" target="_blank"><i
-                                class="fab fa-linkedin"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
                     </div>
                 </div>
             </div>

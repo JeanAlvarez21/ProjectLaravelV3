@@ -31,7 +31,7 @@
         }
 
         .navbar-brand img {
-            height: 40px;
+            height: 50px;
             transition: transform 0.3s ease;
         }
 
@@ -173,10 +173,10 @@
 </head>
 
 <body>
+    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light fixed-top">
         <div class="container">
-            <a class="navbar-brand"
-                href="@auth @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3) {{ url('home') }} @else {{ url('/') }} @endif @else {{ url('/') }} @endauth">
+            <a class="navbar-brand" href="{{ url('/') }}">
                 <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid">
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -223,15 +223,15 @@
                             </a>
                             <form action="{{ route('logout') }}" method="POST" class="d-inline">
                                 @csrf
-                                <button type="submit" class="btn btn-custom">Cerrar Sesión</button>
+                                <button type="submit" class="btn btn-outline-dark">Cerrar Sesión</button>
                             </form>
                         @else
-                            <a href="{{ route('login') }}" class="btn-auth">
+                            <a href="{{ route('login') }}" class="btn btn-outline-dark">
                                 Iniciar Sesión / Regístrate
                             </a>
                         @endif
                     @else
-                        <a href="{{ route('login') }}" class="btn-auth">
+                        <a href="{{ route('login') }}" class="btn btn-outline-dark">
                             Iniciar Sesión / Regístrate
                         </a>
                     @endauth
@@ -358,7 +358,7 @@
     </section>
 
     <!-- Footer -->
-    <footer class="footer mt-5">
+    <footer class="footer">
         <div class="container">
             <div class="row">
                 <div class="col-md-4 mb-4 mb-md-0">
@@ -370,9 +370,9 @@
                     <ul class="list-unstyled">
                         <li><a href="{{ url('/') }}">Inicio</a></li>
                         <li><a href="{{ route('productos.clientes') }}">Productos</a></li>
-                        <li><a href="{{ route('proyectos.index') }}">Proyectos</a></li>
-                        <li><a href="{{ route('carpinteros.index') }}">Carpinteros</a></li>
-                        <li><a href="{{ route('contact.index') }}">Contacto</a></li>
+                        <li><a href="/proyectos">Proyectos</a></li>
+                        <li><a href="/carpinteros">Carpinteros</a></li>
+                        <li><a href="/contacto">Contacto</a></li>
                     </ul>
                 </div>
                 <div class="col-md-4">
