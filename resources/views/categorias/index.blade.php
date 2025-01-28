@@ -17,6 +17,21 @@
             --transition-speed: 0.3s;
         }
 
+        .card {
+            width: 100%;
+            height: 150px;
+            border: none;
+            border-radius: var(--card-border-radius);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
+            transition: transform var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+            margin-bottom: 1.5rem;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background-color: #f8f9fa;
