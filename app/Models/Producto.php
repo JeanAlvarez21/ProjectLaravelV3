@@ -10,7 +10,7 @@ class Producto extends Model
     use HasFactory;
 
     protected $primaryKey = 'id';
-    
+
     protected $fillable = [
         'nombre',
         'descripcion',
@@ -23,7 +23,7 @@ class Producto extends Model
         'visible',
         'link_imagen',
         'nombre_sucursal',
-        'direccion_sucursal', 
+        'direccion_sucursal',
     ];
 
     public function categoria()
@@ -31,4 +31,8 @@ class Producto extends Model
         return $this->belongsTo(Categoria::class, 'id_categoria', 'id_categoria');
     }
 
+    public function isLowStock()
+    {
+        return $this->stock <= $this->min_stock;
+    }
 }

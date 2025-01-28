@@ -23,7 +23,6 @@
             display: flex;
             min-height: 100vh;
             margin: 0;
-            width: 100%;
         }
 
         .sidebar {
@@ -34,19 +33,24 @@
             position: fixed;
             left: 0;
             top: 0;
-            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
+            bottom: 0;
             z-index: 1000;
+            overflow-y: auto;
+            transition: transform var(--transition-speed) ease;
+        }
+
+        .sidebar-hidden {
+            transform: translateX(-100%);
         }
 
         .logo {
             margin-bottom: 2.5rem;
-            padding: 0.5rem;
             text-align: center;
         }
 
         .logo img {
+            max-width: 80%;
             height: auto;
-            width: 80%;
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
         }
 
@@ -63,11 +67,8 @@
             font-weight: 500;
         }
 
-        .nav-item i {
-            font-size: 1.25rem;
-        }
-
-        .nav-item:hover {
+        .nav-item:hover,
+        .nav-item.active {
             background-color: rgba(255, 255, 255, 0.2);
             color: #000;
             transform: translateX(5px);
@@ -75,15 +76,18 @@
 
         .nav-item.active {
             background-color: #fff;
-            color: #000;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .content {
+            flex-grow: 1;
             margin-left: var(--sidebar-width);
             padding: 2rem;
-            width: calc(100% - var(--sidebar-width));
-            max-width: 1200px;
+            transition: margin-left var(--transition-speed) ease;
+        }
+
+        .sidebar-hidden+.content {
+            margin-left: 0;
         }
 
         .btn-logout {
@@ -109,19 +113,12 @@
             border: none;
             border-radius: var(--card-border-radius);
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
-            background: #fff;
-            margin-bottom: 1.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .card-body {
-            padding: 2rem;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 500;
-            transition: all 0.2s ease;
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
         }
 
         .btn-primary {
@@ -136,205 +133,236 @@
             color: #000;
         }
 
+        .sidebar-toggle {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1001;
+            display: none;
+        }
+
         @media (max-width: 992px) {
             .sidebar {
-                width: 80px;
+                transform: translateX(-100%);
             }
 
-            .sidebar .nav-item span {
-                display: none;
+            .sidebar.show {
+                transform: translateX(0);
             }
 
             .content {
-                margin-left: 80px;
-                width: calc(100% - 80px);
+                margin-left: 0;
             }
 
-            .logo img {
-                width: 40px;
+            .sidebar-toggle {
+                display: block;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="d-flex">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="logo">
-                <a href="{{ route('home') }}">
-                    <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid">
-                </a>
-            </div>
+    <button class="btn btn-primary sidebar-toggle" type="button" aria-label="Toggle sidebar">
+        <i class="bi bi-list"></i>
+    </button>
 
-            <nav>
-                @if(auth()->user()->rol == 1)
-                    <a href="/dashboard" class="nav-item">
-                        <i class="bi bi-grid-1x2-fill"></i>
-                        <span>Dashboard</span>
-                    </a>
-                    <a href="/productos" class="nav-item ">
-                        <i class="bi bi-box-seam-fill"></i>
-                        <span>Productos</span>
-                    </a>
-                    <a href="/categorias" class="nav-item">
-                        <i class="bi bi-folder-fill"></i>
-                        <span>Familias</span>
-                    </a>
-                    <a href="/usuarios" class="nav-item">
-                        <i class="bi bi-people-fill"></i>
-                        <span>Usuarios</span>
-                    </a>
-                    <a href="/pedidos" class="nav-item">
-                        <i class="bi bi-cart-fill"></i>
-                        <span>Pedidos</span>
-                    </a>
-                    <a href="/reportes" class="nav-item active">
-                        <i class="bi bi-file-earmark-text-fill"></i>
-                        <span>Reportes</span>
-                    </a>
-                @elseif(auth()->user()->rol == 2)
-                    <a href="/productos" class="nav-item ">
-                        <i class="bi bi-box-seam-fill"></i>
-                        <span>Productos</span>
-                    </a>
-                    <a href="/categorias" class="nav-item">
-                        <i class="bi bi-folder-fill"></i>
-                        <span>Familias</span>
-                    </a>
-                    <a href="/pedidos" class="nav-item">
-                        <i class="bi bi-cart-fill"></i>
-                        <span>Pedidos</span>
-                    </a>
-                    <a href="/reportes" class="nav-item active">
-                        <i class="bi bi-file-earmark-text-fill"></i>
-                        <span>Reportes</span>
-                    </a>
-                @endif
-
-                <form id="logout-form" action="{{ route('logout') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn-logout">
-                        <i class="bi bi-box-arrow-right"></i>
-                        <span>Cerrar sesión</span>
-                    </button>
-                </form>
-            </nav>
+    <div class="sidebar">
+        <div class="logo">
+            <a href="{{ route('home') }}">
+                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid">
+            </a>
         </div>
 
-        <!-- Main content -->
-        <div class="content">
-            <div class="container">
-                <h1 class="mb-4">Reportes y Consultas</h1>
-                <div class="row g-4">
-                    <div class="col-md-6">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">Ventas por Período</h5>
-                                <p class="card-text">Analiza las ventas realizadas en un período específico.</p>
-                                <form action="{{ route('reportes.ventas-periodo') }}" method="GET" class="mb-3">
-                                    <div class="row g-2">
-                                        <div class="col-md-5">
-                                            <input type="date" name="fecha_inicio" class="form-control"
-                                                value="{{ Carbon\Carbon::now()->startOfMonth()->format('Y-m-d') }}">
-                                        </div>
-                                        <div class="col-md-5">
-                                            <input type="date" name="fecha_fin" class="form-control"
-                                                value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button type="submit" class="btn btn-primary w-100">Ver</button>
-                                        </div>
+        <nav>
+            @if(auth()->user()->rol == 1)
+                <a href="/dashboard" class="nav-item">
+                    <i class="bi bi-grid-1x2-fill"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/productos" class="nav-item">
+                    <i class="bi bi-box-seam-fill"></i>
+                    <span>Productos</span>
+                </a>
+                <a href="/categorias" class="nav-item">
+                    <i class="bi bi-folder-fill"></i>
+                    <span>Familias</span>
+                </a>
+                <a href="/usuarios" class="nav-item">
+                    <i class="bi bi-people-fill"></i>
+                    <span>Usuarios</span>
+                </a>
+                <a href="/pedidos" class="nav-item">
+                    <i class="bi bi-cart-fill"></i>
+                    <span>Pedidos</span>
+                </a>
+                <a href="/reportes" class="nav-item active">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                    <span>Reportes</span>
+                </a>
+            @elseif(auth()->user()->rol == 2)
+                <a href="/productos" class="nav-item">
+                    <i class="bi bi-box-seam-fill"></i>
+                    <span>Productos</span>
+                </a>
+                <a href="/categorias" class="nav-item">
+                    <i class="bi bi-folder-fill"></i>
+                    <span>Familias</span>
+                </a>
+                <a href="/pedidos" class="nav-item">
+                    <i class="bi bi-cart-fill"></i>
+                    <span>Pedidos</span>
+                </a>
+                <a href="/reportes" class="nav-item active">
+                    <i class="bi bi-file-earmark-text-fill"></i>
+                    <span>Reportes</span>
+                </a>
+            @endif
+
+            <form id="logout-form" action="{{ route('logout') }}" method="POST">
+                @csrf
+                <button type="submit" class="btn-logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Cerrar sesión</span>
+                </button>
+            </form>
+        </nav>
+    </div>
+
+    <div class="content">
+        <div class="container-fluid">
+            <h1 class="mb-4">Reportes y Consultas</h1>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Ventas por Período</h5>
+                            <p class="card-text">Analiza las ventas realizadas en un período específico.</p>
+                            <form action="{{ route('reportes.ventas-periodo') }}" method="GET" class="mb-3">
+                                <div class="row g-2">
+                                    <div class="col-md-5">
+                                        <input type="date" name="fecha_inicio" class="form-control"
+                                            value="{{ Carbon\Carbon::now()->startOfMonth()->format('Y-m-d') }}">
                                     </div>
-                                </form>
-                                <div class="d-flex justify-content-start gap-2">
-                                    <a href="{{ route('reportes.ventas-periodo', ['export' => 'pdf']) }}"
-                                        class="btn btn-secondary">
-                                        <i class="bi bi-file-pdf"></i> Exportar PDF
-                                    </a>
+                                    <div class="col-md-5">
+                                        <input type="date" name="fecha_fin" class="form-control"
+                                            value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn btn-primary w-100">Ver</button>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
+                            <a href="{{ route('reportes.ventas-periodo', ['export' => 'pdf']) }}"
+                                class="btn btn-secondary">
+                                <i class="bi bi-file-pdf"></i> Exportar PDF
+                            </a>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">Productos más Populares</h5>
-                                <p class="card-text">Visualiza los productos más vendidos y sus estadísticas.</p>
-                                <form action="{{ route('reportes.productos-populares') }}" method="GET" class="mb-3">
-                                    <div class="row g-2">
-                                        <div class="col-md-5">
-                                            <input type="date" name="fecha_inicio" class="form-control"
-                                                value="{{ Carbon\Carbon::now()->startOfMonth()->format('Y-m-d') }}">
-                                        </div>
-                                        <div class="col-md-5">
-                                            <input type="date" name="fecha_fin" class="form-control"
-                                                value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button type="submit" class="btn btn-primary w-100">Ver</button>
-                                        </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Productos más Populares</h5>
+                            <p class="card-text">Visualiza los productos más vendidos y sus estadísticas.</p>
+                            <form action="{{ route('reportes.productos-populares') }}" method="GET" class="mb-3">
+                                <div class="row g-2">
+                                    <div class="col-md-5">
+                                        <input type="date" name="fecha_inicio" class="form-control"
+                                            value="{{ Carbon\Carbon::now()->startOfMonth()->format('Y-m-d') }}">
                                     </div>
-                                </form>
-                                <div class="d-flex justify-content-start gap-2">
-                                    <a href="{{ route('reportes.productos-populares', ['export' => 'pdf']) }}"
-                                        class="btn btn-secondary">
-                                        <i class="bi bi-file-pdf"></i> Exportar PDF
-                                    </a>
+                                    <div class="col-md-5">
+                                        <input type="date" name="fecha_fin" class="form-control"
+                                            value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn btn-primary w-100">Ver</button>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
+                            <a href="{{ route('reportes.productos-populares', ['export' => 'pdf']) }}"
+                                class="btn btn-secondary">
+                                <i class="bi bi-file-pdf"></i> Exportar PDF
+                            </a>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">Inventario Bajo</h5>
-                                <p class="card-text">Revisa los productos con stock bajo que necesitan reposición.</p>
-                                <div class="d-flex justify-content-start gap-2">
-                                    <a href="{{ route('reportes.inventario-bajo') }}"
-                                        class="btn btn-primary mb-2">Ver</a>
-                                    <a href="{{ route('reportes.inventario-bajo', ['export' => 'pdf']) }}"
-                                        class="btn btn-secondary">
-                                        <i class="bi bi-file-pdf"></i> Exportar PDF
-                                    </a>
-                                </div>
-                            </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Inventario Bajo</h5>
+                            <p class="card-text">Revisa los productos con stock bajo que necesitan reposición.</p>
+                            <a href="{{ route('reportes.inventario-bajo') }}" class="btn btn-primary mb-2">Ver</a>
+                            <a href="{{ route('reportes.inventario-bajo', ['export' => 'pdf']) }}"
+                                class="btn btn-secondary">
+                                <i class="bi bi-file-pdf"></i> Exportar PDF
+                            </a>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="card h-100">
-                            <div class="card-body">
-                                <h5 class="card-title">Clientes Top</h5>
-                                <p class="card-text">Identifica a tus mejores clientes por volumen de compras.</p>
-                                <form action="{{ route('reportes.clientes-top') }}" method="GET" class="mb-3">
-                                    <div class="row g-2">
-                                        <div class="col-md-5">
-                                            <input type="date" name="fecha_inicio" class="form-control"
-                                                value="{{ Carbon\Carbon::now()->startOfMonth()->format('Y-m-d') }}">
-                                        </div>
-                                        <div class="col-md-5">
-                                            <input type="date" name="fecha_fin" class="form-control"
-                                                value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
-                                        </div>
-                                        <div class="col-md-2">
-                                            <button type="submit" class="btn btn-primary w-100">Ver</button>
-                                        </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Clientes Top</h5>
+                            <p class="card-text">Identifica a tus mejores clientes por volumen de compras.</p>
+                            <form action="{{ route('reportes.clientes-top') }}" method="GET" class="mb-3">
+                                <div class="row g-2">
+                                    <div class="col-md-5">
+                                        <input type="date" name="fecha_inicio" class="form-control"
+                                            value="{{ Carbon\Carbon::now()->startOfMonth()->format('Y-m-d') }}">
                                     </div>
-                                </form>
-                                <div class="d-flex justify-content-start gap-2">
-                                    <a href="{{ route('reportes.clientes-top', ['export' => 'pdf']) }}"
-                                        class="btn btn-secondary">
-                                        <i class="bi bi-file-pdf"></i> Exportar PDF
-                                    </a>
+                                    <div class="col-md-5">
+                                        <input type="date" name="fecha_fin" class="form-control"
+                                            value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn btn-primary w-100">Ver</button>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
+                            <a href="{{ route('reportes.clientes-top', ['export' => 'pdf']) }}"
+                                class="btn btn-secondary">
+                                <i class="bi bi-file-pdf"></i> Exportar PDF
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const sidebarToggle = document.querySelector('.sidebar-toggle');
+            const sidebar = document.querySelector('.sidebar');
+            const content = document.querySelector('.content');
+
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('show');
+            });
+
+            // Close sidebar when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!sidebar.contains(e.target) && !sidebarToggle.contains(e.target)) {
+                    sidebar.classList.remove('show');
+                }
+            });
+
+            // Adjust layout for smaller screens
+            function adjustLayout() {
+                if (window.innerWidth <= 992) {
+                    sidebar.classList.remove('show');
+                    content.style.marginLeft = '0';
+                } else {
+                    sidebar.classList.add('show');
+                    content.style.marginLeft = `${sidebar.offsetWidth}px`;
+                }
+            }
+
+            window.addEventListener('resize', adjustLayout);
+            adjustLayout(); // Initial call
+        });
+    </script>
 </body>
 
 </html>
