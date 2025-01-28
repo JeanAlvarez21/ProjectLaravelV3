@@ -9,82 +9,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <link href="{{ asset('css/sidebar.css') }}" rel="stylesheet">
+
+
     <style>
-        :root {
-            --primary-color: #FFD700;
-            --primary-dark: #E6C200;
-            --sidebar-width: 280px;
-            --header-height: 70px;
-            --card-border-radius: 12px;
-            --transition-speed: 0.3s;
-        }
-
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: #f8f9fa;
-            display: flex;
-            min-height: 100vh;
-            margin: 0;
-            width: 100%;
-        }
-
-        /* Sidebar Styles */
-        .sidebar {
-            width: var(--sidebar-width);
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            min-height: 100vh;
-            padding: 1.5rem;
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
-            z-index: 1000;
-            overflow-y: auto;
-        }
-
-        .logo {
-            margin-bottom: 2.5rem;
-            padding: 0.5rem;
-            text-align: center;
-        }
-
-        .logo img {
-            height: auto;
-            width: 80%;
-            max-width: 200px;
-            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
-        }
-
-        .nav-item {
-            padding: 0.875rem 1.25rem;
-            margin-bottom: 0.5rem;
-            border-radius: 10px;
-            color: rgba(0, 0, 0, 0.8);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            transition: all var(--transition-speed) ease;
-            font-weight: 500;
-        }
-
-        .nav-item i {
-            font-size: 1.25rem;
-        }
-
-        .nav-item:hover {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: #000;
-            transform: translateX(5px);
-        }
-
-        .nav-item.active {
-            background-color: #fff;
-            color: #000;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
         /* Main Content Styles */
         .main-content {
             margin-left: var(--sidebar-width);
@@ -198,51 +126,6 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.04);
         }
 
-        /* Responsive Styles */
-        @media (max-width: 992px) {
-            .sidebar {
-                width: 80px;
-                padding: 1rem 0.5rem;
-            }
-
-            .sidebar .nav-item span {
-                display: none;
-            }
-
-            .main-content {
-                margin-left: 80px;
-                width: calc(100% - 80px);
-            }
-
-            .logo img {
-                width: 40px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                margin-left: 0;
-                width: 100%;
-            }
-
-            .sidebar {
-                transform: translateX(-100%);
-                transition: transform var(--transition-speed) ease;
-            }
-
-            .sidebar.show {
-                transform: translateX(0);
-            }
-
-            .sidebar-toggle {
-                display: block;
-                position: fixed;
-                top: 1rem;
-                left: 1rem;
-                z-index: 1001;
-            }
-        }
-
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -271,13 +154,20 @@
 </head>
 
 <body>
+    <!-- Loading Indicator -->
+    <div class="loading-indicator">
+        <div class="loading-spinner"></div>
+    </div>
+
+    <!-- Sidebar Toggle Button -->
     <button class="btn btn-primary sidebar-toggle d-md-none" type="button" aria-label="Toggle sidebar">
         <i class="bi bi-list"></i>
     </button>
 
+    <!-- Sidebar -->
     <div class="sidebar">
         <div class="logo">
-            <a href="home">
+            <a href="{{ url('/') }}">
                 <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid">
             </a>
         </div>
@@ -288,7 +178,7 @@
                     <i class="bi bi-grid-1x2-fill"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="/productos" class="nav-item">
+                <a href="/productos" class="nav-item ">
                     <i class="bi bi-box-seam-fill"></i>
                     <span>Productos</span>
                 </a>
@@ -308,8 +198,8 @@
                     <i class="bi bi-file-earmark-text-fill"></i>
                     <span>Reportes</span>
                 </a>
-            @elseif(auth()->user()->rol == 2)
-                <a href="/productos" class="nav-item active">
+            @else
+                <a href="/productos" class="nav-item ">
                     <i class="bi bi-box-seam-fill"></i>
                     <span>Productos</span>
                 </a>
@@ -321,13 +211,9 @@
                     <i class="bi bi-cart-fill"></i>
                     <span>Pedidos</span>
                 </a>
-                <a href="/reportes" class="nav-item">
-                    <i class="bi bi-file-earmark-text-fill"></i>
-                    <span>Reportes</span>
-                </a>
             @endif
 
-            <form id="logout-form" action="{{ route('logout') }}" method="POST">
+            <form action="{{ route('logout') }}" method="POST" class="mt-auto">
                 @csrf
                 <button type="submit" class="btn-logout">
                     <i class="bi bi-box-arrow-right"></i>
@@ -565,6 +451,8 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('js/sidebar.js') }}"></script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const ctx = document.getElementById('salesChart').getContext('2d');
@@ -611,11 +499,6 @@
                     }
                 }
             });
-        });
-
-        // Toggle sidebar on mobile
-        document.querySelector('.sidebar-toggle').addEventListener('click', function () {
-            document.querySelector('.sidebar').classList.toggle('show');
         });
     </script>
 </body>
