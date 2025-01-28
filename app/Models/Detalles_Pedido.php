@@ -11,17 +11,24 @@ class Detalles_Pedido extends Model
     protected $fillable = [
         'pedido_id',
         'producto_id',
+        'proyecto_id',
         'cantidad',
-        'subtotal'
+        'subtotal',
+        'precio'
     ];
 
     public function pedido()
     {
-        return $this->belongsTo(Pedidos::class, 'pedido_id');
+        return $this->belongsTo(Pedidos::class, 'pedido_id', 'id_pedido');
     }
 
     public function producto()
     {
         return $this->belongsTo(Producto::class, 'producto_id');
+    }
+
+    public function proyecto()
+    {
+        return $this->belongsTo(Proyecto::class, 'proyecto_id');
     }
 }

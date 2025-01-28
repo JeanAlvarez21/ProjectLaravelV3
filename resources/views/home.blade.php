@@ -1,278 +1,261 @@
-<!DOCTYPE html>
-<html lang="es">
+@extends('layouts.app2')
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenido a Novocentro - Soluciones en Madera de Alta Calidad</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary-color: #FFD700;
-            --secondary-color: #495E57;
-            --text-color: #333;
-            --light-bg: #f8f9fa;
-            --dark-bg: #343a40;
+@section('title', 'Bienvenido a Novocentro - Soluciones en Madera de Alta Calidad')
+
+@section('styles')
+<style>
+    /* Reset de márgenes */
+    body {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+    }
+
+    /* Hero Section ajustado */
+    .hero-section {
+        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+            url('{{ asset('media/background_main.png') }}') no-repeat center center;
+        background-size: cover;
+        color: white;
+        height: 80vh;
+        width: 100vw;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        margin-top: -76px;
+        padding-top: 76px;
+    }
+
+    .hero-content {
+        max-width: 800px;
+        text-align: center;
+        padding: 2rem;
+        z-index: 2;
+    }
+
+    .hero-title {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 600;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+        letter-spacing: -0.5px;
+    }
+
+    .hero-text {
+        font-size: clamp(1rem, 1.5vw, 1.1rem);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+        opacity: 0.9;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    /* Botón mejorado */
+    .btn-contacto {
+        background-color: var(--primary-color);
+        color: var(--text-color);
+        padding: 12px 32px;
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 2px solid transparent;
+    }
+
+    .btn-contacto:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        color: var(--text-color);
+        border-color: var(--primary-color);
+    }
+
+    /* Carrusel mejorado */
+    .carousel {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        margin: 2rem 0;
+    }
+
+    .carousel-item {
+        height: 400px;
+    }
+
+    .carousel-item img {
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .carousel-caption {
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 8px;
+        padding: 1.5rem;
+        max-width: 500px;
+        margin: 0 auto;
+        bottom: 2rem;
+    }
+
+    .carousel-caption h5 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Características mejoradas */
+    .feature-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        height: 100%;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature-icon {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 1.25rem;
+        transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover .feature-icon {
+        transform: scale(1.1);
+    }
+
+    /* Formulario de contacto mejorado */
+    .contact-section {
+        background-color: var(--light-bg);
+        border-radius: 12px;
+        padding: 3rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-control {
+        padding: 0.75rem 1rem;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.1);
+    }
+
+    /* Títulos de sección mejorados */
+    .section-title {
+        font-size: 2rem;
+        font-weight: 600;
+        margin-bottom: 2rem;
+        text-align: center;
+        position: relative;
+        padding-bottom: 1rem;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 3px;
+        background-color: var(--primary-color);
+        border-radius: 3px;
+    }
+
+    .scroll-indicator {
+        position: absolute;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        color: white;
+        font-size: 2rem;
+        animation: bounce 2s infinite;
+        cursor: pointer;
+        opacity: 0.8;
+        z-index: 2;
+    }
+
+    @keyframes bounce {
+
+        0%,
+        20%,
+        50%,
+        80%,
+        100% {
+            transform: translateY(0) translateX(-50%);
         }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            color: var(--text-color);
-            padding-top: 76px;
+        40% {
+            transform: translateY(-30px) translateX(-50%);
         }
 
-        .navbar {
-            background-color: var(--primary-color);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+        60% {
+            transform: translateY(-15px) translateX(-50%);
         }
+    }
+</style>
+@endsection
 
-        .navbar-brand img {
-            height: 50px;
-            transition: transform 0.3s ease;
-        }
+@section('content')
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">
+            Optimiza tu Proyecto con Madera de
+            <span class="text-warning">Alta Calidad</span>
+        </h1>
+        <p class="hero-text">
+            Descubre cómo nuestra tecnología de vanguardia garantiza madera cortada y acabada
+            según tus necesidades específicas
+        </p>
+        <a href="{{ route('contact.index') }}" class="btn-contacto">
+            CONTÁCTANOS
+            <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+    <div class="scroll-indicator" id="scrollIndicator">
+        <i class="fas fa-chevron-down"></i>
+    </div>
+</section>
 
-        .navbar-brand img:hover {
-            transform: scale(1.05);
-        }
-
-        .nav-link {
-            color: var(--text-color) !important;
-            font-weight: 500;
-            transition: color 0.3s ease;
-        }
-
-        .nav-link:hover {
-            color: var(--secondary-color) !important;
-        }
-
-        .hero-section {
-            background: url('{{ asset('media/background_main.png') }}') no-repeat center center;
-            background-size: cover;
-            color: white;
-            padding: 100px 0;
-        }
-
-        .hero-overlay {
-            background-color: rgba(0, 0, 0, 0.5);
-            padding: 50px;
-            border-radius: 10px;
-        }
-
-        .btn-custom {
-            background-color: var(--primary-color);
-            color: var(--text-color);
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            transition: all 0.3s ease;
-        }
-
-        .btn-custom:hover {
-            background-color: var(--secondary-color);
-            color: white;
-        }
-
-        .carousel-item {
-            transition: transform 0.6s ease-in-out;
-        }
-
-        .carousel-item img {
-            max-height: 300px;
-            object-fit: cover;
-        }
-
-        .carousel-caption {
-            background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 10px;
-            padding: 20px;
-        }
-
-        .feature-icon {
-            font-size: 3rem;
-            color: var(--primary-color);
-            margin-bottom: 1rem;
-        }
-
-        .footer {
-            background-color: var(--dark-bg);
-            color: white;
-            padding: 40px 0;
-        }
-
-        .footer h4 {
-            color: var(--primary-color);
-        }
-
-        .footer a {
-            color: white;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer a:hover {
-            color: var(--primary-color);
-        }
-
-        .social-icons a {
-            font-size: 1.5rem;
-            margin-right: 10px;
-            color: white;
-            transition: color 0.3s ease;
-        }
-
-        .social-icons a:hover {
-            color: var(--primary-color);
-        }
-
-        .btn-auth {
-            padding: 7px 15px;
-            border: 0;
-            border-radius: 100px;
-            background-color: rgb(255, 255, 255);
-            color: #333;
-            font-weight: Bold;
-            transition: all 0.5s;
-            -webkit-transition: all 0.5s;
-        }
-
-        .btn-auth:hover {
-            background-color: #FFFAEB;
-            box-shadow: 0 0 20px #6fc5ff50;
-            transform: scale(1.1);
-        }
-
-        .btn-auth:active {
-            background-color: rgb(255, 255, 255);
-            transition: all 0.25s;
-            -webkit-transition: all 0.10s;
-            box-shadow: none;
-            transform: scale(0.98);
-        }
-
-        .carousel-control-prev,
-        .carousel-control-next {
-            background: none;
-            border: none;
-            padding: 0;
-            margin: 0;
-            width: auto;
-            height: auto;
-        }
-
-        .carousel-control-prev:hover,
-        .carousel-control-next:hover {
-            background: none;
-            box-shadow: none;
-            transform: none;
-        }
-    </style>
-</head>
-
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url('/') }}">
-                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
-                <ul class="navbar-nav mx-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url('/') }}">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('productos.clientes') }}">Productos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('proyectos.index') }}">Proyectos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('carpinteros.index') }}">Carpinteros</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('contact.index') }}">Contacto</a>
-                    </li>
-                    @auth
-                        @if(Auth::user()->rol == 1)
-                            <li class="nav-item"><a href="/dashboard" class="nav-link">Admin</a></li>
-                        @elseif(Auth::user()->rol == 2)
-                            <li class="nav-item"><a href="/productos" class="nav-link">Empleado</a></li>
-                        @endif
-                    @endauth
-                </ul>
-                <div class="navbar-nav">
-                    @auth
-                        @if(Auth::user()->rol == 1 || Auth::user()->rol == 2 || Auth::user()->rol == 3)
-                            <a href="{{ route('cart.view') }}" class="nav-link">
-                                <i class="fas fa-shopping-cart"></i>
-                                <span class="badge bg-primary">{{ count((array) session('cart')) }}</span>
-                            </a>
-                            <a href="{{ route('profile') }}" class="nav-link">
-                                <i class="fas fa-user"></i>
-                            </a>
-                            <a href="{{ route('notificaciones') }}" class="nav-link">
-                                <i class="fas fa-bell"></i>
-                            </a>
-                            <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                                @csrf
-                                <button type="submit" class="btn btn-outline-dark">Cerrar Sesión</button>
-                            </form>
-                        @else
-                            <a href="{{ route('login') }}" class="btn btn-outline-dark">
-                                Iniciar Sesión / Regístrate
-                            </a>
-                        @endif
-                    @else
-                        <a href="{{ route('login') }}" class="btn btn-outline-dark">
-                            Iniciar Sesión / Regístrate
-                        </a>
-                    @endauth
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section class="hero-section text-center d-flex align-items-center justify-content-center">
-        <div class="container hero-overlay">
-            <h1 class="fw-bold">Optimiza tu Proyecto con Madera de <span class="text-warning">Alta Calidad</span></h1>
-            <p class="lead">Descubre cómo nuestra tecnología de vanguardia garantiza madera cortada y acabada según tus
-                necesidades específicas</p>
-            <a href="/contacto" class="btn btn-custom btn-lg mt-3">Contáctanos</a>
-        </div>
-    </section>
-
-    <!-- Sección de Carrusel de Tipos de Paneles -->
+<div id="content">
+    <!-- Carrusel de Paneles -->
     <section class="container my-5">
-        <h2 class="fw-bold text-center mb-4">Nuestros Paneles de Madera</h2>
-
+        <h2 class="section-title">Nuestros Paneles de Madera</h2>
         <div id="panelCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active">
                     <img src="{{ asset('assets/productos/1.jpg') }}" class="d-block w-100" alt="MDP Enchapado">
-                    <div class="carousel-caption d-none d-md-block">
+                    <div class="carousel-caption">
                         <h5>MDP Enchapado</h5>
                         <p>Económico y versátil para proyectos interiores</p>
                     </div>
                 </div>
                 <div class="carousel-item">
                     <img src="{{ asset('assets/productos/2.jpg') }}" class="d-block w-100" alt="MDF Enchapado">
-                    <div class="carousel-caption d-none d-md-block">
+                    <div class="carousel-caption">
                         <h5>MDF Enchapado</h5>
                         <p>Alta resistencia y estabilidad para acabados finos</p>
                     </div>
                 </div>
                 <div class="carousel-item">
                     <img src="{{ asset('assets/productos/3.jpg') }}" class="d-block w-100" alt="Plywood">
-                    <div class="carousel-caption d-none d-md-block">
+                    <div class="carousel-caption">
                         <h5>Plywood</h5>
                         <p>Excelente para exteriores y proyectos estructurales</p>
                     </div>
@@ -287,118 +270,89 @@
                 <span class="visually-hidden">Siguiente</span>
             </button>
         </div>
-
-        <div class="text-center mt-4">
-            <a href="/proyectos/create" class="btn btn-custom btn-lg">Crear un Proyecto</a>
-        </div>
     </section>
 
-    <!-- Sección "Por qué elegir Novocentro" -->
-    <section class="bg-light py-5">
-        <div class="container">
-            <h2 class="fw-bold text-center mb-4">¿Por qué elegir Novocentro?</h2>
-            <div class="row">
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body text-center">
-                            <i class="fas fa-cogs feature-icon"></i>
-                            <h3 class="card-title">Tecnología de Vanguardia</h3>
-                            <p class="card-text">Utilizamos la última tecnología en corte y acabado para garantizar la
-                                precisión en cada proyecto.</p>
-                        </div>
-                    </div>
+    <!-- Características -->
+    <section class="container my-5">
+        <h2 class="section-title">¿Por qué elegir Novocentro?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <i class="fas fa-cogs feature-icon"></i>
+                    <h3 class="h5 mb-3">Tecnología de Vanguardia</h3>
+                    <p class="mb-0">Utilizamos la última tecnología en corte y acabado para garantizar la precisión.</p>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body text-center">
-                            <i class="fas fa-tree feature-icon"></i>
-                            <h3 class="card-title">Sostenibilidad</h3>
-                            <p class="card-text">Comprometidos con el medio ambiente, utilizamos madera de fuentes
-                                sostenibles y procesos eco-amigables.</p>
-                        </div>
-                    </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <i class="fas fa-tree feature-icon"></i>
+                    <h3 class="h5 mb-3">Sostenibilidad</h3>
+                    <p class="mb-0">Comprometidos con el medio ambiente y procesos eco-amigables.</p>
                 </div>
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body text-center">
-                            <i class="fas fa-users feature-icon"></i>
-                            <h3 class="card-title">Asesoría Experta</h3>
-                            <p class="card-text">Nuestro equipo de expertos te guiará en cada etapa de tu proyecto,
-                                desde el diseño hasta la instalación.</p>
-                        </div>
-                    </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card text-center">
+                    <i class="fas fa-users feature-icon"></i>
+                    <h3 class="h5 mb-3">Asesoría Experta</h3>
+                    <p class="mb-0">Nuestro equipo te guiará en cada etapa de tu proyecto.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Sección de Contacto -->
-    <section class="py-5">
-        <div class="container">
-            <h2 class="fw-bold text-center mb-4">Contáctanos</h2>
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <form>
+    <!-- Contacto -->
+    <section class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="contact-section">
+                    <h2 class="section-title">Contáctanos</h2>
+                    <form action="{{ route('contact.submit') }}" method="POST">
+                        @csrf
                         <div class="mb-3">
-                            <input type="text" class="form-control" placeholder="Nombre" required>
+                            <input type="text" name="nombre" class="form-control" placeholder="Nombre" required>
                         </div>
                         <div class="mb-3">
-                            <input type="email" class="form-control" placeholder="Correo Electrónico" required>
+                            <input type="email" name="email" class="form-control" placeholder="Correo Electrónico"
+                                required>
                         </div>
                         <div class="mb-3">
-                            <textarea class="form-control" rows="5" placeholder="Mensaje" required></textarea>
+                            <input type="text" name="asunto" class="form-control" placeholder="Asunto" required>
+                        </div>
+                        <div class="mb-3">
+                            <textarea name="mensaje" class="form-control" rows="4" placeholder="Mensaje"
+                                required></textarea>
                         </div>
                         <div class="text-center">
-                            <button type="submit" class="btn btn-custom btn-lg">Enviar Mensaje</button>
+                            <button type="submit" class="btn-contacto">
+                                Enviar Mensaje
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </section>
+</div>
+@endsection
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <h4>Novocentro</h4>
-                    <p>Transformando la industria de la madera con innovación y calidad desde 1995.</p>
-                </div>
-                <div class="col-md-4 mb-4 mb-md-0">
-                    <h4>Enlaces Rápidos</h4>
-                    <ul class="list-unstyled">
-                        <li><a href="{{ url('/') }}">Inicio</a></li>
-                        <li><a href="{{ route('productos.clientes') }}">Productos</a></li>
-                        <li><a href="/proyectos">Proyectos</a></li>
-                        <li><a href="/carpinteros">Carpinteros</a></li>
-                        <li><a href="/contacto">Contacto</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-4">
-                    <h4>Síguenos</h4>
-                    <div class="social-icons">
-                        <a href="https://www.facebook.com/novocentrodistablasa/?locale=es_LA" target="_blank"><i
-                                class="fab fa-facebook"></i></a>
-                        <a href="https://x.com/novocentrogarz1" target="_blank"><i class="fab fa-twitter"></i></a>
-                        <a href="https://www.instagram.com/novocentrodistablasa/?hl=es" target="_blank"><i
-                                class="fab fa-instagram"></i></a>
-                        <a href="https://ec.linkedin.com/company/distablasa-novopan" target="_blank"><i
-                                class="fab fa-linkedin"></i></a>
-                    </div>
-                </div>
-            </div>
-            <hr class="mt-4 mb-3">
-            <div class="row">
-                <div class="col-md-12 text-center">
-                    <p>&copy; 2023 Novocentro. Todos los derechos reservados.</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const scrollIndicator = document.getElementById('scrollIndicator');
+        const content = document.getElementById('content');
 
-    <!-- Bootstrap Bundle JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-</body>
+        scrollIndicator.addEventListener('click', function () {
+            content.scrollIntoView({ behavior: 'smooth' });
+        });
 
-</html>
+        window.addEventListener('scroll', function () {
+            if (window.scrollY > 100) {
+                scrollIndicator.style.opacity = '0';
+            } else {
+                scrollIndicator.style.opacity = '0.8';
+            }
+        });
+    });
+</script>
+@endsection

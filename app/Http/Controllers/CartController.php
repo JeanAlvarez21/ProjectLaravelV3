@@ -4,57 +4,79 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Producto;
+use App\Models\Proyecto;
+use App\Models\Corte;
 
 class CartController extends Controller
 {
-    public function addToCart(Request $request, $id)
+    public function addToCart(Request $request)
     {
-        $product = Producto::findOrFail($id);
-        $cart = session()->get('cart', []);
+        try {
+            $id = $request->id;
+            $quantity = $request->quantity ?? 1;
+            $cart = session()->get('cart', []);
+            if (strpos($id, 'proyecto_') === 0) {
+                $proyectoId = substr($id, 9);
+                $proyecto = Proyecto::findOrFail($proyectoId);
+                $cart[$id] = [
+                    "name" => $proyecto->nombre,
+                    "quantity" => $quantity,
+                    "price" => $this->calculateProjectPrice($proyecto),
+                    "image" => "ruta_a_imagen_por_defecto.jpg",
+                    "type" => "proyecto"
+                ];
+            } else {
+                $product = Producto::findOrFail($id);
+                if (isset($cart[$id])) {
+                    $cart[$id]['quantity'] += $quantity;
+                } else {
+                    $cart[$id] = [
+                        "name" => $product->nombre,
+                        "quantity" => $quantity,
+                        "price" => $product->precio,
+                        "image" => $product->link_imagen,
+                        "stock" => $product->stock,
+                        "type" => "producto"
+                    ];
+                }
+            }
 
-        if (isset($cart[$id])) {
-            $cart[$id]['quantity'] += $request->quantity;
-        } else {
-            $cart[$id] = [
-                "name" => $product->nombre,
-                "quantity" => $request->quantity,
-                "price" => $product->costo,
-                "image" => $product->link_imagen,
-                "stock" => $product->stock
-            ];
+            session()->put('cart', $cart);
+
+            return response()->json(['success' => 'Ítem agregado al carrito exitosamente!']);
+        } catch (\Exception $e) {
+            \Log::error('Error en addToCart: ' . $e->getMessage());
+            return response()->json(['error' => 'Ocurrió un error al procesar tu solicitud.'], 500);
         }
-
-        session()->put('cart', $cart);
-
-        if ($request->ajax()) {
-            return response()->json(['success' => 'Producto agregado al carrito exitosamente!']);
-        }
-
-        return redirect()->back()->with('success', 'Producto agregado al carrito exitosamente!');
     }
 
     public function updateCart(Request $request)
     {
         if ($request->id && $request->quantity) {
             $cart = session()->get('cart');
-            $product = Producto::findOrFail($request->id);
+            $id = $request->id;
 
-            if ($request->quantity <= $product->stock) {
-                $cart[$request->id]["quantity"] = $request->quantity;
-                session()->put('cart', $cart);
-
-                if ($request->ajax()) {
-                    return response()->json(['success' => 'Carrito actualizado exitosamente!']);
-                }
-
-                return redirect()->back()->with('success', 'Carrito actualizado exitosamente!');
+            if (strpos($id, 'proyecto_') === 0) {
+                $cart[$id]["quantity"] = $request->quantity;
             } else {
-                if ($request->ajax()) {
-                    return response()->json(['error' => 'No hay suficiente stock disponible.'], 400);
+                $product = Producto::findOrFail($id);
+                if ($request->quantity <= $product->stock) {
+                    $cart[$id]["quantity"] = $request->quantity;
+                } else {
+                    if ($request->ajax()) {
+                        return response()->json(['error' => 'No hay suficiente stock disponible.'], 400);
+                    }
+                    return redirect()->back()->with('error', 'No hay suficiente stock disponible.');
                 }
-
-                return redirect()->back()->with('error', 'No hay suficiente stock disponible.');
             }
+
+            session()->put('cart', $cart);
+
+            if ($request->ajax()) {
+                return response()->json(['success' => 'Carrito actualizado exitosamente!']);
+            }
+
+            return redirect()->back()->with('success', 'Carrito actualizado exitosamente!');
         }
     }
 
@@ -68,39 +90,17 @@ class CartController extends Controller
             }
 
             if ($request->ajax()) {
-                return response()->json(['success' => 'Producto eliminado del carrito exitosamente!']);
+                return response()->json(['success' => 'Ítem eliminado del carrito exitosamente!']);
             }
 
-            return redirect()->back()->with('success', 'Producto eliminado del carrito exitosamente!');
+            return redirect()->back()->with('success', 'Ítem eliminado del carrito exitosamente!');
         }
     }
 
     public function viewCart()
     {
-        return view('cart');
-    }
-
-    public function purchase(Request $request)
-    {
         $cart = session()->get('cart', []);
-
-        foreach ($cart as $id => $details) {
-            $product = Producto::find($id);
-            if ($product) {
-                $newStock = $product->stock - $details['quantity'];
-                if ($newStock >= 0) {
-                    $product->stock = $newStock;
-                    $product->save();
-                } else {
-                    return redirect()->back()->with('error', 'No hay suficiente stock para ' . $product->nombre);
-                }
-            }
-        }
-
-        // Clear the cart after successful purchase
-        session()->forget('cart');
-
-        return redirect()->route('cart.view')->with('success', '¡Compra realizada con éxito!');
+        return view('cart', compact('cart'));
     }
 
     public function checkout()
@@ -118,5 +118,18 @@ class CartController extends Controller
 
         return view('order_confirmation', compact('cart', 'total'));
     }
-}
 
+    private function calculateProjectPrice(Proyecto $proyecto)
+    {
+        $totalPrice = 0;
+        foreach ($proyecto->cortes as $corte) {
+            $productoPrice = $corte->producto->precio;
+            $corteVolume = ($corte->largo * $corte->ancho * $corte->espesor) / 1000000; // Convertir a metros cúbicos
+            $productoVolume = ($corte->producto->largo * $corte->producto->ancho * $corte->producto->espesor) / 1000000;
+            $cantidadProductosNecesarios = ceil($corteVolume / $productoVolume);
+
+            $totalPrice += ($productoPrice * $cantidadProductosNecesarios) + $corte->precio_corte;
+        }
+        return $totalPrice;
+    }
+}

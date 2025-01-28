@@ -9,177 +9,147 @@ use Illuminate\Http\Request;
 
 class ProyectoController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (!session()->has('cart')) {
+                session(['cart' => []]);
+            }
+            return $next($request);
+        });
+    }
     public function index()
     {
-        // Listar los proyectos del usuario autenticado
         $proyectos = Proyecto::where('user_id', auth()->id())->get();
         return view('proyectos.index', compact('proyectos'));
     }
 
     public function create()
     {
-        // Mostrar formulario para crear proyecto
         $productos = Producto::all();
         return view('proyectos.create', compact('productos'));
     }
 
     public function store(Request $request)
     {
-        // Validar datos
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'ciudad' => 'required|string|max:255',
-            'local' => 'required|string|max:255',
-            'id_producto' => 'required|exists:productos,id',
-        ]);
-
-        // Guardar datos del proyecto en la sesión
-        session([
-            'proyecto_temporal' => [
-                'nombre' => $request->nombre,
-                'ciudad' => $request->ciudad,
-                'local' => $request->local,
-                'id_producto' => $request->id_producto,
-                'estado' => 'Nuevo',
-                'user_id' => auth()->id(), // Asignar el proyecto al usuario autenticado
-            ],
-        ]);
-
-        // Redirigir a una ruta genérica para manejar cortes temporales
-        return redirect()->route('proyectos.crearCortes');
-    }
-
-    public function crearCortes()
-    {
-        $proyectoTemporal = session('proyecto_temporal');
-
-        if (!$proyectoTemporal) {
-            return redirect()->route('proyectos.index')->withErrors('Primero debe crear un proyecto.');
-        }
-
-        $cortesTemporales = session('cortes_temporales', []);
-
-        return view('proyectos.cortes', compact('proyectoTemporal', 'cortesTemporales'));
-    }
-
-    public function guardarCorteTemporal(Request $request)
-    {
-        $request->validate([
+            'producto_id' => 'required|exists:productos,id',
             'cantidad' => 'required|integer|min:1',
-            'medidas' => 'required|string|max:255',
-            'tipo_borde' => 'required|string|max:255',
-            'color_borde' => 'required|string|max:255',
-            'precio_total' => 'required|numeric|min:0',
+            'largo' => 'required|numeric|min:0',
+            'ancho' => 'required|numeric|min:0',
+            'espesor' => 'required|numeric|min:0',
         ]);
 
-        $cortesTemporales = session('cortes_temporales', []);
-        $cortesTemporales[] = $request->all();
-        session(['cortes_temporales' => $cortesTemporales]);
+        $proyecto = Proyecto::create([
+            'nombre' => $request->nombre,
+            'user_id' => auth()->id(),
+        ]);
 
-        return back()->with('success', 'Corte agregado temporalmente.');
+        $producto = Producto::findOrFail($request->producto_id);
+        $precioCorte = 5.00; // Precio fijo por corte, ajustar según necesidades
+
+        Corte::create([
+            'proyecto_id' => $proyecto->id,
+            'producto_id' => $producto->id,
+            'cantidad' => $request->cantidad,
+            'largo' => $request->largo,
+            'ancho' => $request->ancho,
+            'espesor' => $request->espesor,
+            'precio_corte' => $precioCorte,
+        ]);
+
+        return redirect()->route('proyectos.show', $proyecto)->with('success', 'Proyecto creado con éxito');
     }
 
-    public function guardarProyecto()
+    public function show(Proyecto $proyecto)
     {
-        $proyectoTemporal = session('proyecto_temporal');
-        $cortesTemporales = session('cortes_temporales', []);
-
-        if (!$proyectoTemporal || empty($cortesTemporales)) {
-            return redirect()->route('proyectos.index')->withErrors('Debe agregar al menos un corte para guardar el proyecto.');
-        }
-
-        // Guardar el proyecto
-        $proyecto = Proyecto::create($proyectoTemporal);
-
-        // Asociar los cortes al proyecto
-        foreach ($cortesTemporales as $corte) {
-            $corte['proyecto_id'] = $proyecto->id;
-            Corte::create($corte);
-        }
-
-        // Limpiar los datos temporales
-        session()->forget(['proyecto_temporal', 'cortes_temporales']);
-
-        return redirect()->route('proyectos.index')->with('success', 'Proyecto guardado con éxito.');
+        $proyecto->load('cortes.producto');
+        return view('proyectos.show', compact('proyecto'));
     }
 
-    public function verCortes(Proyecto $proyecto)
+    public function addToCart(Proyecto $proyecto)
     {
-        // Verificar que el usuario autenticado sea el propietario del proyecto
-        if ($proyecto->user_id !== auth()->id()) {
-            abort(403, 'No tienes permiso para ver este proyecto.');
+        $cart = session()->get('cart', []);
+        $proyectoId = 'proyecto_' . $proyecto->id;
+
+        if (isset($cart[$proyectoId])) {
+            $cart[$proyectoId]['quantity']++;
+        } else {
+            $price = $this->calculateProjectPrice($proyecto);
+
+            $cart[$proyectoId] = [
+                "name" => $proyecto->nombre,
+                "quantity" => 1,
+                "price" => $price,
+                "image" => "ruta_a_imagen_por_defecto.jpg",
+                "type" => "proyecto"
+            ];
         }
 
-        // Obtener los cortes asociados al proyecto
-        $cortes = $proyecto->cortes;
-
-        return view('proyectos.cortes', compact('proyecto', 'cortes'));
+        session()->put('cart', $cart);
+        return redirect()->route('cart.view')->with('success', 'Proyecto agregado al carrito con éxito');
     }
 
-    public function destroy(Proyecto $proyecto)
+    private function calculateProjectPrice(Proyecto $proyecto)
     {
-        // Verificar que el usuario autenticado sea el propietario del proyecto
-        if ($proyecto->user_id !== auth()->id()) {
-            abort(403, 'No tienes permiso para eliminar este proyecto.');
-        }
+        $totalPrice = 0;
+        foreach ($proyecto->cortes as $corte) {
+            $productoPrice = $corte->producto->precio;
+            $corteVolume = ($corte->largo * $corte->ancho * $corte->espesor) / 1000000; // Convertir a metros cúbicos
+            $productoVolume = ($corte->producto->largo * $corte->producto->ancho * $corte->producto->espesor) / 1000000;
 
-        $proyecto->delete();
-        return redirect()->route('proyectos.index')->with('success', 'Proyecto eliminado con éxito.');
+            if ($productoVolume > 0) {
+                $cantidadProductosNecesarios = ceil($corteVolume / $productoVolume);
+            } else {
+                $cantidadProductosNecesarios = 1; // Default to 1 if product volume is 0
+            }
+
+            $totalPrice += ($productoPrice * $cantidadProductosNecesarios) + $corte->precio_corte;
+        }
+        return $totalPrice;
     }
     public function edit(Proyecto $proyecto)
     {
-        // Verificar que el usuario autenticado sea el propietario del proyecto
-        if ($proyecto->user_id !== auth()->id()) {
-            abort(403, 'No tienes permiso para editar este proyecto.');
-        }
-
         $productos = Producto::all();
-        $cortes = $proyecto->cortes;
-        return view('proyectos.edit', compact('proyecto', 'productos', 'cortes'));
+        return view('proyectos.edit', compact('proyecto', 'productos'));
     }
 
     public function update(Request $request, Proyecto $proyecto)
     {
-        // Verificar que el usuario autenticado sea el propietario del proyecto
-        if ($proyecto->user_id !== auth()->id()) {
-            abort(403, 'No tienes permiso para editar este proyecto.');
-        }
-
-        // Validar datos del proyecto
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'ciudad' => 'required|string|max:255',
-            'local' => 'required|string|max:255',
-            'id_producto' => 'required|exists:productos,id',
-            'estado' => 'required|in:Nuevo,En proceso,Completado',
-            'cortes' => 'required|array',
-            'cortes.*.id' => 'required|exists:cortes,id',
-            'cortes.*.cantidad' => 'required|integer|min:1',
-            'cortes.*.medidas' => 'required|string|max:255',
-            'cortes.*.tipo_borde' => 'required|string|max:255',
-            'cortes.*.color_borde' => 'required|string|max:255',
+            'producto_id' => 'required|exists:productos,id',
+            'cantidad' => 'required|integer|min:1',
+            'largo' => 'required|numeric|min:0',
+            'ancho' => 'required|numeric|min:0',
+            'espesor' => 'required|numeric|min:0',
         ]);
 
-        // Actualizar el proyecto
         $proyecto->update([
             'nombre' => $request->nombre,
-            'ciudad' => $request->ciudad,
-            'local' => $request->local,
-            'id_producto' => $request->id_producto,
-            'estado' => $request->estado,
         ]);
 
-        // Actualizar los cortes
-        foreach ($request->cortes as $corteData) {
-            $corte = Corte::findOrFail($corteData['id']);
-            $corte->update([
-                'cantidad' => $corteData['cantidad'],
-                'medidas' => $corteData['medidas'],
-                'tipo_borde' => $corteData['tipo_borde'],
-                'color_borde' => $corteData['color_borde'],
-            ]);
+        $corte = $proyecto->cortes->first(); // Asumiendo que cada proyecto tiene un solo corte
+        $corte->update([
+            'producto_id' => $request->producto_id,
+            'cantidad' => $request->cantidad,
+            'largo' => $request->largo,
+            'ancho' => $request->ancho,
+            'espesor' => $request->espesor,
+        ]);
+
+        return redirect()->route('proyectos.show', $proyecto)->with('success', 'Proyecto actualizado con éxito');
+    }
+
+    public function destroy(Proyecto $proyecto)
+    {
+        $proyecto->delete();
+
+        if (request()->ajax()) {
+            return response()->json(['success' => true]);
         }
 
-        return redirect()->route('proyectos.index')->with('success', 'Proyecto y cortes actualizados con éxito.');
+        return redirect()->route('proyectos.index')->with('success', 'Proyecto eliminado con éxito');
     }
 }

@@ -9,37 +9,64 @@ class Proyecto extends Model
 {
     use HasFactory;
 
-    // Nombre de la tabla
-    protected $table = 'proyectos';
-
-    // Campos permitidos para asignación masiva
     protected $fillable = [
         'nombre',
-        'ciudad',
-        'local',
+        'user_id',
+        'descripcion',
         'estado',
-        'id_producto', // Llave foránea para el producto asociado
-        'user_id',     // Llave foránea para el usuario asociado
+        'fecha_inicio',
+        'fecha_fin',
     ];
 
-    /**
-     * Relación: Un proyecto pertenece a un producto.
-     */
-    public function producto()
-    {
-        return $this->belongsTo(Producto::class, 'id_producto');
-    }
+    protected $dates = [
+        'fecha_inicio',
+        'fecha_fin',
+    ];
 
-    /**
-     * Relación: Un proyecto tiene muchos cortes.
-     */
-    public function cortes()
-    {
-    return $this->hasMany(Corte::class, 'proyecto_id');
-    }
-
+    // Relación con el usuario
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
+    }
+
+    // Relación con los cortes
+    public function cortes()
+    {
+        return $this->hasMany(Corte::class);
+    }
+
+    // Relación con los detalles de pedido
+    public function detallesPedido()
+    {
+        return $this->hasMany(DetallePedido::class);
+    }
+
+    // Método para calcular el precio total del proyecto
+    public function calcularPrecioTotal()
+    {
+        return $this->cortes->sum(function ($corte) {
+            return $corte->calcularPrecio();
+        });
+    }
+
+    // Método para obtener el estado del proyecto
+    public function getEstado()
+    {
+        return $this->estado ?? 'En progreso';
+    }
+
+    // Método para verificar si el proyecto está completado
+    public function estaCompletado()
+    {
+        return $this->estado === 'Completado';
+    }
+
+    // Método para obtener la duración del proyecto en días
+    public function getDuracion()
+    {
+        if ($this->fecha_inicio && $this->fecha_fin) {
+            return $this->fecha_inicio->diffInDays($this->fecha_fin);
+        }
+        return null;
     }
 }

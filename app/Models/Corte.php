@@ -9,25 +9,16 @@ class Corte extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'id_producto',  // Cambiado de producto_id a id_producto
-        'proyecto_id',
-        'cantidad',
-        'medidas',
-        'tipo_borde',
-        'color_borde',
-        'descripcion_corte',
-        'precio_total',
-        'fecha_corte',
-    ];
+    protected $fillable = ['producto_id', 'proyecto_id', 'cantidad', 'largo', 'ancho', 'espesor', 'precio_corte'];
 
     public function producto()
     {
-        return $this->belongsTo(Producto::class, 'id_producto');
+        return $this->belongsTo(Producto::class);
     }
 
     public function proyecto()
     {
-        return $this->belongsTo(Proyecto::class, 'proyecto_id');
+        return $this->belongsTo(Proyecto::class);
     }
 }
+

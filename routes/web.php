@@ -25,7 +25,6 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\ReporteController;
 
-
 // Welcome page
 Route::get('/', function () {
     return view('home');
@@ -51,13 +50,15 @@ Route::middleware(['auth'])->group(function () {
         return view('roles.admin');
     })->name('adminsito');
     Route::get('/dashboard', [DashboardController::class, 'index']);
-
-    // Added route within authenticated middleware group
-    Route::get('/pedidos/{pedido}/detalles', [PedidoController::class, 'detalles'])->name('pedidos.detalles');
 });
 
 // Notification routes
-Route::get('/notificaciones', [NotificationCenterController::class, 'index'])->name('notificaciones');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/notificaciones', [NotificationCenterController::class, 'index'])->name('notificaciones.index');
+    Route::post('/notificaciones/{id}/marcar-como-leido', [NotificationCenterController::class, 'markAsRead'])->name('notificaciones.mark-as-read');
+    Route::get('/notificaciones/no-leidas', [NotificationCenterController::class, 'getUnreadCount'])->name('notificaciones.unread-count');
+    Route::post('/notificaciones/store', [NotificationCenterController::class, 'store'])->name('notificaciones.store');
+});
 
 // User management routes
 Route::prefix('usuarios')->group(function () {
@@ -73,16 +74,7 @@ Route::prefix('usuarios')->group(function () {
 Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
 Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 Route::put('/profile/address', [ProfileController::class, 'updateAddress'])->name('address.update');
-Route::get('/user/orders', [ProfileController::class, 'getUserOrders'])->name('user.orders');
 Route::get('/user/orders', [ProfileController::class, 'getUserOrders'])->name('user.orders')->middleware('auth');
-// Authentication actions
-Route::post('/register', [RegisterController::class, 'register']);
-Route::post('password/email', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-Route::post('password/reset', [ResetPasswordController::class, 'reset'])->name('password.update');
-Route::post('/logout', function () {
-    Auth::logout();
-    return redirect('/');
-})->name('logout');
 
 // Inventory routes
 Route::resource('inventario', InventarioController::class);
@@ -97,7 +89,7 @@ Route::resource('categorias', CategoriaController::class);
 
 // Contact routes
 Route::get('/contacto', [ContactController::class, 'index'])->name('contact.index');
-Route::post('/contacto', [ContactController::class, 'store'])->name('contact.store');
+Route::post('/contacto', [ContactController::class, 'submit'])->name('contact.submit');
 
 // Carpenter routes
 Route::prefix('carpinteros')->group(function () {
@@ -111,52 +103,29 @@ Route::prefix('carpinteros')->group(function () {
 
 // Cart routes
 Route::prefix('cart')->group(function () {
-    Route::post('add/{id}', [CartController::class, 'addToCart'])->name('cart.add');
-    Route::post('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
-    Route::post('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
+    Route::post('add', [CartController::class, 'addToCart'])->name('cart.add');
+    Route::post('/update', [CartController::class, 'updateCart'])->name('cart.update');
+    Route::delete('/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::get('/', [CartController::class, 'viewCart'])->name('cart.view');
     Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
+    Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
 });
 
-// Agrupar las rutas bajo el middleware `auth` para asegurar que el usuario esté autenticado
-
+// Project routes
 Route::middleware(['auth'])->group(function () {
-
-    // Rutas principales para proyectos
-    Route::resource('proyectos', ProyectoController::class)->except(['show']);
-
-    // Ruta para crear cortes en un proyecto
-    Route::get('proyectos/crear-cortes', [ProyectoController::class, 'crearCortes'])->name('proyectos.crearCortes');
-
-    // Ruta para guardar un proyecto con cortes temporales
-    Route::post('proyectos/guardar-proyecto', [ProyectoController::class, 'guardarProyecto'])->name('proyectos.guardarProyecto');
-
-    // Ruta para ver los cortes de un proyecto ya guardado
-    Route::get('proyectos/{proyecto}/ver-cortes', [ProyectoController::class, 'verCortes'])->name('proyectos.verCortes');
-
-    // Rutas para manejar cortes
-    Route::post('proyectos/guardar-corte-temporal', [ProyectoController::class, 'guardarCorteTemporal'])->name('proyectos.guardarCorteTemporal');
-    Route::post('proyectos/{proyecto}/guardar-cortes', [CorteController::class, 'store'])->name('cortes.store');
-    Route::get('/proyectos/{proyecto}/edit', [ProyectoController::class, 'edit'])->name('proyectos.edit');
-    Route::put('/proyectos/{proyecto}', [ProyectoController::class, 'update'])->name('proyectos.update');
-    // Rutas para cortes individuales (CRUD)
-    Route::resource('cortes', CorteController::class)->except(['create', 'edit']);
-
+    Route::resource('proyectos', ProyectoController::class);
+    Route::post('/proyectos/{proyecto}/add-to-cart', [ProyectoController::class, 'addToCart'])->name('proyectos.addToCart');
 });
 
 // Order routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
-    Route::get('/pedidos/crear', [PedidoController::class, 'create'])->name('pedidos.create');
     Route::post('/pedidos', [PedidoController::class, 'store'])->name('pedidos.store');
-    Route::get('/pedidos/{pedido}', [PedidoController::class, 'show'])->name('pedidos.show');
-    Route::get('/pedidos/{pedido}/editar', [PedidoController::class, 'edit'])->name('pedidos.edit');
-    Route::put('/pedidos/{pedido}', [PedidoController::class, 'update'])->name('pedidos.update');
-    Route::delete('/pedidos/{pedido}', [PedidoController::class, 'destroy'])->name('pedidos.destroy');
+    Route::get('/pedidos/{pedidos}', [PedidoController::class, 'show'])->name('pedidos.show');
+    Route::get('/pedidos/{pedidos}/detalles', [PedidoController::class, 'detalles'])->name('pedidos.detalles');
 });
 
-//Rutas reportes
-// Rutas para reportes
+// Report routes
 Route::prefix('reportes')->middleware(['auth'])->group(function () {
     Route::get('/', [ReporteController::class, 'index'])->name('reportes.index');
     Route::get('/ventas-periodo', [ReporteController::class, 'ventasPorPeriodo'])->name('reportes.ventas-periodo');
@@ -164,5 +133,3 @@ Route::prefix('reportes')->middleware(['auth'])->group(function () {
     Route::get('/inventario-bajo', [ReporteController::class, 'inventarioBajo'])->name('reportes.inventario-bajo');
     Route::get('/clientes-top', [ReporteController::class, 'clientesTop'])->name('reportes.clientes-top');
 });
-Route::get('/pedidos/{id}', [PedidoController::class, 'show2'])->name('pedidos.show2')->middleware('auth');
-Route::get('/pedidos/{id}/detalles', [PedidoController::class, 'detalles'])->name('pedidos.detalles')->middleware('auth');

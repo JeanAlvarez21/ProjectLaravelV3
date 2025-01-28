@@ -192,7 +192,7 @@
                             <a href="{{ route('profile') }}" class="nav-link">
                                 <i class="fas fa-user"></i>
                             </a>
-                            <a href="{{ route('notificaciones') }}" class="nav-link">
+                            <a href="{{ route('notificaciones.index') }}" class="nav-link">
                                 <i class="fas fa-bell"></i>
                             </a>
                             <form action="{{ route('logout') }}" method="POST" class="d-inline">

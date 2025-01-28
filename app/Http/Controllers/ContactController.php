@@ -3,39 +3,45 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Mail\ContactFormMail;
+use Illuminate\Support\Facades\Mail;
 
 class ContactController extends Controller
 {
+    private $maxMessageLength = 1000; // Define the max message length
+
     public function index()
     {
-        // Puedes pasar datos a la vista si lo necesitas
         $data = [
-            'phone' => '+420 000 000 000',
+            'phone' => '+593 7-257-9891',
+            'email' => 'info@novocentro.com',
             'address' => [
-                'street' => 'Avenida Zoilo Rodriguez',
-                'city' => 'Virgilio Abarca'
+                'street' => 'Av. Salvador Bustamante Celi',
+                'city' => 'Loja',
+                'code' => '110150'
             ],
-            'postal' => [
-                'street' => 'Na Plzeňce 1166/0',
-                'code' => '150 00'
-            ]
+            'hours' => [
+                'weekdays' => '8:00 AM - 6:00 PM',
+                'saturday' => '9:00 AM - 2:00 PM'
+            ],
+            'maxMessageLength' => $this->maxMessageLength // Pass this to the view
         ];
 
         return view('contact', $data);
     }
 
-    // Método opcional para procesar el formulario de contacto si lo agregas después
-    public function store(Request $request)
+    public function submit(Request $request)
     {
         $validated = $request->validate([
-            'name' => 'required|min:3',
+            'nombre' => 'required|min:3',
             'email' => 'required|email',
-            'message' => 'required|min:10'
+            'asunto' => 'required|min:3',
+            'mensaje' => 'required|min:10|max:' . $this->maxMessageLength
         ]);
 
-        // Aquí puedes agregar la lógica para procesar el formulario
-        // Por ejemplo, enviar un email o guardar en base de datos
+        // Enviar el correo
+        Mail::to('cuentitaperrona@gmail.com')->send(new ContactFormMail($validated));
 
-        return redirect()->back()->with('success', 'Mensaje enviado correctamente');
+        return redirect()->back()->with('success', 'Mensaje enviado correctamente. Gracias por contactarnos.');
     }
 }

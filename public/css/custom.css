@@ -1,0 +1,149 @@
+:root {
+    --primary-color: #ffd700;
+    --secondary-color: #495e57;
+    --text-color: #333;
+    --light-bg: #f8f9fa;
+    --dark-bg: #343a40;
+}
+
+body {
+    font-family: "Arial", sans-serif;
+    color: var(--text-color);
+    padding-top: 76px;
+}
+
+.navbar {
+    background-color: var(--primary-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand img {
+    height: 50px;
+    transition: transform 0.3s ease;
+}
+
+.navbar-brand img:hover {
+    transform: scale(1.05);
+}
+
+.nav-link {
+    color: var(--text-color) !important;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--secondary-color) !important;
+}
+
+.btn-custom {
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.btn-custom:hover {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.footer {
+    background-color: var(--dark-bg);
+    color: white;
+    padding: 40px 0;
+}
+
+.footer h4 {
+    color: var(--primary-color);
+}
+
+.footer a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: var(--primary-color);
+}
+
+.social-icons a {
+    font-size: 1.5rem;
+    margin-right: 10px;
+    color: white;
+    transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+    color: var(--primary-color);
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    background-color: var(--primary-color);
+}
+
+.btn-auth {
+    padding: 7px 15px;
+    border: 0;
+    border-radius: 100px;
+    background-color: rgb(255, 255, 255);
+    color: #333;
+    font-weight: Bold;
+    transition: all 0.5s;
+    -webkit-transition: all 0.5s;
+}
+
+.btn-auth:hover {
+    background-color: #fffaeb;
+    box-shadow: 0 0 20px #6fc5ff50;
+    transform: scale(1.1);
+}
+
+.btn-auth:active {
+    background-color: rgb(255, 255, 255);
+    transition: all 0.25s;
+    -webkit-transition: all 0.1s;
+    box-shadow: none;
+    transform: scale(0.98);
+}
+
+.copyable {
+    cursor: pointer;
+}
+
+.copy-icon {
+    cursor: pointer;
+    margin-left: 5px;
+}
+
+@media (max-width: 768px) {
+    .navbar-brand img {
+        height: 30px;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        text-align: center;
+    }
+
+    .navbar-nav {
+        margin-bottom: 1rem;
+    }
+
+    .navbar .btn-auth {
+        margin-top: 0.5rem;
+    }
+}
