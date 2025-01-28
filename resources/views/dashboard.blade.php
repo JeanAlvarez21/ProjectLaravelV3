@@ -37,8 +37,10 @@
             position: fixed;
             left: 0;
             top: 0;
+            bottom: 0;
             box-shadow: 4px 0 10px rgba(0, 0, 0, 0.05);
             z-index: 1000;
+            overflow-y: auto;
         }
 
         .logo {
@@ -50,6 +52,7 @@
         .logo img {
             height: auto;
             width: 80%;
+            max-width: 200px;
             filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
         }
 
@@ -91,18 +94,9 @@
 
         .main-content .container-fluid {
             max-width: 1320px;
-            /* Bootstrap's xxl container width */
             margin: 0 auto;
             padding: 0 15px;
         }
-
-        .col-md-9.ms-sm-auto.col-lg-10 {
-            width: 100%;
-            max-width: 1200px;
-            /* Fixed width similar to original */
-            margin: 0 auto;
-        }
-
 
         /* Card Styles */
         .card {
@@ -225,6 +219,30 @@
             }
         }
 
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform var(--transition-speed) ease;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .sidebar-toggle {
+                display: block;
+                position: fixed;
+                top: 1rem;
+                left: 1rem;
+                z-index: 1001;
+            }
+        }
+
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
@@ -243,17 +261,20 @@
             background: #555;
         }
 
-        /* Añadir estilos específicos para el contenedor del gráfico */
+        /* Chart wrapper styles */
         .chart-wrapper {
             position: relative;
             height: 300px;
-            /* Altura fija para el gráfico */
             width: 100%;
         }
     </style>
 </head>
 
 <body>
+    <button class="btn btn-primary sidebar-toggle d-md-none" type="button" aria-label="Toggle sidebar">
+        <i class="bi bi-list"></i>
+    </button>
+
     <div class="sidebar">
         <div class="logo">
             <a href="home">
@@ -319,7 +340,7 @@
     <div class="main-content">
         <div class="container-fluid">
             <div class="row">
-                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <main class="col-12">
                     @if(isset($error))
                         <div class="alert alert-danger" role="alert">
                             <i class="bi bi-exclamation-triangle-fill me-2"></i>
@@ -416,7 +437,8 @@
                                                     <tr>
                                                         <td>#{{ $pedido->id_pedido }}</td>
                                                         <td>{{ $pedido->usuario->nombres }}
-                                                            {{ $pedido->usuario->apellidos }}</td>
+                                                            {{ $pedido->usuario->apellidos }}
+                                                        </td>
                                                         <td>
                                                             @if($pedido->fecha_pedido instanceof \Carbon\Carbon)
                                                                 {{ $pedido->fecha_pedido->format('d/m/Y H:i') }}
@@ -561,8 +583,8 @@
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: true, // Cambiar a true
-                    aspectRatio: 2, // Añadir ratio de aspecto fijo
+                    maintainAspectRatio: true,
+                    aspectRatio: 2,
                     plugins: {
                         legend: {
                             display: false
@@ -589,6 +611,11 @@
                     }
                 }
             });
+        });
+
+        // Toggle sidebar on mobile
+        document.querySelector('.sidebar-toggle').addEventListener('click', function () {
+            document.querySelector('.sidebar').classList.toggle('show');
         });
     </script>
 </body>
