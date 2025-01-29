@@ -31,4 +31,11 @@ class Detalles_Pedido extends Model
     {
         return $this->belongsTo(Proyecto::class, 'proyecto_id');
     }
+    public function getNombreItemAttribute()
+    {
+        return $this->producto ? $this->producto->nombre :
+            ($this->proyecto ? $this->proyecto->nombre : 'N/A');
+    }
+
+
 }

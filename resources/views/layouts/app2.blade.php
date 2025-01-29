@@ -10,6 +10,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.all.min.js"></script>
     <style>
@@ -44,11 +46,25 @@
                 transform: rotate(360deg);
             }
         }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        main {
+            flex: 1 0 auto;
+        }
     </style>
     @yield('styles')
 </head>
 
-<body class="overflow-x-hidden"> <!-- Prevenir scroll horizontal -->
+<body class="overflow-x-hidden">
+    <div id="loader-wrapper">
+        <div id="loader"></div>
+    </div>
+
     @include('partials.navbar')
 
     <main class="w-100 p-0">
@@ -58,32 +74,28 @@
     @include('partials.footer')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Hide the loader when the page is fully loaded
+            window.addEventListener('load', function () {
+                document.getElementById('loader-wrapper').style.display = 'none';
+            });
+
+            // Show the loader when navigating to a new page
+            document.addEventListener('click', function (event) {
+                var target = event.target;
+                if (target.tagName === 'A' && !target.getAttribute('href').startsWith('#')) {
+                    document.getElementById('loader-wrapper').style.display = 'flex';
+                }
+            });
+
+            // Show the loader when submitting a form
+            document.addEventListener('submit', function () {
+                document.getElementById('loader-wrapper').style.display = 'flex';
+            });
+        });
+    </script>
     @yield('scripts')
 </body>
-<div id="loader-wrapper">
-    <div id="loader"></div>
-</div>
-@yield('content')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Hide the loader when the page is fully loaded
-        window.addEventListener('load', function () {
-            document.getElementById('loader-wrapper').style.display = 'none';
-        });
-
-        // Show the loader when navigating to a new page
-        document.addEventListener('click', function (event) {
-            var target = event.target;
-            if (target.tagName === 'A' && !target.getAttribute('href').startsWith('#')) {
-                document.getElementById('loader-wrapper').style.display = 'flex';
-            }
-        });
-
-        // Show the loader when submitting a form
-        document.addEventListener('submit', function () {
-            document.getElementById('loader-wrapper').style.display = 'flex';
-        });
-    });
-</script>
 
 </html>

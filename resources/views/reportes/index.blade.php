@@ -12,10 +12,6 @@
 </head>
 
 <body>
-    <!-- Loading Indicator -->
-    <div class="loading-indicator d-none">
-        <div class="loading-spinner"></div>
-    </div>
 
     <!-- Sidebar Toggle Button -->
     <button class="btn btn-primary sidebar-toggle" type="button" aria-label="Toggle sidebar">

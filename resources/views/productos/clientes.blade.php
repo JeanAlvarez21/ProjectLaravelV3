@@ -13,7 +13,7 @@
                     <div class="card-body">
                         <h5 class="card-title">{{ $producto->nombre }}</h5>
                         <p class="card-text">{{ $producto->descripcion }}</p>
-                        <p class="card-text"><strong>Precio:</strong> ${{ number_format($producto->costo, 2) }}</p>
+                        <p class="card-text"><strong>Precio:</strong> ${{ number_format($producto->precio, 2) }}</p>
                         <p class="card-text">
                             <strong>Stock:</strong>
                             @if($producto->stock > 0)

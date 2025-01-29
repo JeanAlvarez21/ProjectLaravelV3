@@ -19,7 +19,7 @@
     </div>
 
     <div id="notificationList">
-        <!-- Las notificaciones se cargarán aquí dinámicamente -->
+        @include('partials.notifications', ['notifications' => $notifications])
     </div>
 </div>
 @endsection

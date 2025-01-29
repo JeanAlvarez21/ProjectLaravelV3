@@ -23,12 +23,20 @@ class NotificationCenterController extends Controller
         ]);
     }
 
-
-    public function index()
+    public function index(Request $request)
     {
-        $notifications = Notification::where('user_id', Auth::id())
-            ->orderBy('created_at', 'desc')
-            ->get();
+        $filter = $request->query('filter', 'all');
+        $query = Notification::where('user_id', Auth::id());
+
+        if ($filter === 'unread') {
+            $query->where('is_read', false);
+        }
+
+        $notifications = $query->orderBy('created_at', 'desc')->get();
+
+        if ($request->ajax()) {
+            return view('partials.notifications', compact('notifications'))->render();
+        }
 
         return view('notification-center', compact('notifications'));
     }
@@ -51,4 +59,3 @@ class NotificationCenterController extends Controller
         return response()->json(['count' => $count]);
     }
 }
-

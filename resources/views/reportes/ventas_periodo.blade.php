@@ -26,10 +26,7 @@
 </head>
 
 <body>
-    <!-- Loading Indicator -->
-    <div class="loading-indicator d-none">
-        <div class="loading-spinner"></div>
-    </div>
+
 
     <!-- Sidebar Toggle Button -->
     <button class="btn btn-primary sidebar-toggle" type="button" aria-label="Toggle sidebar">
@@ -132,12 +129,12 @@
                             </thead>
                             <tbody>
                                 @php 
-                                                                                                                                                                                                                                                                                                                                                                        $totalVentas = 0;
+                                                                                                                                                                                                                                                                                                                                                                                                            $totalVentas = 0;
                                     $totalPedidos = 0; 
                                 @endphp
                                 @foreach($ventas as $venta)
                                                                 @php 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $totalVentas += $venta->total_ventas;
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        $totalVentas += $venta->total_ventas;
                                                                     $totalPedidos += $venta->total_pedidos;
                                                                 @endphp
                                                                 <tr>

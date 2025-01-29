@@ -91,10 +91,20 @@
                     <div class="row mb-4">
                         <div class="col-md-6">
                             <h5>Información del Cliente</h5>
-                            <p><strong>Nombre:</strong> {{ $pedido->usuario->nombres }}
-                                {{ $pedido->usuario->apellidos }}
+                            <p><strong>Nombre:</strong>
+                                @if($pedido->usuario)
+                                    {{ $pedido->usuario->nombres }} {{ $pedido->usuario->apellidos }}
+                                @else
+                                    N/A
+                                @endif
                             </p>
-                            <p><strong>Email:</strong> {{ $pedido->usuario->email }}</p>
+                            <p><strong>Email:</strong>
+                                @if($pedido->usuario)
+                                    {{ $pedido->usuario->email }}
+                                @else
+                                    N/A
+                                @endif
+                            </p>
                             <p><strong>Dirección:</strong> {{ $pedido->direccion_pedido }}</p>
                         </div>
                         <div class="col-md-6">
@@ -129,13 +139,15 @@
                             <tbody>
                                 @foreach($pedido->detalles as $detalle)
                                     <tr>
-                                        <td>{{ $detalle->producto->nombre }}</td>
+                                        <td>{{ $detalle->nombre_item }}</td>
                                         <td>{{ $detalle->cantidad }}</td>
-                                        <td>${{ number_format($detalle->subtotal / $detalle->cantidad, 2) }}</td>
+                                        <td>${{ number_format($detalle->precio, 2) }}</td>
                                         <td>${{ number_format($detalle->subtotal, 2) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
+
+
                             <tfoot>
                                 <tr>
                                     <td colspan="3" class="text-end"><strong>Total:</strong></td>

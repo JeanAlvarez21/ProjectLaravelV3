@@ -90,19 +90,24 @@ class PedidoController extends Controller
                 ->withInput();
         }
     }
-    public function show(Pedidos $pedido)
+    public function show($id)
     {
-        $pedido->load(['usuario', 'detalles.producto', 'detalles.proyecto']);
-        return view('pedidos.show', compact('pedido'));
+        try {
+            $pedido = Pedidos::with(['usuario', 'detalles.producto', 'detalles.proyecto'])
+                ->findOrFail($id);
+            return view('pedidos.show', compact('pedido'));
+        } catch (\Exception $e) {
+            Log::error('Error al mostrar el pedido: ' . $e->getMessage());
+            return redirect()->route('pedidos.index')
+                ->with('error', 'No se pudo cargar el pedido solicitado.');
+        }
     }
+
+
 
     public function index()
     {
-        $pedidos = Pedidos::with(['usuario', 'detalles.producto', 'detalles.proyecto'])
-            ->where('id_usuario', Auth::id())
-            ->orderBy('fecha_pedido', 'desc')
-            ->paginate(10);
-
+        $pedidos = Pedidos::with('usuario')->get();
         return view('pedidos.index', compact('pedidos'));
     }
 

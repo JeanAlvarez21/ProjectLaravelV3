@@ -13,27 +13,30 @@ class CartController extends Controller
     {
         try {
             $id = $request->id;
-            $quantity = $request->quantity ?? 1;
+            $quantity = max(1, intval($request->quantity ?? 1));
             $cart = session()->get('cart', []);
+
             if (strpos($id, 'proyecto_') === 0) {
                 $proyectoId = substr($id, 9);
                 $proyecto = Proyecto::findOrFail($proyectoId);
                 $cart[$id] = [
                     "name" => $proyecto->nombre,
                     "quantity" => $quantity,
-                    "price" => $this->calculateProjectPrice($proyecto),
+                    "price" => floatval($this->calculateProjectPrice($proyecto)),
                     "image" => "ruta_a_imagen_por_defecto.jpg",
                     "type" => "proyecto"
                 ];
             } else {
                 $product = Producto::findOrFail($id);
+                $price = number_format((float) $product->precio, 2, '.', '');
+
                 if (isset($cart[$id])) {
-                    $cart[$id]['quantity'] += $quantity;
+                    $cart[$id]['quantity'] = min($product->stock, $cart[$id]['quantity'] + $quantity);
                 } else {
                     $cart[$id] = [
                         "name" => $product->nombre,
-                        "quantity" => $quantity,
-                        "price" => $product->precio,
+                        "quantity" => min($product->stock, $quantity),
+                        "price" => (float) $price,
                         "image" => $product->link_imagen,
                         "stock" => $product->stock,
                         "type" => "producto"
@@ -43,7 +46,15 @@ class CartController extends Controller
 
             session()->put('cart', $cart);
 
-            return response()->json(['success' => 'Ítem agregado al carrito exitosamente!']);
+            $subtotal = $cart[$id]['price'] * $cart[$id]['quantity'];
+            $total = $this->calculateTotal($cart);
+
+            return response()->json([
+                'success' => 'Ítem agregado al carrito exitosamente!',
+                'cart' => $cart,
+                'subtotal' => number_format($subtotal, 2, '.', ''),
+                'total' => number_format($total, 2, '.', '')
+            ]);
         } catch (\Exception $e) {
             \Log::error('Error en addToCart: ' . $e->getMessage());
             return response()->json(['error' => 'Ocurrió un error al procesar tu solicitud.'], 500);
@@ -52,71 +63,86 @@ class CartController extends Controller
 
     public function updateCart(Request $request)
     {
-        if ($request->id && $request->quantity) {
-            $cart = session()->get('cart');
-            $id = $request->id;
+        try {
+            if ($request->id && $request->quantity) {
+                $cart = session()->get('cart', []);
+                $id = $request->id;
+                $quantity = max(1, intval($request->quantity));
 
-            if (strpos($id, 'proyecto_') === 0) {
-                $cart[$id]["quantity"] = $request->quantity;
-            } else {
-                $product = Producto::findOrFail($id);
-                if ($request->quantity <= $product->stock) {
-                    $cart[$id]["quantity"] = $request->quantity;
-                } else {
-                    if ($request->ajax()) {
-                        return response()->json(['error' => 'No hay suficiente stock disponible.'], 400);
-                    }
-                    return redirect()->back()->with('error', 'No hay suficiente stock disponible.');
+                if (!isset($cart[$id])) {
+                    return response()->json(['error' => 'Producto no encontrado en el carrito.'], 404);
                 }
+
+                if (strpos($id, 'proyecto_') === 0) {
+                    $cart[$id]["quantity"] = $quantity;
+                } else {
+                    $product = Producto::findOrFail($id);
+                    if ($quantity <= $product->stock) {
+                        $cart[$id]["quantity"] = $quantity;
+                    } else {
+                        return response()->json([
+                            'error' => 'No hay suficiente stock disponible.',
+                            'available_stock' => $product->stock
+                        ], 400);
+                    }
+                }
+
+                session()->put('cart', $cart);
+
+                $subtotal = $cart[$id]['price'] * $cart[$id]['quantity'];
+                $total = $this->calculateTotal($cart);
+
+                return response()->json([
+                    'success' => 'Carrito actualizado exitosamente!',
+                    'subtotal' => number_format($subtotal, 2),
+                    'total' => number_format($total, 2)
+                ]);
             }
-
-            session()->put('cart', $cart);
-
-            if ($request->ajax()) {
-                return response()->json(['success' => 'Carrito actualizado exitosamente!']);
-            }
-
-            return redirect()->back()->with('success', 'Carrito actualizado exitosamente!');
+            return response()->json(['error' => 'Datos inválidos'], 400);
+        } catch (\Exception $e) {
+            \Log::error('Error en updateCart: ' . $e->getMessage());
+            return response()->json(['error' => 'Ocurrió un error al actualizar el carrito.'], 500);
         }
     }
 
     public function removeFromCart(Request $request)
     {
-        if ($request->id) {
-            $cart = session()->get('cart');
-            if (isset($cart[$request->id])) {
-                unset($cart[$request->id]);
-                session()->put('cart', $cart);
-            }
+        try {
+            if ($request->id) {
+                $cart = session()->get('cart', []);
+                if (isset($cart[$request->id])) {
+                    unset($cart[$request->id]);
+                    session()->put('cart', $cart);
 
-            if ($request->ajax()) {
-                return response()->json(['success' => 'Ítem eliminado del carrito exitosamente!']);
+                    return response()->json([
+                        'success' => 'Ítem eliminado del carrito exitosamente!',
+                        'total' => number_format($this->calculateTotal($cart), 2)
+                    ]);
+                }
             }
-
-            return redirect()->back()->with('success', 'Ítem eliminado del carrito exitosamente!');
+            return response()->json(['error' => 'Producto no encontrado'], 404);
+        } catch (\Exception $e) {
+            \Log::error('Error en removeFromCart: ' . $e->getMessage());
+            return response()->json(['error' => 'Ocurrió un error al eliminar el producto.'], 500);
         }
     }
 
     public function viewCart()
     {
         $cart = session()->get('cart', []);
-        return view('cart', compact('cart'));
+        $total = $this->calculateTotal($cart);
+        return view('cart', compact('cart', 'total'));
     }
 
-    public function checkout()
+    private function calculateTotal($cart)
     {
-        $cart = session()->get('cart', []);
-
-        if (empty($cart)) {
-            return redirect()->route('cart.view')->with('error', 'El carrito está vacío.');
-        }
-
         $total = 0;
         foreach ($cart as $item) {
-            $total += $item['price'] * $item['quantity'];
+            $price = number_format((float) $item['price'], 2, '.', '');
+            $quantity = intval($item['quantity']);
+            $total += (float) $price * $quantity;
         }
-
-        return view('order_confirmation', compact('cart', 'total'));
+        return $total;
     }
 
     private function calculateProjectPrice(Proyecto $proyecto)
@@ -131,5 +157,18 @@ class CartController extends Controller
             $totalPrice += ($productoPrice * $cantidadProductosNecesarios) + $corte->precio_corte;
         }
         return $totalPrice;
+    }
+
+    public function checkout()
+    {
+        $cart = session()->get('cart', []);
+
+        if (empty($cart)) {
+            return redirect()->route('cart.view')->with('error', 'El carrito está vacío.');
+        }
+
+        $total = $this->calculateTotal($cart);
+
+        return view('order_confirmation', compact('cart', 'total'));
     }
 }

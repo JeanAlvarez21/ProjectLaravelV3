@@ -6,6 +6,9 @@ function initializeSearch(tableId, searchInputId) {
 
     if (!searchInput || !tableBody) return;
 
+    // Guardar el contenido original de la tabla
+    const originalTableContent = tableBody.innerHTML;
+
     searchInput.addEventListener("input", function (e) {
         const searchTerm = e.target.value.toLowerCase();
 
@@ -22,6 +25,15 @@ function initializeSearch(tableId, searchInputId) {
         // Debounce search
         searchTimeout = setTimeout(() => {
             const rows = tableBody.getElementsByTagName("tr");
+
+            // Si el término de búsqueda está vacío, restablecer la tabla al estado original
+            if (searchTerm === "") {
+                tableBody.innerHTML = originalTableContent;
+                tableBody
+                    .closest(".table-responsive")
+                    .classList.remove("loading-table", "active");
+                return;
+            }
 
             Array.from(rows).forEach((row) => {
                 const text = row.textContent.toLowerCase();
@@ -40,13 +52,13 @@ function initializeSearch(tableId, searchInputId) {
             if (visibleRows.length === 0) {
                 const noResultsRow = document.createElement("tr");
                 noResultsRow.innerHTML = `
-            <td colspan="7" class="text-center py-4">
-                <div class="d-flex flex-column align-items-center">
-                    <i class="bi bi-search display-4 text-muted mb-2"></i>
-                    <p class="text-muted mb-0">No se encontraron resultados para "${searchTerm}"</p>
-                </div>
-            </td>
-        `;
+                    <td colspan="7" class="text-center py-4">
+                        <div class="d-flex flex-column align-items-center">
+                            <i class="bi bi-search display-4 text-muted mb-2"></i>
+                            <p class="text-muted mb-0">No se encontraron resultados para "${searchTerm}"</p>
+                        </div>
+                    </td>
+                `;
                 tableBody.innerHTML = "";
                 tableBody.appendChild(noResultsRow);
             }
