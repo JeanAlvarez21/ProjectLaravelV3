@@ -243,7 +243,7 @@
                                                 value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
                                         </div>
                                         <div class="col-md-2">
-                                            <button type="submit" class="btn btn-primary w-100">Ver</button>
+                                            <button type="submit" class="btn btn-primary w-30">Ver</button>
                                         </div>
                                     </div>
                                 </form>
@@ -272,7 +272,7 @@
                                                 value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
                                         </div>
                                         <div class="col-md-2">
-                                            <button type="submit" class="btn btn-primary w-100">Ver</button>
+                                            <button type="submit" class="btn btn-primary w-30">Ver</button>
                                         </div>
                                     </div>
                                 </form>
@@ -317,7 +317,7 @@
                                                 value="{{ Carbon\Carbon::now()->format('Y-m-d') }}">
                                         </div>
                                         <div class="col-md-2">
-                                            <button type="submit" class="btn btn-primary w-100">Ver</button>
+                                            <button type="submit" class="btn btn-primary w-30">Ver</button>
                                         </div>
                                     </div>
                                 </form>

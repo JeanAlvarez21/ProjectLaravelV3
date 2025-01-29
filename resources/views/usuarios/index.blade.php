@@ -140,6 +140,42 @@
             color: #000;
         }
 
+        /* Estilo de la tabla */
+        #user-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        #user-table th, #user-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        #user-table th {
+            background-color: var(--primary-color);
+            color: #000;
+        }
+
+        #user-table td {
+            background-color: #fff;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .search-bar {
+            padding: 0.75rem;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 250px;
+            margin-left: 1rem;
+        }
+
         /* Responsividad */
         @media (max-width: 992px) {
             .sidebar {
@@ -211,7 +247,7 @@
                     <i class="bi bi-grid-1x2-fill"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="/productos" class="nav-item ">
+                <a href="/productos" class="nav-item">
                     <i class="bi bi-box-seam-fill"></i>
                     <span>Productos</span>
                 </a>
