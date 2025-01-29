@@ -25,6 +25,7 @@ class NotificationCenterController extends Controller
 
     public function index(Request $request)
     {
+
         $filter = $request->query('filter', 'all');
         $query = Notification::where('user_id', Auth::id());
 

@@ -13,6 +13,7 @@ class CarpinteroController extends Controller
     {
         $carpinteros = Carpintero::all();
         return view('carpinteros.index', compact('carpinteros'));
+
     }
 
     public function manage()

@@ -61,9 +61,7 @@
 </head>
 
 <body class="overflow-x-hidden">
-    <div id="loader-wrapper">
-        <div id="loader"></div>
-    </div>
+
 
     @include('partials.navbar')
 

@@ -1,6 +1,44 @@
 @extends('layouts.app2')
 
 @section('title', 'Catálogo de Productos')
+@section('styles')
+<style>
+    .card-img-container {
+        height: 250px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .card-img-top {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-custom {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .btn-custom:hover {
+        background-color: #0056b3;
+    }
+</style>
+@endsection
 
 @section('content')
 <div class="container mt-5">
@@ -9,7 +47,9 @@
         @foreach($productos as $producto)
             <div class="col-md-3">
                 <div class="card mb-4">
-                    <img src="{{ asset($producto->link_imagen) }}" class="card-img-top" alt="{{ $producto->nombre }}">
+                    <div class="card-img-container">
+                        <img src="{{ asset($producto->link_imagen) }}" class="card-img-top" alt="{{ $producto->nombre }}">
+                    </div>
                     <div class="card-body">
                         <h5 class="card-title">{{ $producto->nombre }}</h5>
                         <p class="card-text">{{ $producto->descripcion }}</p>
@@ -72,7 +112,6 @@
         const messageModal = new bootstrap.Modal(document.getElementById('messageModal'));
         const messageContent = document.getElementById('messageContent');
 
-        // Función para crear notificación
         async function createNotification(productName, quantity) {
             try {
                 const response = await fetch('{{ route("notificaciones.store") }}', {
@@ -87,18 +126,15 @@
                         user_id: {{ Auth::check() ? Auth::id() : 'null' }}
                     })
                 });
-
                 if (!response.ok) {
                     throw new Error('Error al crear la notificación');
                 }
-
                 return await response.json();
             } catch (error) {
                 console.error('Error:', error);
             }
         }
 
-        // Manejar envío del formulario
         addToCartForms.forEach(form => {
             form.addEventListener('submit', async function (e) {
                 e.preventDefault();
@@ -132,22 +168,12 @@
                         throw new Error(data.error || 'Error al agregar al carrito');
                     }
 
-                    // Crear notificación
                     await createNotification(productName, quantity);
-
-                    // Actualizar contador del carrito
-                    const cartBadge = document.querySelector('.badge.bg-primary');
-                    if (cartBadge) {
-                        const currentCount = parseInt(cartBadge.textContent || '0');
-                        cartBadge.textContent = currentCount + 1;
-                    }
-
                     messageContent.textContent = data.success || "Producto agregado al carrito con éxito.";
                     messageModal.show();
-
                 } catch (error) {
                     console.error('Error:', error);
-                    messageContent.textContent = "Ocurrió un error al procesar tu solicitud: " + error.message;
+                    messageContent.textContent = "Ocurrió un error: " + error.message;
                     messageModal.show();
                 }
             });

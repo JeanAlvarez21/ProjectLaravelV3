@@ -22,6 +22,7 @@
         @include('partials.notifications', ['notifications' => $notifications])
     </div>
 </div>
+
 @endsection
 
 @section('scripts')

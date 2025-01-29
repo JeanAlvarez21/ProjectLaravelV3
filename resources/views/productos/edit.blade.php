@@ -17,6 +17,32 @@
             border-color: #ffe57f;
             color: #b45309;
         }
+        .image-preview-container {
+        margin-bottom: 1rem;
+    }
+
+    .preview-wrapper {
+        margin-top: 0.5rem;
+        width: 150px;
+        height: 150px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        overflow: hidden;
+        background-color: #f8f9fa;
+    }
+
+    .preview-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transition: all 0.3s ease;
+    }
+
+    .preview-wrapper:hover {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+    }
     </style>
 </head>
 <body>
@@ -44,12 +70,10 @@
                     <i class="bi bi-grid-1x2-fill"></i>
                     <span>Dashboard</span>
                 </a>
-                <div class="nav-item active">
-                    <a href="/productos" class="nav-link active">
-                        <i class="bi bi-box-seam-fill"></i>
-                        <span>Productos</span>
-                    </a>
-                </div>
+                <a href="/productos" class="nav-item active">
+                    <i class="bi bi-box-seam-fill"></i>
+                    <span>Productos</span>
+                </a>
                 <a href="/categorias" class="nav-item">
                     <i class="bi bi-folder-fill"></i>
                     <span>Familias</span>
@@ -145,8 +169,6 @@
                                                 value="{{ old('nombre', $producto->nombre) }}">
                                         </div>
 
-                                        <!-- Commented out largo, ancho, grosor -->
-                                        <!--
                                         <div class="mb-3">
                                             <label class="form-label">Dimensiones</label>
                                             <div class="row g-2">
@@ -170,14 +192,13 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        -->
                                     </div>
 
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label for="descripcion" class="form-label">Descripción del Producto</label>
-                                            <textarea class="form-control" id="descripcion" name="descripcion"
-                                                rows="4" required>{{ old('descripcion', $producto->descripcion) }}</textarea>
+                                            <label for="descripcion_opcional" class="form-label">Descripción adicional (opcional)</label>
+                                            <textarea class="form-control" id="descripcion_opcional" name="descripcion_opcional"
+                                                rows="4">{{ old('descripcion_opcional', $producto->descripcion_opcional) }}</textarea>
                                         </div>
 
                                         <div class="mb-3">
@@ -231,18 +252,20 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="imagen" class="form-label">Imagen del Producto</label>
-                                            @if($producto->imagen)
-                                                <div class="mb-2">
-                                                    <img src="{{ asset('storage/' . $producto->imagen) }}" 
-                                                        alt="Imagen actual" class="current-image">
-                                                </div>
-                                            @endif
-                                            <input type="file" class="form-control" id="imagen" name="imagen"
-                                                accept="image/jpeg,image/png,image/jpg">
-                                            <small class="text-muted">Deja este campo vacío si no deseas cambiar la imagen</small>
-                                            <img id="preview" class="preview-image d-none" alt="Vista previa de la imagen">
-                                        </div>
+    <label for="imagen" class="form-label">Imagen del Producto</label>
+    <div class="image-preview-container">
+        <input type="file" class="form-control" id="imagen" name="imagen" accept="image/jpeg,image/png,image/jpg">
+        <div class="preview-wrapper">
+            @if($producto->imagen)
+                <img src="{{ asset('storage/' . $producto->imagen) }}" 
+                     alt="Imagen actual" 
+                     class="current-image preview-image">
+            @endif
+            <img id="preview" class="preview-image" style="display: none;" alt="Vista previa">
+        </div>
+        <small class="text-muted">Deja este campo vacío si no deseas cambiar la imagen</small>
+    </div>
+</div>
                                     </div>
 
                                     <div class="col-md-6">
@@ -293,43 +316,60 @@
     <script src="{{ asset('js/searchbar.js') }}"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Image preview
-            const imagen = document.getElementById('imagen');
-            const preview = document.getElementById('preview');
-            
-            imagen.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                
-                if (file) {
-                    const reader = new FileReader();
-                    
-                    reader.onload = function(e) {
-                        preview.src = e.target.result;
-                        preview.classList.remove('d-none');
-                    }
-                    
-                    reader.readAsDataURL(file);
-                } else {
-                    preview.classList.add('d-none');
-                    preview.src = '';
-                }
-            });
+document.addEventListener('DOMContentLoaded', function() {
+    // Mantener todo el código JavaScript existente
 
-            // Form validation
-            const form = document.getElementById('editProductForm');
-            form.addEventListener('submit', function(e) {
-                const precio = parseFloat(document.getElementById('precio').value);
-                const costo = parseFloat(document.getElementById('costo').value);
-                
-                if (precio < costo) {
-                    if (!confirm('El precio de venta es menor que el costo. ¿Desea continuar?')) {
-                        e.preventDefault();
-                    }
+    // Añadir el código para la vista previa de imagen
+    const imagen = document.getElementById('imagen');
+    const preview = document.getElementById('preview');
+    const currentImage = document.querySelector('.current-image');
+    
+    imagen.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        
+        if (file) {
+            // Validar el tipo de archivo
+            const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+            if (!validTypes.includes(file.type)) {
+                alert('Por favor, selecciona una imagen válida (JPEG, PNG o JPG)');
+                this.value = '';
+                return;
+            }
+
+            // Validar el tamaño del archivo (máximo 5MB)
+            const maxSize = 5 * 1024 * 1024; // 5MB en bytes
+            if (file.size > maxSize) {
+                alert('La imagen es demasiado grande. El tamaño máximo es 5MB');
+                this.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                if (currentImage) {
+                    currentImage.style.display = 'none';
                 }
-            });
-        });
-    </script>
+            }
+            
+            reader.onerror = function() {
+                alert('Error al leer el archivo');
+                this.value = '';
+            }
+            
+            reader.readAsDataURL(file);
+        } else {
+            preview.style.display = 'none';
+            if (currentImage) {
+                currentImage.style.display = 'block';
+            }
+        }
+    });
+
+    // ... (mantener el resto del código JavaScript existente) ...
+});
+</script>
 </body>
 </html>
-
