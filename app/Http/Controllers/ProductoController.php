@@ -145,7 +145,7 @@ class ProductoController extends Controller
         // Validar los datos del formulario
         $request->validate([
             'nombre' => 'required|string|max:255', // Nombre del producto
-            'descripcion' => 'required|string|max:255', // Descripción detallada
+            'descripcion' => 'required|string|max:1000', // Descripción detallada, máximo aumentado a 1000 caracteres
             'id_categoria' => 'required', // Validar la categoría
             'codigo_producto' => [
                 'required',
@@ -279,3 +279,4 @@ class ProductoController extends Controller
     }
 
 }
+

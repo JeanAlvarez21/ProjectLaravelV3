@@ -44,10 +44,12 @@
                     <i class="bi bi-grid-1x2-fill"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="/productos" class="nav-item active">
-                    <i class="bi bi-box-seam-fill"></i>
-                    <span>Productos</span>
-                </a>
+                <div class="nav-item active">
+                    <a href="/productos" class="nav-link active">
+                        <i class="bi bi-box-seam-fill"></i>
+                        <span>Productos</span>
+                    </a>
+                </div>
                 <a href="/categorias" class="nav-item">
                     <i class="bi bi-folder-fill"></i>
                     <span>Familias</span>
@@ -143,6 +145,8 @@
                                                 value="{{ old('nombre', $producto->nombre) }}">
                                         </div>
 
+                                        <!-- Commented out largo, ancho, grosor -->
+                                        <!--
                                         <div class="mb-3">
                                             <label class="form-label">Dimensiones</label>
                                             <div class="row g-2">
@@ -166,13 +170,14 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        -->
                                     </div>
 
                                     <div class="col-md-6">
                                         <div class="mb-3">
-                                            <label for="descripcion_opcional" class="form-label">Descripción adicional (opcional)</label>
-                                            <textarea class="form-control" id="descripcion_opcional" name="descripcion_opcional"
-                                                rows="4">{{ old('descripcion_opcional', $producto->descripcion_opcional) }}</textarea>
+                                            <label for="descripcion" class="form-label">Descripción del Producto</label>
+                                            <textarea class="form-control" id="descripcion" name="descripcion"
+                                                rows="4" required>{{ old('descripcion', $producto->descripcion) }}</textarea>
                                         </div>
 
                                         <div class="mb-3">
@@ -327,3 +332,4 @@
     </script>
 </body>
 </html>
+

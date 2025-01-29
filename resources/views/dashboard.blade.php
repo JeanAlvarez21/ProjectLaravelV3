@@ -374,25 +374,7 @@
 
                     <!-- Projects and Carpenters -->
                     <div class="row mt-4">
-                        <div class="col-md-6">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title mb-4">Proyectos Activos</h5>
-                                    <div class="list-group list-group-flush">
-                                        @foreach($proyectosActivos as $proyecto)
-                                            <div
-                                                class="list-group-item d-flex justify-content-between align-items-center px-0">
-                                                <span class="text-truncate">{{ $proyecto->nombre }}</span>
-                                                <span
-                                                    class="badge bg-{{ $proyecto->estado == 'En proceso' ? 'warning' : 'success' }} rounded-pill">
-                                                    {{ $proyecto->estado }}
-                                                </span>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+
                         <div class="col-md-6">
                             <div class="card">
                                 <div class="card-body">
