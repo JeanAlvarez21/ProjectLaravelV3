@@ -105,7 +105,7 @@ Route::prefix('carpinteros')->group(function () {
 Route::prefix('cart')->group(function () {
     Route::post('add', [CartController::class, 'addToCart'])->name('cart.add');
     Route::patch('/cart/update', [CartController::class, 'updateCart'])->name('cart.update');
-    Route::delete('/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
+    Route::delete('/cart/remove', [CartController::class, 'removeFromCart'])->name('cart.remove');
     Route::get('/', [CartController::class, 'viewCart'])->name('cart.view');
     Route::get('/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
     Route::get('/cart/checkout', [CartController::class, 'checkout'])->name('cart.checkout');
