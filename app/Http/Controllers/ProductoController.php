@@ -6,13 +6,163 @@ use Illuminate\Validation\Rule;
 use App\Models\Producto;
 use App\Models\Categoria;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-
-// Asegúrate de importar esta clase al inicio del archivo
-
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary; // Importación correcta
 
 class ProductoController extends Controller
 {
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'largo' => 'required|integer|min:1',
+            'ancho' => 'required|integer|min:1',
+            'grosor' => 'required|integer|min:1',
+            'descripcion_opcional' => 'nullable|string|max:255',
+            'id_categoria' => 'required',
+            'codigo_producto' => 'required|string|max:100|unique:productos,codigo_producto',
+            'precio' => 'required|numeric|min:0',
+            'costo' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'min_stock' => 'required|integer|min:0',
+            'visible' => 'required|boolean',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'nombre_sucursal' => 'required|string|max:100',
+            'direccion_sucursal' => 'required|string|max:100',
+        ], [
+            'codigo_producto.unique' => 'Ya existe un producto con este Código'
+        ]);
+
+        // Construir la descripción combinada
+        $dimensiones = "{$request->largo}mm X {$request->ancho}mm X {$request->grosor}mm";
+        $descripcionCompleta = $request->descripcion_opcional
+            ? "{$dimensiones}\n{$request->descripcion_opcional}"
+            : $dimensiones;
+
+        // Manejo de categorías
+        if ($request->id_categoria === 'nueva') {
+            $categoria = Categoria::create([
+                'nombre_categoria' => ucfirst(strtolower($request->nueva_categoria)),
+                'descripcion_categoria' => ucfirst(strtolower($request->descripcion_categoria))
+            ]);
+            $id_categoria = $categoria->id_categoria;
+        } else {
+            $id_categoria = $request->id_categoria;
+        }
+
+        // Manejo de la imagen con Cloudinary
+        $rutaImagen = null;
+
+        if ($request->hasFile('imagen')) {
+            $uploadedFile = Cloudinary::upload($request->file('imagen')->getRealPath(), [
+                'folder' => 'productos', // Carpeta en Cloudinary (opcional)
+            ]);
+            $rutaImagen = $uploadedFile->getSecurePath(); // URL segura de la imagen
+        }
+
+        // Crear el producto
+        Producto::create([
+            'codigo_producto' => $request->codigo_producto,
+            'nombre' => $request->nombre,
+            'descripcion' => $descripcionCompleta,
+            'id_categoria' => $id_categoria,
+            'precio' => $request->precio,
+            'costo' => $request->costo,
+            'stock' => $request->stock,
+            'min_stock' => $request->min_stock,
+            'visible' => $request->visible,
+            'link_imagen' => $rutaImagen,
+            'nombre_sucursal' => $request->nombre_sucursal,
+            'direccion_sucursal' => $request->direccion_sucursal,
+        ]);
+
+        return redirect()->route('productos.index')
+            ->with('success', 'Producto creado exitosamente.');
+    }
+
+    public function update(Request $request, Producto $producto)
+    {
+        // Validar los datos del formulario
+        $request->validate([
+            'nombre' => 'required|string|max:255',
+            'descripcion' => 'required|string|max:1000',
+            'id_categoria' => 'required',
+            'codigo_producto' => [
+                'required',
+                'string',
+                'max:100',
+                Rule::unique('productos', 'codigo_producto')->ignore($producto->id),
+            ],
+            'precio' => 'required|numeric|min:0',
+            'costo' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'min_stock' => 'required|integer|min:0',
+            'visible' => 'required|boolean',
+            'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'nombre_sucursal' => 'required|string|max:100',
+            'direccion_sucursal' => 'required|string|max:100',
+        ]);
+
+        // Manejar la categoría
+        if ($request->id_categoria === 'nueva') {
+            $categoria = Categoria::create([
+                'nombre_categoria' => ucfirst(strtolower($request->nueva_categoria)),
+                'descripcion_categoria' => ucfirst(strtolower($request->descripcion_categoria)),
+            ]);
+            $id_categoria = $categoria->id_categoria;
+        } else {
+            $id_categoria = $request->id_categoria;
+        }
+
+        // Manejar la imagen con Cloudinary
+        if ($request->hasFile('imagen')) {
+            // Eliminar la imagen anterior de Cloudinary si existe
+            if ($producto->link_imagen) {
+                $publicId = pathinfo($producto->link_imagen, PATHINFO_FILENAME);
+                Cloudinary::destroy($publicId);
+            }
+
+            // Subir la nueva imagen a Cloudinary
+            $uploadedFile = Cloudinary::upload($request->file('imagen')->getRealPath(), [
+                'folder' => 'productos', // Carpeta en Cloudinary (opcional)
+            ]);
+            $rutaImagen = $uploadedFile->getSecurePath(); // URL segura de la imagen
+        } else {
+            $rutaImagen = $producto->link_imagen; // Mantener la imagen existente
+        }
+
+        // Actualizar los datos del producto
+        $producto->update([
+            'nombre' => $request->nombre,
+            'descripcion' => $request->descripcion,
+            'id_categoria' => $id_categoria,
+            'codigo_producto' => $request->codigo_producto,
+            'precio' => $request->precio,
+            'costo' => $request->costo,
+            'stock' => $request->stock,
+            'min_stock' => $request->min_stock,
+            'visible' => $request->visible,
+            'link_imagen' => $rutaImagen,
+            'nombre_sucursal' => $request->nombre_sucursal,
+            'direccion_sucursal' => $request->direccion_sucursal,
+        ]);
+
+        return redirect()->route('productos.index')
+            ->with('success', 'Producto actualizado exitosamente.');
+    }
+
+    public function destroy(Producto $producto)
+    {
+        // Eliminar la imagen de Cloudinary si existe
+        if ($producto->link_imagen) {
+            $publicId = pathinfo($producto->link_imagen, PATHINFO_FILENAME);
+            Cloudinary::destroy($publicId);
+        }
+
+        $producto->delete();
+        return redirect()->route('productos.index')
+            ->with('success', 'Producto eliminado exitosamente.');
+    }
+
     public function index(Request $request)
     {
         $query = Producto::query();
@@ -62,164 +212,6 @@ class ProductoController extends Controller
         });
 
         return view('productos.index', compact('productos', 'categorias', 'search'));
-    }
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'largo' => 'required|integer|min:1',
-            'ancho' => 'required|integer|min:1',
-            'grosor' => 'required|integer|min:1',
-            'descripcion_opcional' => 'nullable|string|max:255',
-            'id_categoria' => 'required',
-            'codigo_producto' => 'required|string|max:100|unique:productos,codigo_producto',
-            'precio' => 'required|numeric|min:0',
-            'costo' => 'required|numeric|min:0',
-            'stock' => 'required|integer|min:0',
-            'min_stock' => 'required|integer|min:0',
-            'visible' => 'required|boolean',
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'nombre_sucursal' => 'required|string|max:100',
-            'direccion_sucursal' => 'required|string|max:100',
-        ], [
-            'codigo_producto.unique' => 'Ya existe un producto con este Código'
-        ]);
-
-        // Construir la descripción combinada
-        $dimensiones = "{$request->largo}mm X {$request->ancho}mm X {$request->grosor}mm";
-        $descripcionCompleta = $request->descripcion_opcional
-            ? "{$dimensiones}\n{$request->descripcion_opcional}"
-            : $dimensiones;
-
-        // Manejo de categorías
-        if ($request->id_categoria === 'nueva') {
-            $categoria = Categoria::create([
-                'nombre_categoria' => ucfirst(strtolower($request->nueva_categoria)),
-                'descripcion_categoria' => ucfirst(strtolower($request->descripcion_categoria))
-            ]);
-            $id_categoria = $categoria->id_categoria;
-        } else {
-            $id_categoria = $request->id_categoria;
-        }
-
-        // Manejo de la imagen
-        $rutaImagen = null;
-
-        if ($request->hasFile('imagen')) {
-            $imagen = $request->file('imagen');
-            $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
-            $imagen->move(public_path('assets/productos'), $nombreImagen);
-            $rutaImagen = 'assets/productos/' . $nombreImagen;
-        }
-
-        // Crear el producto
-        Producto::create([
-            'codigo_producto' => $request->codigo_producto,
-            'nombre' => $request->nombre,
-            'descripcion' => $descripcionCompleta,
-            'id_categoria' => $id_categoria,
-            'precio' => $request->precio,
-            'costo' => $request->costo,
-            'stock' => $request->stock,
-            'min_stock' => $request->min_stock,
-            'visible' => $request->visible,
-            'link_imagen' => $rutaImagen,
-            'nombre_sucursal' => $request->nombre_sucursal,
-            'direccion_sucursal' => $request->direccion_sucursal,
-        ]);
-
-        return redirect()->route('productos.index')
-            ->with('success', 'Producto creado exitosamente.');
-    }
-
-
-    public function edit(Producto $producto)
-    {
-        $categorias = Categoria::all();
-        return view('productos.edit', compact('producto', 'categorias'));
-    }
-
-
-    public function update(Request $request, Producto $producto)
-    {
-        // Validar los datos del formulario
-        $request->validate([
-            'nombre' => 'required|string|max:255', // Nombre del producto
-            'descripcion' => 'required|string|max:1000', // Descripción detallada, máximo aumentado a 1000 caracteres
-            'id_categoria' => 'required', // Validar la categoría
-            'codigo_producto' => [
-                'required',
-                'string',
-                'max:100',
-                Rule::unique('productos', 'codigo_producto')->ignore($producto->id), // Usa 'id' como clave primaria
-            ],
-            'precio' => 'required|numeric|min:0', // Precio
-            'costo' => 'required|numeric|min:0', // Costo
-            'stock' => 'required|integer|min:0', // Stock
-            'min_stock' => 'required|integer|min:0', // Stock mínimo
-            'visible' => 'required|boolean', // Visibilidad
-            'imagen' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Validar imagen
-            'nombre_sucursal' => 'required|string|max:100', // Nombre de la sucursal
-            'direccion_sucursal' => 'required|string|max:100', // Dirección de la sucursal
-        ]);
-
-        // Manejar la categoría
-        if ($request->id_categoria === 'nueva') {
-            $categoria = Categoria::create([
-                'nombre_categoria' => ucfirst(strtolower($request->nueva_categoria)),
-                'descripcion_categoria' => ucfirst(strtolower($request->descripcion_categoria)),
-            ]);
-            $id_categoria = $categoria->id_categoria;
-        } else {
-            $id_categoria = $request->id_categoria;
-        }
-
-        // Manejar la imagen
-        if ($request->hasFile('imagen')) {
-            // Eliminar la imagen anterior si existe
-            if ($producto->link_imagen && file_exists(public_path($producto->link_imagen))) {
-                unlink(public_path($producto->link_imagen));
-            }
-
-            $imagen = $request->file('imagen');
-            $nombreImagen = time() . '_' . $imagen->getClientOriginalName();
-            $imagen->move(public_path('assets/productos'), $nombreImagen);
-            $rutaImagen = 'assets/productos/' . $nombreImagen;
-        } else {
-            $rutaImagen = $producto->link_imagen; // Mantener la imagen existente
-        }
-
-        // Actualizar los datos del producto
-        $producto->update([
-            'nombre' => $request->nombre,
-            'descripcion' => $request->descripcion,
-            'id_categoria' => $id_categoria,
-            'codigo_producto' => $request->codigo_producto,
-            'precio' => $request->precio,
-            'costo' => $request->costo,
-            'stock' => $request->stock,
-            'min_stock' => $request->min_stock,
-            'visible' => $request->visible,
-            'link_imagen' => $rutaImagen,
-            'nombre_sucursal' => $request->nombre_sucursal,
-            'direccion_sucursal' => $request->direccion_sucursal,
-        ]);
-
-        // Redirigir con un mensaje de éxito
-        return redirect()->route('productos.index')
-            ->with('success', 'Producto actualizado exitosamente.');
-    }
-
-
-    public function destroy(Producto $producto)
-    {
-        if ($producto->link_imagen && file_exists(public_path($producto->link_imagen))) {
-            unlink(public_path($producto->link_imagen));
-        }
-
-        $producto->delete();
-        return redirect()->route('productos.index')
-            ->with('success', 'Producto eliminado exitosamente.');
     }
 
     public function showForClients()

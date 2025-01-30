@@ -11,7 +11,6 @@
 
     <link href="{{ asset('css/sidebar.css') }}" rel="stylesheet">
 
-
     <style>
         /* Main Content Styles */
         .main-content {
@@ -147,7 +146,7 @@
         /* Chart wrapper styles */
         .chart-wrapper {
             position: relative;
-            height: 300px;
+            height: 400px;
             width: 100%;
         }
     </style>
@@ -236,13 +235,6 @@
 
                     <div class="d-flex justify-content-between align-items-center mb-4">
                         <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
-                        <div class="d-flex gap-3">
-                            <a href="{{ route('cart.view') }}"
-                                class="btn btn-outline-primary d-flex align-items-center gap-2">
-                                <i class="bi bi-cart"></i>
-                                <span>Carrito ({{ $cartItemCount }})</span>
-                            </a>
-                        </div>
                     </div>
 
                     <!-- Stats Cards -->
@@ -295,68 +287,12 @@
                         </div>
                     </div>
 
-                    <!-- Recent Orders and Top Products -->
+                    <!-- Top and Bottom Products -->
                     <div class="row">
-                        <div class="col-md-8">
+                        <div class="col-md-6">
                             <div class="card">
                                 <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-center mb-4">
-                                        <h5 class="card-title mb-0">Pedidos Recientes</h5>
-                                        <a href="{{ route('pedidos.index') }}" class="btn btn-primary btn-sm">
-                                            Ver todos
-                                        </a>
-                                    </div>
-                                    <div class="table-responsive">
-                                        <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>ID</th>
-                                                    <th>Usuario</th>
-                                                    <th>Fecha</th>
-                                                    <th>Total</th>
-                                                    <th>Estado</th>
-                                                    <th>Acciones</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach($pedidosRecientes as $pedido)
-                                                    <tr>
-                                                        <td>#{{ $pedido->id_pedido }}</td>
-                                                        <td>{{ $pedido->usuario->nombres }}
-                                                            {{ $pedido->usuario->apellidos }}
-                                                        </td>
-                                                        <td>
-                                                            @if($pedido->fecha_pedido instanceof \Carbon\Carbon)
-                                                                {{ $pedido->fecha_pedido->format('d/m/Y H:i') }}
-                                                            @else
-                                                                {{ \Carbon\Carbon::parse($pedido->fecha_pedido)->format('d/m/Y H:i') }}
-                                                            @endif
-                                                        </td>
-                                                        <td>${{ number_format($pedido->total, 2) }}</td>
-                                                        <td>
-                                                            <span
-                                                                class="badge bg-{{ $pedido->estado == 'Completado' ? 'success' : 'warning' }}">
-                                                                {{ $pedido->estado ?? 'Pendiente' }}
-                                                            </span>
-                                                        </td>
-                                                        <td>
-                                                            <a href="{{ route('pedidos.show', $pedido->id_pedido) }}"
-                                                                class="btn btn-sm btn-outline-primary">
-                                                                <i class="bi bi-eye"></i>
-                                                            </a>
-                                                        </td>
-                                                    </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title mb-4">Productos Más Vendidos</h5>
+                                    <h5 class="card-title mb-4">Top 10 Productos Más Vendidos</h5>
                                     <div class="list-group list-group-flush">
                                         @foreach($topProductos as $producto)
                                             <div
@@ -368,6 +304,77 @@
                                         @endforeach
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title mb-4">Top 10 Productos Menos Vendidos</h5>
+                                    <div class="list-group list-group-flush">
+                                        @foreach($bottomProductos as $producto)
+                                            <div
+                                                class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                                <span class="text-truncate">{{ $producto->nombre }}</span>
+                                                <span
+                                                    class="badge bg-secondary rounded-pill">{{ $producto->total_vendidos }}</span>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Orders -->
+                    <div class="card mt-4">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="card-title mb-0">Últimos 10 Pedidos Recientes</h5>
+                                <a href="{{ route('pedidos.index') }}" class="btn btn-primary btn-sm">
+                                    Ver todos
+                                </a>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Usuario</th>
+                                            <th>Fecha</th>
+                                            <th>Total</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($pedidosRecientes as $pedido)
+                                            <tr>
+                                                <td>#{{ $pedido->id_pedido }}</td>
+                                                <td>{{ $pedido->usuario->nombres }} {{ $pedido->usuario->apellidos }}</td>
+                                                <td>
+                                                    @if($pedido->fecha_pedido instanceof \Carbon\Carbon)
+                                                        {{ $pedido->fecha_pedido->format('d/m/Y H:i') }}
+                                                    @else
+                                                        {{ \Carbon\Carbon::parse($pedido->fecha_pedido)->format('d/m/Y H:i') }}
+                                                    @endif
+                                                </td>
+                                                <td>${{ number_format($pedido->total, 2) }}</td>
+                                                <td>
+                                                    <span
+                                                        class="badge bg-{{ $pedido->estado == 'Completado' ? 'success' : 'warning' }}">
+                                                        {{ $pedido->estado ?? 'Pendiente' }}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <a href="{{ route('pedidos.show', $pedido->id_pedido) }}"
+                                                        class="btn btn-sm btn-outline-primary">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -385,7 +392,7 @@
                                                 class="list-group-item d-flex justify-content-between align-items-center px-0">
                                                 <span class="text-truncate">{{ $carpintero->nombre }}</span>
                                                 <span
-                                                    class="badge bg-info rounded-pill">{{ $carpintero->especialidad }}</span>
+                                                    class="badge bg-success rounded-pill">{{ $carpintero->especialidad }}</span>
                                             </div>
                                         @endforeach
                                     </div>
@@ -453,8 +460,7 @@
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: true,
-                    aspectRatio: 2,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
                             display: false

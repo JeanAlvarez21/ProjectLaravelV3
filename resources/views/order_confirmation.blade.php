@@ -35,9 +35,9 @@
                                             <span class="badge bg-info">Proyecto</span>
                                         @endif
                                     </td>
-                                    <td>{{ $details['quantity'] }}</td>
+                                    <td>{{ $details['quantity'] ?? 1 }}</td>
                                     <td>${{ number_format($details['price'], 2) }}</td>
-                                    <td>${{ number_format($details['price'] * $details['quantity'], 2) }}</td>
+                                    <td>${{ number_format(($details['price'] * ($details['quantity'] ?? 1)), 2) }}</td>
                                 </tr>
                             @endforeach
                         </tbody>

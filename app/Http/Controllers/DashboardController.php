@@ -41,19 +41,28 @@ class DashboardController extends Controller
             });
             $chartData = $ventas->pluck('total');
 
-            // Obtener los 5 pedidos más recientes con eager loading
+            // Obtener los 10 pedidos más recientes con eager loading
             $pedidosRecientes = Pedidos::with('usuario')
                 ->orderBy('fecha_pedido', 'desc')
-                ->limit(5)
+                ->limit(10)
                 ->get();
 
-            // Obtener los 5 productos más vendidos
+            // Obtener los 10 productos más vendidos
             $topProductos = DB::table('detalles_pedidos')
                 ->join('productos', 'detalles_pedidos.producto_id', '=', 'productos.id')
                 ->select('productos.nombre', DB::raw('SUM(detalles_pedidos.cantidad) as total_vendidos'))
                 ->groupBy('productos.id', 'productos.nombre')
                 ->orderByDesc('total_vendidos')
-                ->limit(5)
+                ->limit(10)
+                ->get();
+
+            // Obtener los 10 productos menos vendidos
+            $bottomProductos = DB::table('detalles_pedidos')
+                ->rightJoin('productos', 'detalles_pedidos.producto_id', '=', 'productos.id')
+                ->select('productos.nombre', DB::raw('COALESCE(SUM(detalles_pedidos.cantidad), 0) as total_vendidos'))
+                ->groupBy('productos.id', 'productos.nombre')
+                ->orderBy('total_vendidos', 'asc')
+                ->limit(10)
                 ->get();
 
             // Obtener los proyectos activos
@@ -74,10 +83,6 @@ class DashboardController extends Controller
                 ->limit(5)
                 ->get();
 
-            // Obtener el contenido actual del carrito
-            $cartItems = session()->get('cart', []);
-            $cartItemCount = count($cartItems);
-
             return view('dashboard', compact(
                 'totalUsuarios',
                 'totalPedidos',
@@ -87,10 +92,10 @@ class DashboardController extends Controller
                 'chartData',
                 'pedidosRecientes',
                 'topProductos',
+                'bottomProductos',
                 'proyectosActivos',
                 'carpinterosDisponibles',
-                'productosConBajoStock',
-                'cartItemCount'
+                'productosConBajoStock'
             ));
 
         } catch (\Exception $e) {
