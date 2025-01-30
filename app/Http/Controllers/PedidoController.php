@@ -15,7 +15,8 @@ class PedidoController extends Controller
 {
     public function store(Request $request)
     {
-        $cart = session()->get('cart', []);
+        $userId = Auth::id();
+        $cart = session()->get("cart.$userId", []);
 
         if (empty($cart)) {
             return redirect()->route('cart.checkout')->with('error', 'El carrito está vacío.');
@@ -26,7 +27,7 @@ class PedidoController extends Controller
         try {
             // Crear el pedido
             $pedido = new Pedidos();
-            $pedido->id_usuario = Auth::id();
+            $pedido->id_usuario = $userId;
             $pedido->fecha_pedido = now();
             $pedido->direccion_pedido = $request->input('direccion_pedido', Auth::user()->direccion);
             $pedido->total = 0; // Inicializamos el total
@@ -36,34 +37,42 @@ class PedidoController extends Controller
 
             // Procesar cada item del carrito
             foreach ($cart as $id => $details) {
+                $quantity = $details['quantity'] ?? 1;
+
                 if (strpos($id, 'proyecto_') === 0) {
                     $proyectoId = substr($id, 9);
-                    $proyecto = Proyecto::findOrFail($proyectoId);
+                    $proyecto = Proyecto::find($proyectoId);
+                    if (!$proyecto) {
+                        throw new \Exception("Proyecto no encontrado: ID {$proyectoId}");
+                    }
 
                     $detalle = new Detalles_Pedido();
                     $detalle->pedido_id = $pedido->id_pedido;
                     $detalle->proyecto_id = $proyecto->id;
-                    $detalle->cantidad = $details['quantity'];
+                    $detalle->cantidad = $quantity;
                     $detalle->precio = $details['price'];
-                    $detalle->subtotal = $details['price'] * $details['quantity'];
+                    $detalle->subtotal = $details['price'] * $quantity;
                     $detalle->save();
                 } else {
-                    $producto = Producto::findOrFail($id);
+                    $producto = Producto::find($id);
+                    if (!$producto) {
+                        throw new \Exception("Producto no encontrado: ID {$id}");
+                    }
 
-                    if ($producto->stock < $details['quantity']) {
+                    if ($producto->stock < $quantity) {
                         throw new \Exception("Stock insuficiente para '{$producto->nombre}'.");
                     }
 
                     $detalle = new Detalles_Pedido();
                     $detalle->pedido_id = $pedido->id_pedido;
                     $detalle->producto_id = $id;
-                    $detalle->cantidad = $details['quantity'];
+                    $detalle->cantidad = $quantity;
                     $detalle->precio = $producto->precio;
-                    $detalle->subtotal = $producto->precio * $details['quantity'];
+                    $detalle->subtotal = $producto->precio * $quantity;
                     $detalle->save();
 
                     // Actualizar stock del producto
-                    $producto->stock -= $details['quantity'];
+                    $producto->stock -= $quantity;
                     $producto->save();
                 }
 
@@ -75,7 +84,7 @@ class PedidoController extends Controller
             $pedido->save();
 
             // Limpiar el carrito
-            session()->forget('cart');
+            session()->forget("cart.$userId");
 
             DB::commit();
 
@@ -90,6 +99,9 @@ class PedidoController extends Controller
                 ->withInput();
         }
     }
+
+
+
     public function show($id)
     {
         try {
@@ -102,8 +114,6 @@ class PedidoController extends Controller
                 ->with('error', 'No se pudo cargar el pedido solicitado.');
         }
     }
-
-
 
     public function index()
     {
@@ -125,3 +135,4 @@ class PedidoController extends Controller
         }
     }
 }
+

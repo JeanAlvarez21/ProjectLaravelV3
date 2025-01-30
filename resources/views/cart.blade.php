@@ -136,7 +136,7 @@
     </h1>
     <div id="alert-container"></div>
 
-    @if(session('cart'))
+    @if(!empty($cart))
         <div class="card shadow fade-in">
             <div class="card-body">
                 <div class="alert alert-info text-center mb-4" style="background-color: #e3f2fd; border-color: #90caf9;">
@@ -156,7 +156,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach(session('cart') as $id => $details)
+                            @foreach($cart as $id => $details)
                                 @php 
                                     $subtotal = floatval($details['price']) * intval($details['quantity']);
                                 @endphp

@@ -6,14 +6,15 @@ use App\Models\Proyecto;
 use App\Models\Producto;
 use App\Models\Corte;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 class ProyectoController extends Controller
 {
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
-            if (!session()->has('cart')) {
-                session(['cart' => []]);
+            if (!Session::has('cart')) {
+                Session::put('cart', []);
             }
             return $next($request);
         });
@@ -70,7 +71,8 @@ class ProyectoController extends Controller
 
     public function addToCart(Proyecto $proyecto)
     {
-        $cart = session()->get('cart', []);
+        $userId = auth()->id();
+        $cart = Session::get("cart.$userId", []);
         $proyectoId = 'proyecto_' . $proyecto->id;
 
         if (isset($cart[$proyectoId])) {
@@ -87,10 +89,10 @@ class ProyectoController extends Controller
             ];
         }
 
-        session()->put('cart', $cart);
+        Session::put("cart.$userId", $cart);
+
         return redirect()->route('cart.view')->with('success', 'Proyecto agregado al carrito con éxito');
     }
-
     private function calculateProjectPrice(Proyecto $proyecto)
     {
         $totalPrice = 0;
@@ -109,6 +111,7 @@ class ProyectoController extends Controller
         }
         return $totalPrice;
     }
+
     public function edit(Proyecto $proyecto)
     {
         $productos = Producto::all();
