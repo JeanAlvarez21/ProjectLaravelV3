@@ -20,36 +20,14 @@ class CartController extends Controller
 
     public function addToCart(Request $request)
     {
-        $userId = auth()->id();
-        $cart = Session::get("cart.$userId", []);
-
-        $id = $request->id;
-        $type = $request->type ?? 'producto';
-        $quantity = $request->quantity ?? 1;
-
         try {
-            if ($type === 'proyecto') {
-                $proyecto = Proyecto::findOrFail($id);
-                $item = [
-                    "name" => $proyecto->nombre,
-                    "quantity" => $quantity,
-                    "price" => $this->calculateProjectPrice($proyecto),
-                    "image" => "ruta_a_imagen_por_defecto.jpg",
-                    "type" => "proyecto"
-                ];
-                $cartKey = "proyecto_$id";
-            } else {
-                $producto = Producto::findOrFail($id);
-                $item = [
-                    "name" => $producto->nombre,
-                    "quantity" => $quantity,
-                    "price" => $producto->precio,
-                    "image" => $producto->imagen,
-                    "type" => "producto",
-                    "stock" => $producto->stock
-                ];
-                $cartKey = $id;
-            }
+            $userId = auth()->id();
+            $cart = Session::get("cart.$userId", []);
+            $id = $request->id;
+            $type = $request->type ?? 'producto';
+            $quantity = $request->quantity ?? 1;
+            $item = $this->createCartItem($id, $type, $quantity);
+            $cartKey = $item['type'] === 'proyecto' ? "proyecto_$id" : $id;
 
             if (isset($cart[$cartKey])) {
                 $cart[$cartKey]['quantity'] += $quantity;
@@ -66,27 +44,46 @@ class CartController extends Controller
         }
     }
 
+    private function createCartItem($id, $type, $quantity)
+    {
+        if ($type === 'proyecto') {
+            $proyecto = Proyecto::findOrFail($id);
+            return [
+                "name" => $proyecto->nombre,
+                "quantity" => $quantity,
+                "price" => $this->calculateProjectPrice($proyecto),
+                "image" => "ruta_a_imagen_por_defecto.jpg",
+                "type" => "proyecto"
+            ];
+        } else {
+            $producto = Producto::findOrFail($id);
+            return [
+                "name" => $producto->nombre,
+                "quantity" => $quantity,
+                "price" => $producto->precio,
+                "image" => $producto->imagen,
+                "type" => "producto",
+                "stock" => $producto->stock
+            ];
+        }
+    }
+
     public function checkout()
     {
         $userId = Auth::id();
         $cart = session()->get("cart.$userId", []);
-
+        
         if (empty($cart)) {
             return redirect()->route('cart.view')->with('error', 'El carrito está vacío.');
         }
 
         $total = $this->calculateTotal($cart);
-
         return view('order_confirmation', compact('cart', 'total'));
     }
 
     private function calculateTotal($cart)
     {
-        $total = 0;
-        foreach ($cart as $item) {
-            $total += $item['price'] * $item['quantity'];
-        }
-        return $total;
+        return array_reduce($cart, fn($total, $item) => $total + ($item['price'] * $item['quantity']), 0);
     }
 
     private function calculateProjectPrice(Proyecto $proyecto)
@@ -94,49 +91,44 @@ class CartController extends Controller
         $totalPrice = 0;
         foreach ($proyecto->cortes as $corte) {
             $productoPrice = $corte->producto->precio;
-            $corteVolume = ($corte->largo * $corte->ancho * $corte->espesor) / 1000000; // Convertir a metros cúbicos
-            $productoVolume = ($corte->producto->largo * $corte->producto->ancho * $corte->producto->espesor) / 1000000;
-
-            if ($productoVolume > 0) {
-                $cantidadProductosNecesarios = ceil($corteVolume / $productoVolume);
-            } else {
-                $cantidadProductosNecesarios = 1; // Default to 1 if product volume is 0
-            }
-
+            $corteVolume = $this->calculateVolume($corte->largo, $corte->ancho, $corte->espesor);
+            $productoVolume = $this->calculateVolume($corte->producto->largo, $corte->producto->ancho, $corte->producto->espesor);
+            $cantidadProductosNecesarios = $productoVolume > 0 ? ceil($corteVolume / $productoVolume) : 1;
             $totalPrice += ($productoPrice * $cantidadProductosNecesarios) + $corte->precio_corte;
         }
         return $totalPrice;
     }
+
+    private function calculateVolume($largo, $ancho, $espesor)
+    {
+        return ($largo * $ancho * $espesor) / 1000000; // Convertir a metros cúbicos
+    }
+
     public function removeFromCart(Request $request)
     {
         $userId = auth()->id();
         $cart = Session::get("cart.$userId", []);
-
         $id = $request->id;
 
         if (isset($cart[$id])) {
             unset($cart[$id]);
             Session::put("cart.$userId", $cart);
             Session::save();
-
             $total = $this->calculateTotal($cart);
-
             return response()->json(['success' => 'Producto eliminado del carrito', 'total' => $total]);
         }
 
         return response()->json(['error' => 'Producto no encontrado en el carrito'], 404);
     }
+
     public function updateCart(Request $request)
     {
         $userId = auth()->id();
         $cart = Session::get("cart.$userId", []);
-
         $id = $request->id;
         $quantity = $request->quantity;
 
-        // Verificar si el producto existe en el carrito
         if (isset($cart[$id])) {
-            // Si el tipo es 'producto', verificar el stock disponible
             if ($cart[$id]['type'] === 'producto') {
                 $producto = Producto::find($id);
                 if ($producto && $quantity > $producto->stock) {
@@ -147,14 +139,10 @@ class CartController extends Controller
                 }
             }
 
-            // Actualizar la cantidad en el carrito
             $cart[$id]['quantity'] = $quantity;
-
-            // Guardar el carrito actualizado en la sesión
             Session::put("cart.$userId", $cart);
             Session::save();
 
-            // Calcular el nuevo subtotal y el total del carrito
             $subtotal = $cart[$id]['price'] * $quantity;
             $total = $this->calculateTotal($cart);
 
@@ -168,4 +156,3 @@ class CartController extends Controller
         return response()->json(['error' => 'Producto no encontrado en el carrito.'], 404);
     }
 }
-

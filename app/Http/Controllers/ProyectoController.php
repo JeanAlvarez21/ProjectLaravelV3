@@ -19,6 +19,34 @@ class ProyectoController extends Controller
             return $next($request);
         });
     }
+
+    private function validateProyecto(Request $request)
+    {
+        return $request->validate([
+            'nombre' => 'required|string|max:255',
+            'producto_id' => 'required|exists:productos,id',
+            'cantidad' => 'required|integer|min:1',
+            'largo' => 'required|numeric|min:0',
+            'ancho' => 'required|numeric|min:0',
+            'espesor' => 'required|numeric|min:0',
+        ]);
+    }
+
+    private function createCorte(Request $request, Proyecto $proyecto)
+    {
+        $producto = Producto::findOrFail($request->producto_id);
+        $precioCorte = 5.00; // Precio fijo por corte, ajustar según necesidades
+        return Corte::create([
+            'proyecto_id' => $proyecto->id,
+            'producto_id' => $producto->id,
+            'cantidad' => $request->cantidad,
+            'largo' => $request->largo,
+            'ancho' => $request->ancho,
+            'espesor' => $request->espesor,
+            'precio_corte' => $precioCorte,
+        ]);
+    }
+
     public function index()
     {
         $proyectos = Proyecto::where('user_id', auth()->id())->get();
@@ -33,32 +61,14 @@ class ProyectoController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'producto_id' => 'required|exists:productos,id',
-            'cantidad' => 'required|integer|min:1',
-            'largo' => 'required|numeric|min:0',
-            'ancho' => 'required|numeric|min:0',
-            'espesor' => 'required|numeric|min:0',
-        ]);
+        $this->validateProyecto($request);
 
         $proyecto = Proyecto::create([
             'nombre' => $request->nombre,
             'user_id' => auth()->id(),
         ]);
 
-        $producto = Producto::findOrFail($request->producto_id);
-        $precioCorte = 5.00; // Precio fijo por corte, ajustar según necesidades
-
-        Corte::create([
-            'proyecto_id' => $proyecto->id,
-            'producto_id' => $producto->id,
-            'cantidad' => $request->cantidad,
-            'largo' => $request->largo,
-            'ancho' => $request->ancho,
-            'espesor' => $request->espesor,
-            'precio_corte' => $precioCorte,
-        ]);
+        $this->createCorte($request, $proyecto);
 
         return redirect()->route('proyectos.show', $proyecto)->with('success', 'Proyecto creado con éxito');
     }
@@ -79,7 +89,6 @@ class ProyectoController extends Controller
             $cart[$proyectoId]['quantity']++;
         } else {
             $price = $this->calculateProjectPrice($proyecto);
-
             $cart[$proyectoId] = [
                 "name" => $proyecto->nombre,
                 "quantity" => 1,
@@ -90,9 +99,9 @@ class ProyectoController extends Controller
         }
 
         Session::put("cart.$userId", $cart);
-
         return redirect()->route('cart.view')->with('success', 'Proyecto agregado al carrito con éxito');
     }
+
     private function calculateProjectPrice(Proyecto $proyecto)
     {
         $totalPrice = 0;
@@ -100,13 +109,7 @@ class ProyectoController extends Controller
             $productoPrice = $corte->producto->precio;
             $corteVolume = ($corte->largo * $corte->ancho * $corte->espesor) / 1000000; // Convertir a metros cúbicos
             $productoVolume = ($corte->producto->largo * $corte->producto->ancho * $corte->producto->espesor) / 1000000;
-
-            if ($productoVolume > 0) {
-                $cantidadProductosNecesarios = ceil($corteVolume / $productoVolume);
-            } else {
-                $cantidadProductosNecesarios = 1; // Default to 1 if product volume is 0
-            }
-
+            $cantidadProductosNecesarios = ($productoVolume > 0) ? ceil($corteVolume / $productoVolume) : 1; // Default to 1 if product volume is 0
             $totalPrice += ($productoPrice * $cantidadProductosNecesarios) + $corte->precio_corte;
         }
         return $totalPrice;
@@ -120,14 +123,7 @@ class ProyectoController extends Controller
 
     public function update(Request $request, Proyecto $proyecto)
     {
-        $request->validate([
-            'nombre' => 'required|string|max:255',
-            'producto_id' => 'required|exists:productos,id',
-            'cantidad' => 'required|integer|min:1',
-            'largo' => 'required|numeric|min:0',
-            'ancho' => 'required|numeric|min:0',
-            'espesor' => 'required|numeric|min:0',
-        ]);
+        $this->validateProyecto($request);
 
         $proyecto->update([
             'nombre' => $request->nombre,
