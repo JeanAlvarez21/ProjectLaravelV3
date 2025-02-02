@@ -18,12 +18,12 @@
     {% endblock %}
     <link rel="shortcut icon" href="https://cloudinary-res.cloudinary.com/image/upload/docsite/brand-assets/cloudinary_favicon_32x32.png" />
     {% if project.config('base_url') %}
-        {%- for version in project.versions -%}
+        {% for version in project.versions %}
             <link rel="search"
                   type="application/opensearchdescription+xml"
                   href="{{ project.config('base_url')|replace({'%version%': version}) }}/opensearch.xml"
                   title="{{ project.config('title') }} ({{ version }})" />
-        {% endfor -%}
+        {% endfor %}
     {% endif %}
 </head>
 {% block html %}

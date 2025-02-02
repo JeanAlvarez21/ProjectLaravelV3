@@ -208,7 +208,7 @@
                 <i class="bi bi-arrow-left me-2"></i>Continuar Comprando
             </a>
             <a href="{{ route('cart.checkout') }}" class="btn btn-custom btn-lg">
-                Proceder al Checkout <i class="bi bi-arrow-right ms-2"></i>
+                Proceder al Pago <i class="bi bi-arrow-right ms-2"></i>
             </a>
         </div>
     @else
