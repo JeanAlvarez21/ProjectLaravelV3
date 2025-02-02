@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Carpintero;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class CarpinteroController extends Controller
 {
@@ -13,7 +13,6 @@ class CarpinteroController extends Controller
     {
         $carpinteros = Carpintero::all();
         return view('carpinteros.index', compact('carpinteros'));
-
     }
 
     public function manage()
@@ -43,13 +42,11 @@ class CarpinteroController extends Controller
             'ubicacion' => 'nullable|string|max:100',
         ]);
 
+        $imageUrl = null;
+
         if ($request->hasFile('foto_perfil')) {
-            $image = $request->file('foto_perfil');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('assets/carpinterosAttachment'), $imageName);
-            $imageUrl = 'assets/carpinterosAttachment/' . $imageName;
-        } else {
-            $imageUrl = null;
+            $uploadedImage = Cloudinary::upload($request->file('foto_perfil')->getRealPath())->getSecurePath();
+            $imageUrl = $uploadedImage;
         }
 
         Carpintero::create([
@@ -86,20 +83,18 @@ class CarpinteroController extends Controller
         ]);
 
         $carpintero = Carpintero::findOrFail($id);
+        $imageUrl = $carpintero->foto_perfil;
 
         if ($request->hasFile('foto_perfil')) {
+            // Eliminar imagen anterior de Cloudinary si existe
             if ($carpintero->foto_perfil) {
-                $oldImagePath = public_path($carpintero->foto_perfil);
-                if (file_exists($oldImagePath)) {
-                    unlink($oldImagePath);
-                }
+                $publicId = pathinfo($carpintero->foto_perfil, PATHINFO_FILENAME);
+                Cloudinary::destroy($publicId);
             }
-            $image = $request->file('foto_perfil');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('assets/carpinterosAttachment'), $imageName);
-            $imageUrl = 'assets/carpinterosAttachment/' . $imageName;
-        } else {
-            $imageUrl = $carpintero->foto_perfil;
+
+            // Subir nueva imagen
+            $uploadedImage = Cloudinary::upload($request->file('foto_perfil')->getRealPath())->getSecurePath();
+            $imageUrl = $uploadedImage;
         }
 
         $carpintero->update([
@@ -120,11 +115,10 @@ class CarpinteroController extends Controller
     {
         $carpintero = Carpintero::findOrFail($id);
 
+        // Eliminar imagen de Cloudinary si existe
         if ($carpintero->foto_perfil) {
-            $imagePath = public_path($carpintero->foto_perfil);
-            if (file_exists($imagePath)) {
-                unlink($imagePath);
-            }
+            $publicId = pathinfo($carpintero->foto_perfil, PATHINFO_FILENAME);
+            Cloudinary::destroy($publicId);
         }
 
         $carpintero->delete();
@@ -132,4 +126,3 @@ class CarpinteroController extends Controller
         return redirect()->route('carpinteros.manage')->with('success', 'Carpintero eliminado con éxito.');
     }
 }
-
