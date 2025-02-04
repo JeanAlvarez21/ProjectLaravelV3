@@ -8,6 +8,7 @@ use App\Models\Categoria;
 use Illuminate\Http\Request;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary; // Importación correcta
 
+
 class ProductoController extends Controller
 {
     public function store(Request $request)
@@ -78,13 +79,40 @@ class ProductoController extends Controller
         return redirect()->route('productos.index')
             ->with('success', 'Producto creado exitosamente.');
     }
+    public function show(Producto $producto)
+    {
+        return redirect()->route('productos.edit', $producto);
+    }
 
+    public function edit(Producto $producto)
+    {
+        $categorias = Categoria::all();
+
+        // Parse the descripcion field
+        $dimensiones = '';
+        $descripcion_opcional = '';
+
+        if (preg_match('/(\d+mm X \d+mm X \d+mm)(.*)/', $producto->descripcion, $matches)) {
+            $dimensiones = $matches[1];
+            $descripcion_opcional = trim($matches[2]);
+        }
+
+        // Extract individual dimensions
+        list($largo, $ancho, $grosor) = array_map(function ($dim) {
+            return (int) $dim;
+        }, explode('X', str_replace('mm', '', $dimensiones)));
+
+        return view('productos.edit', compact('producto', 'categorias', 'largo', 'ancho', 'grosor', 'descripcion_opcional'));
+    }
     public function update(Request $request, Producto $producto)
     {
         // Validar los datos del formulario
         $request->validate([
             'nombre' => 'required|string|max:255',
-            'descripcion' => 'required|string|max:1000',
+            'largo' => 'required|integer|min:1',
+            'ancho' => 'required|integer|min:1',
+            'grosor' => 'required|integer|min:1',
+            'descripcion_opcional' => 'nullable|string|max:255',
             'id_categoria' => 'required',
             'codigo_producto' => [
                 'required',
@@ -101,6 +129,12 @@ class ProductoController extends Controller
             'nombre_sucursal' => 'required|string|max:100',
             'direccion_sucursal' => 'required|string|max:100',
         ]);
+
+        // Construir la descripción
+        $dimensiones = "{$request->largo}mm X {$request->ancho}mm X {$request->grosor}mm";
+        $descripcion = $request->descripcion_opcional
+            ? "{$dimensiones}\n{$request->descripcion_opcional}"
+            : $dimensiones;
 
         // Manejar la categoría
         if ($request->id_categoria === 'nueva') {
@@ -133,7 +167,7 @@ class ProductoController extends Controller
         // Actualizar los datos del producto
         $producto->update([
             'nombre' => $request->nombre,
-            'descripcion' => $request->descripcion,
+            'descripcion' => $descripcion,
             'id_categoria' => $id_categoria,
             'codigo_producto' => $request->codigo_producto,
             'precio' => $request->precio,
@@ -149,7 +183,6 @@ class ProductoController extends Controller
         return redirect()->route('productos.index')
             ->with('success', 'Producto actualizado exitosamente.');
     }
-
     public function destroy(Producto $producto)
     {
         // Eliminar la imagen de Cloudinary si existe

@@ -7,50 +7,50 @@
 
     <nav>
         @if(auth()->user()->rol == 1)
-            <a href="/dashboard" class="nav-item">
+            <a href="/dashboard" class="nav-item {{ Request::is('dashboard') ? 'active' : '' }}">
                 <i class="bi bi-grid-1x2-fill"></i>
                 <span>Dashboard</span>
             </a>
-            <a href="/productos" class="nav-item">
+            <a href="{{ route('productos.index') }}" class="nav-item {{ Request::is('productos*') ? 'active' : '' }}">
                 <i class="bi bi-box-seam-fill"></i>
                 <span>Productos</span>
             </a>
-            <a href="/categorias" class="nav-item">
+            <a href="{{ route('categorias.index') }}" class="nav-item {{ Request::is('categorias*') ? 'active' : '' }}">
                 <i class="bi bi-folder-fill"></i>
                 <span>Familias</span>
             </a>
-            <a href="/usuarios" class="nav-item">
+            <a href="{{ route('usuarios.index') }}" class="nav-item {{ Request::is('usuarios*') ? 'active' : '' }}">
                 <i class="bi bi-people-fill"></i>
                 <span>Usuarios</span>
             </a>
-            <a href="/pedidos" class="nav-item">
+            <a href="{{ route('pedidos.index') }}" class="nav-item {{ Request::is('pedidos*') ? 'active' : '' }}">
                 <i class="bi bi-cart-fill"></i>
                 <span>Pedidos</span>
             </a>
-            <a href="/reportes" class="nav-item">
+            <a href="{{ route('reportes.index') }}" class="nav-item {{ Request::is('reportes*') ? 'active' : '' }}">
                 <i class="bi bi-file-earmark-text-fill"></i>
                 <span>Reportes</span>
             </a>
         @elseif(auth()->user()->rol == 2)
-            <a href="/productos" class="nav-item">
+            <a href="{{ route('productos.index') }}" class="nav-item {{ Request::is('productos*') ? 'active' : '' }}">
                 <i class="bi bi-box-seam-fill"></i>
                 <span>Productos</span>
             </a>
-            <a href="/categorias" class="nav-item">
+            <a href="{{ route('categorias.index') }}" class="nav-item {{ Request::is('categorias*') ? 'active' : '' }}">
                 <i class="bi bi-folder-fill"></i>
                 <span>Familias</span>
             </a>
-            <a href="/pedidos" class="nav-item">
+            <a href="{{ route('pedidos.index') }}" class="nav-item {{ Request::is('pedidos*') ? 'active' : '' }}">
                 <i class="bi bi-cart-fill"></i>
                 <span>Pedidos</span>
             </a>
-            <a href="/reportes" class="nav-item">
+            <a href="{{ route('reportes.index') }}" class="nav-item {{ Request::is('reportes*') ? 'active' : '' }}">
                 <i class="bi bi-file-earmark-text-fill"></i>
                 <span>Reportes</span>
             </a>
         @endif
 
-        <form id="logout-form" action="{{ route('logout') }}" method="POST">
+        <form action="{{ route('logout') }}" method="POST" class="mt-auto">
             @csrf
             <button type="submit" class="btn-logout">
                 <i class="bi bi-box-arrow-right"></i>

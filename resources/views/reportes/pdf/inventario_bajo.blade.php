@@ -44,7 +44,7 @@
                 <th>Producto</th>
                 <th>Stock Actual</th>
                 <th>Stock Mínimo</th>
-                <th>Diferencia</th>
+                <th>Reabastecer</th>
             </tr>
         </thead>
         <tbody>
@@ -53,7 +53,7 @@
                     <td>{{ $producto->nombre }}</td>
                     <td>{{ $producto->stock }}</td>
                     <td>{{ $producto->min_stock }}</td>
-                    <td class="warning">{{ $producto->stock - $producto->min_stock }}</td>
+                    <td>{{ $producto->stock < $producto->min_stock ? 'Sí' : 'No' }}</td>
                 </tr>
             @endforeach
         </tbody>

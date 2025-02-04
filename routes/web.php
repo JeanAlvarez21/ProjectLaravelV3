@@ -87,6 +87,8 @@ Route::resource('inventario', InventarioController::class);
 Route::resource('productos', ProductoController::class);
 Route::get('/productos/search', [ProductoController::class, 'search'])->name('productos.search');
 Route::get('/productos-clientes', [ProductoController::class, 'showForClients'])->name('productos.clientes');
+Route::resource('productos', ProductoController::class)->except(['show']);
+
 
 // Category routes
 Route::resource('categorias', CategoriaController::class);
