@@ -1,145 +1,63 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Crear Producto - Novocentro</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="{{ asset('css/sidebar.css') }}" rel="stylesheet">
+@extends('layouts.app')
 
-    <style>
-        .preview-image {
-            max-width: 200px;
-            max-height: 200px;
-            object-fit: contain;
-            margin-top: 1rem;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
+@section('title', 'Crear Producto - Novocentro')
 
-        .form-label {
-            font-weight: 500;
-            margin-bottom: 0.5rem;
-            color: #344767;
-        }
+@section('styles')
+<style>
+    .preview-image {
+        max-width: 200px;
+        max-height: 200px;
+        object-fit: contain;
+        margin-top: 1rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+        color: #344767;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
+    }
+    .input-group-text {
+        background-color: #f8f9fa;
+        border-color: #e9ecef;
+    }
+    .card {
+        border: none;
+        box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15);
+    }
+    .card-body {
+        padding: 2rem;
+    }
+</style>
+@endsection
 
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.2rem rgba(255, 215, 0, 0.25);
-        }
+@section('content')
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-10">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h1 class="h3 mb-0">Crear Nuevo Producto</h1>
+                        <a href="{{ route('productos.index') }}" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i>
+                            Volver
+                        </a>
+                    </div>
 
-        .input-group-text {
-            background-color: #f8f9fa;
-            border-color: #e9ecef;
-        }
-
-        .card {
-            border: none;
-            box-shadow: 0 0 2rem 0 rgba(136, 152, 170, 0.15);
-        }
-
-        .card-body {
-            padding: 2rem;
-        }
-    </style>
-</head>
-<body>
-    <!-- Loading Indicator -->
-    <div class="loading-indicator">
-        <div class="loading-spinner"></div>
-    </div>
-
-    <!-- Sidebar Toggle Button -->
-    <button class="btn btn-primary sidebar-toggle d-md-none" type="button" aria-label="Toggle sidebar">
-        <i class="bi bi-list"></i>
-    </button>
-
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="logo">
-            <a href="{{ url('/') }}">
-                <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid">
-            </a>
-        </div>
-
-        <nav>
-            @if(auth()->user()->rol == 1)
-                <a href="/dashboard" class="nav-item">
-                    <i class="bi bi-grid-1x2-fill"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="/productos" class="nav-item active">
-                    <i class="bi bi-box-seam-fill"></i>
-                    <span>Productos</span>
-                </a>
-                <a href="/categorias" class="nav-item">
-                    <i class="bi bi-folder-fill"></i>
-                    <span>Familias</span>
-                </a>
-                <a href="/usuarios" class="nav-item">
-                    <i class="bi bi-people-fill"></i>
-                    <span>Usuarios</span>
-                </a>
-                <a href="/pedidos" class="nav-item">
-                    <i class="bi bi-cart-fill"></i>
-                    <span>Pedidos</span>
-                </a>
-                <a href="/reportes" class="nav-item">
-                    <i class="bi bi-file-earmark-text-fill"></i>
-                    <span>Reportes</span>
-                </a>
-            @else
-                <a href="/productos" class="nav-item active">
-                    <i class="bi bi-box-seam-fill"></i>
-                    <span>Productos</span>
-                </a>
-                <a href="/categorias" class="nav-item">
-                    <i class="bi bi-folder-fill"></i>
-                    <span>Familias</span>
-                </a>
-                <a href="/pedidos" class="nav-item">
-                    <i class="bi bi-cart-fill"></i>
-                    <span>Pedidos</span>
-                </a>
-            @endif
-
-            <form action="{{ route('logout') }}" method="POST" class="mt-auto">
-                @csrf
-                <button type="submit" class="btn-logout">
-                    <i class="bi bi-box-arrow-right"></i>
-                    <span>Cerrar sesión</span>
-                </button>
-            </form>
-        </nav>
-    </div>
-
-    <!-- Main Content -->
-    <div class="content">
-        <div class="container-fluid">
-            <div class="row justify-content-center">
-                <div class="col-12 col-xl-10">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                <h1 class="h3 mb-0">Crear Nuevo Producto</h1>
-                                <a href="{{ route('productos.index') }}" class="btn btn-outline-secondary">
-                                    <i class="bi bi-arrow-left"></i>
-                                    Volver
-                                </a>
-                            </div>
-
-                            @if ($errors->any())
-                                <div class="alert alert-danger mb-4">
-                                    <ul class="mb-0">
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
-
+                    @if ($errors->any())
+                        <div class="alert alert-danger mb-4">
+                            <ul class="mb-0">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                             <form action="{{ route('productos.store') }}" method="POST" enctype="multipart/form-data" id="createProductForm">
                                 @csrf
                                 <div class="row g-4">
@@ -300,13 +218,14 @@
                                         </div>
                                     </div>
                                 </div>
-                            </form>
-                        </div>
-                    </div>
+                                </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
+    @endsection
+    @section('scripts')
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{ asset('js/sidebar.js') }}"></script>
@@ -366,5 +285,4 @@
             });
         });
     </script>
-</body>
-</html>
+@endsection
