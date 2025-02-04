@@ -51,8 +51,27 @@
 
     .chart-wrapper {
         position: relative;
-        height: 400px;
+        height: 300px;
         width: 100%;
+    }
+
+    .table {
+        font-size: 0.875rem;
+    }
+
+    .table th {
+        font-weight: 600;
+        text-transform: uppercase;
+        color: #6c757d;
+    }
+
+    .badge {
+        font-weight: 500;
+    }
+
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
     }
 </style>
 @endsection
@@ -133,8 +152,7 @@
                                     @foreach($topProductos as $producto)
                                         <li class="list-group-item d-flex justify-content-between align-items-center px-0">
                                             <span class="text-truncate">{{ $producto->nombre }}</span>
-                                            <span
-                                                class="badge bg-primary rounded-pill">{{ $producto->total_vendidos }}</span>
+                                            <span class="badge bg-primary rounded-pill">{{ $producto->total_vendidos }}</span>
                                         </li>
                                     @endforeach
                                 </ul>
@@ -149,8 +167,7 @@
                                     @foreach($bottomProductos as $producto)
                                         <li class="list-group-item d-flex justify-content-between align-items-center px-0">
                                             <span class="text-truncate">{{ $producto->nombre }}</span>
-                                            <span
-                                                class="badge bg-secondary rounded-pill">{{ $producto->total_vendidos }}</span>
+                                            <span class="badge bg-secondary rounded-pill">{{ $producto->total_vendidos }}</span>
                                         </li>
                                     @endforeach
                                 </ul>
@@ -169,7 +186,7 @@
                             </a>
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-hover">
+                            <table class="table table-hover align-middle">
                                 <thead>
                                     <tr>
                                         <th scope="col">ID</th>
@@ -181,36 +198,43 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($pedidosRecientes as $pedido)
-                                                                        <tr>
-                                                                            <td>#{{ $pedido->id_pedido }}</td>
-                                                                            <td>{{ $pedido->usuario->nombres }} {{ $pedido->usuario->apellidos }}</td>
-                                                                            <td>
-                                                                                @if($pedido->fecha_pedido instanceof \Carbon\Carbon)
-                                                                                    {{ $pedido->fecha_pedido->format('d/m/Y H:i') }}
-                                                                                @else
-                                                                                    {{ \Carbon\Carbon::parse($pedido->fecha_pedido)->format('d/m/Y H:i') }}
-                                                                                @endif
-                                                                            </td>
-                                                                            <td>${{ number_format($pedido->total, 2) }}</td>
-                                                                            <td>
-                                                                                <span class="badge status-badge 
-                                                                                    {{ $pedido->estado->nombre === 'Entregado' ? 'bg-success' :
-                                                                                    ($pedido->estado->nombre === 'Cancelado' ? 'bg-danger' :
-                                                                                    (in_array($pedido->estado->nombre, ['En proceso', 'En reparto']) ? 'bg-primary' : 'bg-warning')) }}">
-                                                                                    {{ $pedido->estado->nombre ?? 'Pendiente' }}
-                                                                                </span>
-
-                                                                            </td>
-                                                                            <td>
-                                                                                <a href="{{ route('pedidos.show', $pedido->id_pedido) }}"
-                                                                                    class="btn btn-sm btn-outline-primary">
-                                                                                    <i class="bi bi-eye"></i>
-                                                                                    <span class="visually-hidden">Ver detalles del pedido</span>
-                                                                                </a>
-                                                                            </td>
-                                                                        </tr>
-                                    @endforeach
+                                    @forelse($pedidosRecientes as $pedido)
+                                        <tr>
+                                            <td>#{{ $pedido->id_pedido }}</td>
+                                            <td>{{ $pedido->usuario->nombres }} {{ $pedido->usuario->apellidos }}</td>
+                                            <td>{{ $pedido->fecha_pedido->format('d/m/Y H:i') }}</td>
+                                            <td>${{ number_format($pedido->total, 2) }}</td>
+                                            <td>
+                                                <span class="badge rounded-pill 
+                                                    @switch($pedido->estado->nombre)
+                                                        @case('Entregado')
+                                                            bg-success
+                                                            @break
+                                                        @case('Cancelado')
+                                                            bg-danger
+                                                            @break
+                                                        @case('En proceso')
+                                                        @case('En reparto')
+                                                            bg-primary
+                                                            @break
+                                                        @default
+                                                            bg-warning
+                                                    @endswitch">
+                                                    {{ $pedido->estado->nombre }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <a href="{{ route('pedidos.show', $pedido->id_pedido) }}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i>
+                                                    <span class="visually-hidden">Ver detalles del pedido</span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" class="text-center py-4">No hay pedidos recientes</td>
+                                        </tr>
+                                    @endforelse
                                 </tbody>
                             </table>
                         </div>
@@ -227,8 +251,7 @@
                                     @foreach($carpinterosDisponibles as $carpintero)
                                         <li class="list-group-item d-flex justify-content-between align-items-center px-0">
                                             <span class="text-truncate">{{ $carpintero->nombre }}</span>
-                                            <span
-                                                class="badge bg-success rounded-pill">{{ $carpintero->especialidad }}</span>
+                                            <span class="badge bg-success rounded-pill">{{ $carpintero->especialidad }}</span>
                                         </li>
                                     @endforeach
                                 </ul>
@@ -258,8 +281,7 @@
                                             <td>{{ $producto->stock }}</td>
                                             <td>{{ $producto->min_stock }}</td>
                                             <td>
-                                                <a href="{{ route('productos.edit', $producto->id) }}"
-                                                    class="btn btn-sm btn-warning">
+                                                <a href="{{ route('productos.edit', $producto->id) }}" class="btn btn-sm btn-warning">
                                                     <i class="bi bi-pencil"></i>
                                                     <span class="visually-hidden">Editar producto</span>
                                                 </a>
@@ -278,52 +300,57 @@
 @endsection
 
 @section('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const ctx = document.getElementById('salesChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: {!! json_encode($chartLabels) !!},
-                datasets: [{
-                    label: 'Ventas Diarias',
-                    data: {!! json_encode($chartData) !!},
-                    fill: true,
-                    borderColor: '#0d6efd',
-                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: {!! json_encode($chartLabels) !!}, // Fechas o días de ventas
+                    datasets: [{
+                        label: 'Ventas Diarias',
+                        data: {!! json_encode($chartData) !!}, // Datos de ventas
+                        fill: true,
+                        borderColor: '#0d6efd',
+                        backgroundColor: 'rgba(13, 110, 253, 0.2)',
+                        pointBackgroundColor: '#0d6efd',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#0d6efd',
+                        tension: 0.1
+                    }]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            borderDash: [2, 4],
-                            color: 'rgba(0, 0, 0, 0.05)'
-                        },
-                        ticks: {
-                            callback: function (value) {
-                                return '$' + value.toLocaleString();
-                            }
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true
                         }
                     },
-                    x: {
-                        grid: {
-                            display: false
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                borderDash: [2, 4],
+                                color: 'rgba(0, 0, 0, 0.05)'
+                            },
+                            ticks: {
+                                callback: function (value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
                         }
                     }
                 }
-            }
+            });
         });
-    });
-</script>
+    </script>
 @endsection

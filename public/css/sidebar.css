@@ -1,56 +1,124 @@
 :root {
-    --primary-color: #ffd700;
-    --primary-dark: #e6c200;
-    --sidebar-width: 280px;
-    --sidebar-width-collapsed: 80px;
-    --transition-speed: 0.3s;
+    --primary-color: #ffd700; /* Color principal del tema */
+    --primary-dark: #e6c200; /* Color oscuro para el tema */
+    --sidebar-width: 280px; /* Ancho del sidebar cuando está expandido */
+    --sidebar-width-collapsed: 80px; /* Ancho del sidebar cuando está colapsado */
+    --transition-speed: 0.3s; /* Velocidad de la transición para el cambio de tamaño */
 }
 
+/* Estilo del botón para expandir el sidebar */
+.expand-sidebar-btn {
+    position: absolute;
+    top: 10%;
+    right: -10px; /* Ajusta la posición para que no sobresalga */
+    transform: translateY(-50%); /* Centrado vertical */
+    width: 30px; /* Tamaño del botón */
+    height: 30px; /* Tamaño del botón */
+    background-color: black; /* Color de fondo del botón */
+    color: white; /* Color del ícono */
+    border-radius: 50%; /* Hace el botón redondeado */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+    z-index: 1001; /* Asegura que el botón esté por encima de otros elementos */
+    transition: right var(--transition-speed) ease; /* Transición suave para el movimiento */
+}
+
+/* Mantener el botón en la posición correcta, sin desbordar el sidebar */
+.sidebar.sidebar-collapsed .expand-sidebar-btn,
+.sidebar.sidebar-expanded .expand-sidebar-btn {
+    right: -10px; /* El botón no se moverá fuera del sidebar */
+}
+
+/* Estilo para el ícono dentro del botón */
+.expand-sidebar-btn i {
+    font-size: 1rem;
+    transition: transform var(--transition-speed) ease; /* Transición para el giro del ícono */
+}
+
+/* Rotar el ícono cuando el sidebar está colapsado */
+.sidebar-collapsed .expand-sidebar-btn i {
+    transform: rotate(180deg); /* Gira el ícono cuando está colapsado */
+}
+
+/* Estilo base para el cuerpo de la página */
 body {
     font-family: "Inter", system-ui, -apple-system, sans-serif;
     background-color: #f8f9fa;
     display: flex;
-    min-height: 100vh;
+    min-height: 100vh; /* Asegura que el cuerpo ocupe toda la pantalla */
     margin: 0;
 }
 
+/* Estilos del sidebar (barra lateral) */
 .sidebar {
-    width: var(--sidebar-width);
+    width: var(--sidebar-width); /* Ancho del sidebar cuando está expandido */
     background: linear-gradient(
         135deg,
         var(--primary-color) 0%,
         var(--primary-dark) 100%
     );
-    min-height: 100vh;
-    padding: 1.5rem;
-    position: fixed;
+    min-height: 100vh; /* Asegura que ocupe toda la altura de la pantalla */
+    padding: 1.5rem; /* Espaciado interno */
+    position: fixed; /* Fija el sidebar al lado izquierdo */
     left: 0;
     top: 0;
     bottom: 0;
-    z-index: 1000;
-    overflow-y: auto;
-    transition: all var(--transition-speed) ease;
+    z-index: 1000; /* Asegura que esté por encima del contenido */
+    overflow-y: auto; /* Permite desplazamiento si el contenido es largo */
+    transition: width var(--transition-speed) ease,
+        transform var(--transition-speed) ease;
+    overflow: hidden; /* Previene el desbordamiento horizontal */
 }
 
+/* Cuando el sidebar está colapsado */
 .sidebar-collapsed {
-    width: var(--sidebar-width-collapsed);
+    width: var(
+        --sidebar-width-collapsed
+    ); /* Reduce el ancho cuando está colapsado */
 }
 
+/* Botón para alternar la visibilidad del sidebar */
+.toggle-sidebar-btn {
+    position: absolute;
+    top: 50%;
+    right: -20px;
+    transform: translateY(-50%); /* Centrado vertical */
+    background: #007bff;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: right var(--transition-speed) ease,
+        transform var(--transition-speed) ease;
+}
+
+/* Estilo del botón cuando el sidebar está colapsado */
+.sidebar-collapsed .toggle-sidebar-btn {
+    right: -40px; /* Se mueve fuera del área del sidebar cuando está colapsado */
+    transform: translateY(-50%) rotate(180deg); /* Gira el botón cuando está colapsado */
+}
+
+/* Estilos del logo */
 .logo {
-    margin-bottom: 2.5rem;
+    margin-bottom: 2.5rem; /* Espaciado debajo del logo */
     text-align: center;
 }
 
 .logo img {
-    max-width: 80%;
+    max-width: 80%; /* Limita el tamaño máximo del logo */
     height: auto;
-    transition: all var(--transition-speed) ease;
+    transition: all var(--transition-speed) ease; /* Transición suave cuando cambia el tamaño */
 }
 
+/* Estilo para el logo cuando el sidebar está colapsado */
 .sidebar-collapsed .logo img {
-    max-width: 40px;
+    max-width: 40px; /* Reduce el tamaño del logo cuando el sidebar está colapsado */
 }
 
+/* Estilos para los enlaces de navegación */
 .nav-item {
     padding: 0.875rem 1.25rem;
     margin-bottom: 0.5rem;
@@ -59,53 +127,61 @@ body {
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.75rem; /* Espaciado entre ícono y texto */
     transition: all var(--transition-speed) ease;
     font-weight: 500;
 }
 
+/* Estilos para el hover de los enlaces */
 .nav-item:hover,
 .nav-item.active {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.2); /* Fondo cuando pasa el ratón */
     color: #000;
-    transform: translateX(5px);
+    transform: translateX(5px); /* Desplazamiento al pasar el ratón */
 }
 
+/* Estilos para los elementos activos */
 .nav-item.active {
     background-color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para el ítem activo */
 }
 
+/* Estilo de los íconos dentro de los enlaces */
 .nav-item i {
     font-size: 1.25rem;
     transition: all var(--transition-speed) ease;
 }
 
+/* Ocultar texto y ajustar el ícono cuando el sidebar está colapsado */
 .sidebar-collapsed .nav-item span {
-    display: none;
+    display: none; /* Oculta el texto */
 }
 
 .sidebar-collapsed .nav-item {
-    justify-content: center;
-    padding: 0.875rem;
+    justify-content: center; /* Centra el ítem */
+    padding: 0.875rem; /* Reduce el padding */
 }
 
 .sidebar-collapsed .nav-item i {
-    font-size: 1.5rem;
+    font-size: 1.5rem; /* Aumenta el tamaño del ícono */
 }
 
+/* Estilos del contenido principal */
 .content {
-    margin-left: var(--sidebar-width);
+    margin-left: var(
+        --sidebar-width
+    ); /* Deja espacio para el sidebar expandido */
     padding: 2rem;
-    width: calc(100% - var(--sidebar-width));
+    width: calc(100% - var(--sidebar-width)); /* Resta el ancho del sidebar */
     transition: all var(--transition-speed) ease;
 }
 
+/* Cuando el sidebar está colapsado, ajustamos el contenido */
 .content-expanded {
     margin-left: var(--sidebar-width-collapsed);
     width: calc(100% - var(--sidebar-width-collapsed));
 }
-
+/* Estilos del botón de logout */
 .btn-logout {
     background-color: #fff;
     color: #dc3545;
@@ -118,21 +194,42 @@ body {
     margin-top: 2rem;
     font-weight: 500;
     transition: all var(--transition-speed) ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; /* Espaciado entre el texto y el ícono */
 }
 
+/* Estilo al pasar el ratón sobre el botón de logout */
 .btn-logout:hover {
     background-color: #dc3545;
     color: #fff;
 }
 
+/* Ocultar el texto y mostrar solo el ícono cuando el sidebar está colapsado */
+.sidebar-collapsed .btn-logout span {
+    display: none; /* Oculta el texto */
+}
+
+.sidebar-collapsed .btn-logout i {
+    display: inline-block; /* Muestra solo el ícono */
+}
+
+/* Estilos del ícono dentro del botón de logout */
+.btn-logout i {
+    font-size: 1.5rem; /* Tamaño del ícono */
+    transition: all var(--transition-speed) ease; /* Transición para el ícono */
+}
+/* Estilos para el sidebar en dispositivos pequeños */
 .sidebar-toggle {
     position: fixed;
     top: 1rem;
     left: 1rem;
     z-index: 1001;
-    display: none;
+    display: none; /* Inicialmente oculto */
 }
 
+/* Estilos para el indicador de carga */
 .loading-indicator {
     position: fixed;
     top: 0;
@@ -159,32 +256,35 @@ body {
     animation: spin 1s linear infinite;
 }
 
+/* Animación para el spinner */
 @keyframes spin {
     0% {
         transform: rotate(0deg);
     }
-
     100% {
         transform: rotate(360deg);
     }
 }
 
+/* Estilos para el gráfico en dispositivos pequeños */
 @media (max-width: 992px) {
     .sidebar {
-        transform: translateX(-100%);
+        transform: translateX(
+            -100%
+        ); /* Ocultar el sidebar en pantallas pequeñas */
     }
 
     .sidebar.show {
-        transform: translateX(0);
+        transform: translateX(0); /* Mostrar el sidebar cuando está visible */
     }
 
     .content {
-        margin-left: 0;
+        margin-left: 0; /* No hay margen izquierdo cuando el sidebar está oculto */
         width: 100%;
     }
 
     .sidebar-toggle {
-        display: block;
+        display: block; /* Mostrar el botón para alternar el sidebar */
     }
 }
 
@@ -194,8 +294,9 @@ body {
     margin-bottom: 2rem;
 }
 
+/* Ajustar el tamaño del gráfico en pantallas pequeñas */
 @media (max-width: 768px) {
     .chart-container {
-        height: 300px;
+        height: 300px; /* Reducir la altura en pantallas más pequeñas */
     }
 }

@@ -8,6 +8,7 @@ use App\Models\Pedidos;
 use App\Models\Producto;
 use App\Models\Proyecto;
 use App\Models\Carpintero;
+use App\Models\EstadoPedido;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -29,20 +30,30 @@ class DashboardController extends Controller
             $ingresosTotales = Pedidos::sum('total');
 
             // Obtener las ventas de los últimos 30 días
-            $ventas = Pedidos::where('fecha_pedido', '>=', Carbon::now()->subDays(30))
-                ->selectRaw('DATE(fecha_pedido) as date, SUM(total) as total')
-                ->groupBy('date')
-                ->orderBy('date', 'asc')
+            $ventasUltimos30Dias = Pedidos::where('fecha_pedido', '>=', Carbon::now()->subDays(30))
+                ->selectRaw('DATE(fecha_pedido) as fecha, SUM(total) as total_ventas')
+                ->groupBy('fecha')
+                ->orderBy('fecha')
                 ->get();
 
             // Preparar los datos para el gráfico
-            $chartLabels = $ventas->pluck('date')->map(function ($date) {
-                return Carbon::parse($date)->format('d/m');
-            });
-            $chartData = $ventas->pluck('total');
+            $chartLabels = [];
+            $chartData = [];
+            $fechaInicio = Carbon::now()->subDays(29)->startOfDay();
+            $fechaFin = Carbon::now()->endOfDay();
+
+            while ($fechaInicio <= $fechaFin) {
+                $fecha = $fechaInicio->format('Y-m-d');
+                $venta = $ventasUltimos30Dias->firstWhere('fecha', $fecha);
+
+                $chartLabels[] = $fechaInicio->format('d/m');
+                $chartData[] = $venta ? $venta->total_ventas : 0;
+
+                $fechaInicio->addDay();
+            }
 
             // Obtener los 10 pedidos más recientes con eager loading
-            $pedidosRecientes = Pedidos::with('usuario')
+            $pedidosRecientes = Pedidos::with(['usuario', 'estado'])
                 ->orderBy('fecha_pedido', 'desc')
                 ->limit(10)
                 ->get();
@@ -83,6 +94,9 @@ class DashboardController extends Controller
                 ->limit(5)
                 ->get();
 
+            // Obtener todos los estados de pedido
+            $estadosPedido = EstadoPedido::all();
+
             return view('dashboard', compact(
                 'totalUsuarios',
                 'totalPedidos',
@@ -95,7 +109,8 @@ class DashboardController extends Controller
                 'bottomProductos',
                 'proyectosActivos',
                 'carpinterosDisponibles',
-                'productosConBajoStock'
+                'productosConBajoStock',
+                'estadosPedido'
             ));
 
         } catch (\Exception $e) {
@@ -103,3 +118,4 @@ class DashboardController extends Controller
         }
     }
 }
+

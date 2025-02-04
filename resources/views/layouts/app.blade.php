@@ -7,6 +7,9 @@
     <title>@yield('title', 'Novocentro')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+
     <link href="{{ asset('css/sidebar.css') }}" rel="stylesheet">
     <link href="{{ asset('css/searchbar.css') }}" rel="stylesheet">
     <link href="{{ asset('css/loading.css') }}" rel="stylesheet">
@@ -14,10 +17,7 @@
 </head>
 
 <body>
-    <div class="loading-indicator d-none">
-        <div class="loading-spinner"></div>
-        <div class="loading-text mt-3">Generando PDF...</div>
-    </div>
+    @include('partials.loading')
 
     <button class="btn btn-primary sidebar-toggle d-md-none" type="button" aria-label="Toggle sidebar">
         <i class="bi bi-list"></i>
@@ -25,7 +25,7 @@
 
     @include('partials.sidebar')
 
-    <div class="content">
+    <div class="content" id="main-content">
         @yield('content')
     </div>
 
@@ -33,6 +33,7 @@
     <script src="{{ asset('js/sidebar.js') }}"></script>
     <script src="{{ asset('js/searchbar.js') }}"></script>
     <script src="{{ asset('js/pdf-export.js') }}"></script>
+    @yield('scripts')
 
 </body>
 

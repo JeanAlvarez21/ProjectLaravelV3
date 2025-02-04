@@ -1,4 +1,8 @@
 <div class="sidebar">
+    <div class="expand-sidebar-btn">
+        <i class="bi bi-chevron-right"></i>
+    </div>
+
     <div class="logo">
         <a href="{{ route('home') }}">
             <img src="{{ asset('media/logo.png') }}" alt="Logo" class="img-fluid">

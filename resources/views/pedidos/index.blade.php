@@ -13,10 +13,6 @@
 </head>
 
 <body>
-    <!-- Loading Indicator -->
-    <div class="loading-indicator">
-        <div class="loading-spinner"></div>
-    </div>
 
     <!-- Sidebar Toggle Button -->
     <button class="btn btn-primary sidebar-toggle d-md-none" type="button" aria-label="Toggle sidebar">
