@@ -117,10 +117,14 @@
                                 @endif
                             </p>
                             <p><strong>Estado:</strong>
-                                <span
-                                    class="badge status-badge {{ $pedido->estado->nombre === 'Completado' ? 'bg-success' : 'bg-warning' }}">
-                                    {{ $pedido->estado->nombre ?? 'Pendiente' }}
-                                </span>
+                            
+                            <span class="badge status-badge 
+                                {{ $pedido->estado->nombre === 'Entregado' ? 'bg-success' : 
+                                ($pedido->estado->nombre === 'Cancelado' ? 'bg-danger' : 
+                                (in_array($pedido->estado->nombre, ['En proceso', 'En reparto']) ? 'bg-primary' : 'bg-warning')) }}">
+                                {{ $pedido->estado->nombre ?? 'Pendiente' }}
+                            </span>
+
                             </p>
                             <p><strong>Total:</strong> ${{ number_format($pedido->total, 2) }}</p>
                         </div>

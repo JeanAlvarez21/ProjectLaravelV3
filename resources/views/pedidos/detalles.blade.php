@@ -80,10 +80,13 @@
                             </p>
                         </div>
                         <div class="col-md-6 text-md-end">
-                            <span
-                                class="badge status-badge {{ $pedido->estado->nombre === 'Completado' ? 'bg-success' : 'bg-warning' }}">
-                                {{ $pedido->estado->nombre ?? 'Pendiente' }}
-                            </span>
+                        <span class="badge status-badge 
+                            {{ $pedido->estado->nombre === 'Entregado' ? 'bg-success' : 
+                            ($pedido->estado->nombre === 'Cancelado' ? 'bg-danger' : 
+                            (in_array($pedido->estado->nombre, ['En proceso', 'En reparto']) ? 'bg-primary' : 'bg-warning')) }}">
+                            {{ $pedido->estado->nombre ?? 'Pendiente' }}
+                        </span>
+
                         </div>
                     </div>
 
