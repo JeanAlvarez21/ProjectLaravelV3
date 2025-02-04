@@ -25,6 +25,10 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PedidoController;
 use App\Http\Controllers\ReporteController;
 
+
+
+
+
 // Welcome page
 Route::get('/', function () {
     return view('home');
@@ -123,6 +127,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/pedidos', [PedidoController::class, 'store'])->name('pedidos.store');
     Route::get('/pedidos/{pedidos}', [PedidoController::class, 'show'])->name('pedidos.show');
     Route::get('/pedidos/{pedidos}/detalles', [PedidoController::class, 'detalles'])->name('pedidos.detalles');
+    Route::post('/pedidos/{id}/cambiar-estado', [PedidoController::class, 'cambiarEstado'])->name('pedidos.cambiarEstado');
+    Route::post('/pedidos/{id}/actualizar-estado', [PedidoController::class, 'actualizarEstado'])->name('pedidos.actualizarEstado');
+
 });
 
 // Report routes

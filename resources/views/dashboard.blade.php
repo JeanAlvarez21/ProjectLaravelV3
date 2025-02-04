@@ -348,30 +348,34 @@
                                     </thead>
                                     <tbody>
                                         @foreach($pedidosRecientes as $pedido)
-                                            <tr>
-                                                <td>#{{ $pedido->id_pedido }}</td>
-                                                <td>{{ $pedido->usuario->nombres }} {{ $pedido->usuario->apellidos }}</td>
-                                                <td>
-                                                    @if($pedido->fecha_pedido instanceof \Carbon\Carbon)
-                                                        {{ $pedido->fecha_pedido->format('d/m/Y H:i') }}
-                                                    @else
-                                                        {{ \Carbon\Carbon::parse($pedido->fecha_pedido)->format('d/m/Y H:i') }}
-                                                    @endif
-                                                </td>
-                                                <td>${{ number_format($pedido->total, 2) }}</td>
-                                                <td>
-                                                    <span
-                                                        class="badge bg-{{ $pedido->estado == 'Completado' ? 'success' : 'warning' }}">
-                                                        {{ $pedido->estado ?? 'Pendiente' }}
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <a href="{{ route('pedidos.show', $pedido->id_pedido) }}"
-                                                        class="btn btn-sm btn-outline-primary">
-                                                        <i class="bi bi-eye"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
+                                                                            <tr>
+                                                                                <td>#{{ $pedido->id_pedido }}</td>
+                                                                                <td>{{ $pedido->usuario->nombres }} {{ $pedido->usuario->apellidos }}</td>
+                                                                                <td>
+                                                                                    @if($pedido->fecha_pedido instanceof \Carbon\Carbon)
+                                                                                        {{ $pedido->fecha_pedido->format('d/m/Y H:i') }}
+                                                                                    @else
+                                                                                        {{ \Carbon\Carbon::parse($pedido->fecha_pedido)->format('d/m/Y H:i') }}
+                                                                                    @endif
+                                                                                </td>
+                                                                                <td>${{ number_format($pedido->total, 2) }}</td>
+                                                                                <td>
+                                                                                    <span
+                                                                                        class="badge status-badge 
+                                                                                        {{ $pedido->estado->nombre === 'Entregado' ? 'bg-success' :
+                                                                                        ($pedido->estado->nombre === 'Cancelado' ? 'bg-danger' :
+                                                                                        (in_array($pedido->estado->nombre, ['En proceso', 'En reparto']) ? 'bg-primary' : 'bg-warning')) }}">
+                                                                                        {{ $pedido->estado->nombre ?? 'Pendiente' }}
+                                                                                    </span>
+
+                                                                                </td>
+                                                                                <td>
+                                                                                    <a href="{{ route('pedidos.show', $pedido->id_pedido) }}"
+                                                                                        class="btn btn-sm btn-outline-primary">
+                                                                                        <i class="bi bi-eye"></i>
+                                                                                    </a>
+                                                                                </td>
+                                                                            </tr>
                                         @endforeach
                                     </tbody>
                                 </table>

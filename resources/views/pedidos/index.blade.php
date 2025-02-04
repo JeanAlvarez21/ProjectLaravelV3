@@ -127,20 +127,18 @@
                                 @forelse($pedidos as $pedido)
                                     <tr>
                                         <td>{{ $pedido->id_pedido }}</td>
-                                        <td>{{ $pedido->usuario->nombres }} {{ $pedido->usuario->apellidos }}</td>
-                                        <td>
-                                            @if($pedido->fecha_pedido instanceof \Carbon\Carbon)
-                                                {{ $pedido->fecha_pedido->format('d/m/Y H:i') }}
-                                            @else
-                                                {{ \Carbon\Carbon::parse($pedido->fecha_pedido)->format('d/m/Y H:i') }}
-                                            @endif
-                                        </td>
+                                        <td>{{ $pedido->usuario->nombres}} {{ $pedido->usuario->apellidos}}</td>
+                                        <td>{{ $pedido->fecha_pedido->format('d/m/Y H:i') }}</td>
                                         <td>${{ number_format($pedido->total, 2) }}</td>
                                         <td>
-                                            <span
-                                                class="badge bg-{{ $pedido->estado == 'Completado' ? 'success' : 'warning' }}">
-                                                {{ $pedido->estado ?? 'Pendiente' }}
-                                            </span>
+                                            <select class="form-select form-select-sm estado-pedido"
+                                                data-pedido-id="{{ $pedido->id_pedido }}">
+                                                @foreach(\App\Models\EstadoPedido::all() as $estado)
+                                                    <option value="{{ $estado->id }}" {{ $pedido->id_estado == $estado->id ? 'selected' : '' }}>
+                                                        {{ $estado->nombre }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
                                         </td>
                                         <td class="text-end">
                                             <a href="{{ route('pedidos.show', $pedido->id_pedido) }}"
@@ -177,6 +175,54 @@
             initializeSearch('pedidosTableBody', 'pedidoSearchInput');
         });
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            initializeSearch('pedidosTableBody', 'pedidoSearchInput');
+
+            // Manejar el cambio de estado del pedido
+            document.querySelectorAll('.estado-pedido').forEach(select => {
+                select.addEventListener('change', function () {
+                    const pedidoId = this.dataset.pedidoId;
+                    const nuevoEstadoId = this.value;
+
+                    // Mostrar el indicador de carga
+                    document.querySelector('.loading-indicator').style.display = 'flex';
+
+                    // Realizar la petición AJAX para actualizar el estado
+                    fetch(`/pedidos/${pedidoId}/actualizar-estado`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: JSON.stringify({ id_estado: nuevoEstadoId })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                console.log('Estado actualizado con éxito');
+                            } else {
+                                console.error('Error al actualizar el estado');
+                                this.value = this.dataset.lastValue;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            this.value = this.dataset.lastValue;
+                        })
+                        .finally(() => {
+                            // Ocultar el indicador de carga
+                            document.querySelector('.loading-indicator').style.display = 'none';
+                        });
+
+                    // Guardar el valor seleccionado para posible reversión
+                    this.dataset.lastValue = this.value;
+                });
+            });
+        });
+    </script>
+
 </body>
 
 </html>

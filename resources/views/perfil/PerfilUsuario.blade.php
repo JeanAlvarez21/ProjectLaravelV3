@@ -452,7 +452,7 @@
                                             <h5 class="card-title">Código de Pedido #${order.id_pedido}</h5>
                                             <p class="card-text">Fecha: ${new Date(order.fecha_pedido).toLocaleDateString()}</p>
                                             <p class="card-text">Total: $${parseFloat(order.total).toFixed(2)}</p>
-                                            <span class="badge bg-${order.estado === 'Completado' ? 'success' : order.estado === 'Pendiente' ? 'warning' : 'info'}">${order.estado || 'Pendiente'}</span>
+                                            
                                         </div>
                                         <div class="card-footer">
                                             <button onclick="loadOrderDetails(${order.id_pedido})" class="btn btn-primary btn-sm">Ver Detalles</button>

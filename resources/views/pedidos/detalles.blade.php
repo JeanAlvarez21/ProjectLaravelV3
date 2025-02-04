@@ -81,8 +81,8 @@
                         </div>
                         <div class="col-md-6 text-md-end">
                             <span
-                                class="badge status-badge {{ $pedido->estado === 'Completado' ? 'bg-success' : 'bg-warning' }}">
-                                {{ $pedido->estado ?? 'Pendiente' }}
+                                class="badge status-badge {{ $pedido->estado->nombre === 'Completado' ? 'bg-success' : 'bg-warning' }}">
+                                {{ $pedido->estado->nombre ?? 'Pendiente' }}
                             </span>
                         </div>
                     </div>

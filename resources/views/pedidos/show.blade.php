@@ -117,8 +117,9 @@
                                 @endif
                             </p>
                             <p><strong>Estado:</strong>
-                                <span class="badge bg-{{ $pedido->estado == 'Completado' ? 'success' : 'warning' }}">
-                                    {{ $pedido->estado ?? 'Pendiente' }}
+                                <span
+                                    class="badge status-badge {{ $pedido->estado->nombre === 'Completado' ? 'bg-success' : 'bg-warning' }}">
+                                    {{ $pedido->estado->nombre ?? 'Pendiente' }}
                                 </span>
                             </p>
                             <p><strong>Total:</strong> ${{ number_format($pedido->total, 2) }}</p>
